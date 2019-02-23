@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+message GameState {
+  repeated Actor actors = 1;
+}
+
+message Actor {
+  message Position {
+    float x = 1;
+    float y = 2;
+  }
+
+  uint64 id = 1;
+  uint32 type = 2;
+  Position position = 3;
+  float angle = 4;
+}
+
+message MoveCommand {
+  Actor.Position target = 1;
+}
