@@ -42,15 +42,24 @@
     <ClCompile Include="..\Common\protocol.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="game_scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="client.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="game_scene.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\protocol.pb.h">
       <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

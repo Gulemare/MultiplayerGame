@@ -43,7 +43,7 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     // We have a new connection
     qDebug() << socketDescriptor << " Connecting...";
 
-    emit addPlayer(QPoint{0, 0}, QString::number(socketDescriptor));
+    emit addPlayer(QPoint{0, 0}, socketDescriptor);
 
     // Every new connection will be run in a newly created thread
     QThread *thread = new QThread(this);

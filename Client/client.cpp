@@ -1,7 +1,6 @@
 #include "../Common/protocol.pb.h"
 #include "client.h"
-
-const float PIXELS_IN_METER = 20.f;
+#include "constants.h"
 
 Client::Client(QWidget *parent)
     : QWidget(parent)
@@ -49,12 +48,12 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(portLineEdit_, 1, 1);
     mainLayout->addWidget(serverTextWidget_, 3, 0, 1, 2);
     mainLayout->addWidget(buttonBox, 4, 0, 1, 2);
-    mainLayout->addWidget(view_, 0, 2, 5, 1);
+    mainLayout->addWidget(view_, 5, 0, 1, 2);
 
     enableConnectionButton();
     initScene();
 
-    setMinimumSize(1500, 800);
+    setMinimumSize(500, 900);
 }
 
 void Client::connectButtonClicked()
@@ -65,12 +64,12 @@ void Client::connectButtonClicked()
         portLineEdit_->text().toInt());
 }
 
-void Client::sendCommand(const std::string& msg)
+void Client::sendCommand(const QByteArray& msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_10);
-    out << msg.data();
+    out << msg;
     tcpSocket_->write(block);
 }
 
@@ -80,9 +79,11 @@ void Client::sendMoveCommand(QPointF pos)
     auto target = new Actor::Position;
     target->set_x(pos.x() / PIXELS_IN_METER);
     target->set_y(pos.y() / PIXELS_IN_METER);
-    qDebug() << target->x() << " " << target->y();
     cmd.set_allocated_target(target);
-    sendCommand(cmd.SerializeAsString());
+
+    QByteArray msg(cmd.ByteSize(), Qt::Uninitialized);
+    cmd.SerializeToArray(msg.data(), msg.size());
+    sendCommand(msg);
 }
 
 void Client::getGameState()
@@ -93,9 +94,8 @@ void Client::getGameState()
     if (!in.commitTransaction())
         return;
 
-    auto message = data.toStdString();
     GameState state;
-    if (!state.ParseFromString(message))
+    if (!state.ParseFromArray(data.data(), data.size()))
         return;
 
     std::string res;
@@ -110,29 +110,18 @@ void Client::getGameState()
 
         updatedIds.insert(obj.id());
 
-        if (items_.count(obj.id()) == 0) {
-            auto item = std::make_shared<QGraphicsEllipseItem>(
-                QRect(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER, 2 * PIXELS_IN_METER, 2 * PIXELS_IN_METER));
-            item->setVisible(true);
-            scene_->addItem(item.get());
-            items_[obj.id()] = item;
+        if (!scene_->containsActor(obj.id())) {
+            scene_->createActor(static_cast<GameType>(obj.type()), obj.id());
         }
-        else {
-            items_[obj.id()]->setPos({
+
+        scene_->getActor(obj.id())->setPos({
                 obj.position().x() * PIXELS_IN_METER,
                 obj.position().y() * PIXELS_IN_METER });
-        }
     }
 
-    for (auto it = items_.begin(); it != items_.end();) {
+    scene_->removeNotUpdated(updatedIds);
 
-        if (updatedIds.count(it->first) == 0)
-            it = items_.erase(it);
-        else
-            ++it;
-    }
-
-    serverTextWidget_->append(QString::fromStdString(res));
+    //serverTextWidget_->append(QString::fromStdString(res));
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)

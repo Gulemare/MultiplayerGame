@@ -119,6 +119,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\game_types.h" />
     <ClInclude Include="..\Common\protocol.pb.h" />
     <ClInclude Include="actor.h" />
     <ClInclude Include="game.h" />

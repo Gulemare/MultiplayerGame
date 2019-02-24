@@ -1,22 +1,17 @@
 #pragma once
 #include <stdint.h>
 
-enum ActorType {
-    UNKNOWN = 0,
-    PLAYER,
-    WALL,
-    REMOVED
-};
+#include "../Common/game_types.h"
 
 struct ActorData {
-    ActorData(ActorType type = UNKNOWN);
+    ActorData(GameType type = UNKNOWN);
     virtual ~ActorData() {};
     uint64_t id() const;
-    ActorType type() const ;
+    GameType type() const ;
     void setRemoved();
 
 private:
-    ActorType type_;
+    GameType type_;
     uint64_t id_;
     static uint64_t lastId;
 };

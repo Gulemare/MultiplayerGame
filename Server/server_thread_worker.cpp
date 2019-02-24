@@ -1,5 +1,4 @@
 #include "server_thread_worker.h"
-#include "../Common/protocol.pb.h"
 
 void ThreadWorker::start() {
     socket_ = new QTcpSocket();
@@ -22,19 +21,18 @@ void ThreadWorker::readyRead() {
     in.startTransaction();
     QByteArray data;
     in >> data;
-    qDebug() << data;
     if (!in.commitTransaction())
         return;
 
-    qDebug() << "transaction commited";
-    
-    auto msg = data.toStdString();
-
     MoveCommand cmd;
-    if (!cmd.ParseFromString(msg))
+    if (!cmd.ParseFromArray(data.data(), data.size()))
         return;
 
-    qDebug() << cmd.target().x() << " " << cmd.target().y();
+    qDebug() << QString("%1(%2): (%3, %4)")
+        .arg(socketDescriptor_)
+        .arg((int)QThread::currentThreadId())
+        .arg(cmd.target().x())
+        .arg(cmd.target().y());
     emit moveCommand(socketDescriptor_, cmd.target().x(), cmd.target().y());
 }
 
@@ -46,13 +44,16 @@ void ThreadWorker::disconnected() {
     QThread::currentThread()->exit(0);
 }
 
-void ThreadWorker::sendGameState(const std::string& state) {
+void ThreadWorker::sendGameState(const GameState& state) {
+
+    QByteArray msg(state.ByteSize(), Qt::Uninitialized);
+    state.SerializeToArray(msg.data(), msg.size());
+
     // send game state to client
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_10);
-    out << state.data();
-
+    out << msg;
     socket_->write(block);
 }
 

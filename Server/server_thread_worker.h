@@ -4,6 +4,8 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QDataStream>
+#include <QByteArray>
+#include "../Common/protocol.pb.h"
 
 class ThreadWorker : public QObject
 {
@@ -16,7 +18,7 @@ public slots:
     void start();
     void readyRead();
     void disconnected();
-    void sendGameState(const std::string& state);
+    void sendGameState(const GameState& state);
 
 signals:
     void error(QTcpSocket::SocketError socketerror);

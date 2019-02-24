@@ -2,24 +2,12 @@
 #include <QtWidgets>
 #include <QDataStream>
 #include <QTcpSocket>
-#include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
 #include <QHash>
 #include <memory>
 #include <unordered_map>
 #include <algorithm>
-
-/*! Scene for game visualising */
-class GameScene : public QGraphicsScene {
-    Q_OBJECT
-protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override {
-        emit clickedOnScene(event->scenePos());
-    }
-
-signals:
-    void clickedOnScene(QPointF pos);
-};
+#include "game_scene.h"
+#include "../Common/protocol.pb.h"
 
 /*! Game client */
 class Client : public QWidget
@@ -36,7 +24,7 @@ private:
     QPushButton* connectButton_ = nullptr;
     QGraphicsView* view_ = nullptr;
     GameScene* scene_ = nullptr;
-    std::unordered_map<int, std::shared_ptr<QGraphicsItem>> items_;
+    
 
     QTcpSocket *tcpSocket_ = nullptr;
     QDataStream in;
@@ -44,7 +32,7 @@ private:
 
 private slots:
     void connectButtonClicked();
-    void sendCommand(const std::string& state);
+    void sendCommand(const QByteArray& msg);
     void sendMoveCommand(QPointF pos);
     void getGameState();
     void displayError(QAbstractSocket::SocketError socketError);

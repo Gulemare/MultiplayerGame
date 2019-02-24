@@ -69,5 +69,8 @@
     <ClInclude Include="actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\game_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

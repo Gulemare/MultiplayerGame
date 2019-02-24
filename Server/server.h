@@ -3,6 +3,7 @@
 #include <QTcpServer>
 #include <QThread>
 #include <QTimer>
+#include "../Common/protocol.pb.h"
 #include "game.h"
 
 /*! Worker for game, lives in separate thread */
@@ -24,8 +25,8 @@ public slots:
         emit gameStateUpdated(game_.getState());
     }
 
-    void addPlayer(QPoint pos, const QString& name) {
-        game_.addPlayer(pos, name.toStdString().data());
+    void addPlayer(QPoint pos, const int playerId) {
+        game_.addPlayer(pos, playerId);
         qDebug() << "Player added";
     }
 
@@ -38,7 +39,7 @@ public slots:
     }
 
 signals:
-    void gameStateUpdated(const std::string& state);
+    void gameStateUpdated(const GameState& state);
 
 private:
     Game game_;
@@ -54,9 +55,9 @@ public:
 
 signals:
     void startGame();
-    void addPlayer(QPoint pos, const QString& name);
+    void addPlayer(QPoint pos, const int playerId);
     void removePlayer(const int id);
-    void sendGameState(const std::string& state);
+    void sendGameState(const GameState& state);
     void startThreadWorker();
 
     void commandPlayerMove(int playerId, float x, float y);

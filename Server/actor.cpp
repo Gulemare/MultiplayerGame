@@ -1,7 +1,7 @@
 #include "actor.h"
 uint64_t ActorData::lastId = 0;
 
-ActorData::ActorData(ActorType type) : type_(type) {
+ActorData::ActorData(GameType type) : type_(type) {
     id_ = lastId++;
 }
 
@@ -10,7 +10,7 @@ uint64_t ActorData::id() const
     return id_;
 }
 
-ActorType ActorData::type() const
+GameType ActorData::type() const
 {
     return type_;
 }

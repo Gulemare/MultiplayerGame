@@ -25,7 +25,7 @@ Game::~Game()
 
 void Game::init()
 {
-    /*
+    
     b2BodyDef bodyDef;
     bodyDef.type = b2_staticBody;
     bodyDef.position.Set(0.f, 0.f);
@@ -46,9 +46,6 @@ void Game::init()
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
     body->CreateFixture(&fixtureDef);
-
-    */
-    
 }
 
 void Game::tick()
@@ -58,13 +55,13 @@ void Game::tick()
     handlePlayersMovements();
 }
 
-void Game::addPlayer(QPoint pos, const QString& name)
+void Game::addPlayer(QPoint pos, const int playerId)
 {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(pos.x(), pos.y());
     b2Body* body = world_.CreateBody(&bodyDef);
-    auto data = new PlayerData{ "Player", name.toInt() };
+    auto data = new PlayerData{ "Player", playerId };
     body->SetUserData(data);
 
     players_[data->playerId()] = body;
@@ -79,9 +76,9 @@ void Game::addPlayer(QPoint pos, const QString& name)
     body->CreateFixture(&fixtureDef);
 }
 
-void Game::removePlayer(const int id)
+void Game::removePlayer(const int playerId)
 {
-    auto body = players_.at(id);
+    auto body = players_.at(playerId);
     auto data = static_cast<ActorData*>(body->GetUserData());
     auto player = dynamic_cast<PlayerData*>(data);
     player->setRemoved();
@@ -95,7 +92,7 @@ void Game::updatePlayerMovePath(const int playerId, const std::list<QPointF>& ne
     player->movePath_ = newPath;
 }
 
-std::string Game::getState()
+GameState Game::getState()
 {
     GameState state;
     
@@ -113,9 +110,7 @@ std::string Game::getState()
         obj->set_id(data->id());
     }
 
-    std::string msg;
-    state.SerializeToString(&msg);
-    return msg;
+    return state;
 }
 
 void Game::deleteRemoved()

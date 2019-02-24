@@ -4,6 +4,7 @@
 #include <QPoint>
 #include <vector>
 #include <unordered_map>
+#include "../Common/protocol.pb.h"
 
 class ActorData;
 
@@ -16,12 +17,12 @@ public:
     void init();
     void tick();
 
-    void addPlayer(QPoint pos, const QString& name);
-    void removePlayer(const int id);
+    void addPlayer(QPoint pos, const int playerId);
+    void removePlayer(const int playerId);
 
     void updatePlayerMovePath(const int playerId, const std::list<QPointF>& newPath);
 
-    std::string getState();
+    GameState getState();
 
 private:
     const b2Vec2 gravity_ = { 0.f, 0.f };
