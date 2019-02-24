@@ -65,6 +65,6 @@ protected:
     void incomingConnection(qintptr socketDescriptor);
 
 private:
-    QThread gameThread;
+    QThread gameThread_;
 
 };

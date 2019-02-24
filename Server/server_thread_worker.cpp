@@ -3,7 +3,7 @@
 
 void ThreadWorker::start() {
     socket_ = new QTcpSocket();
-    if (!socket_->setSocketDescriptor(this->socketDescriptor_))
+    if (!socket_->setSocketDescriptor(socketDescriptor_))
     {
         emit error(socket_->error());
         return;
@@ -25,6 +25,8 @@ void ThreadWorker::readyRead() {
     qDebug() << data;
     if (!in.commitTransaction())
         return;
+
+    qDebug() << "transaction commited";
     
     auto msg = data.toStdString();
 
@@ -49,7 +51,6 @@ void ThreadWorker::sendGameState(const std::string& state) {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_10);
-
     out << state.data();
 
     socket_->write(block);

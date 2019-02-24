@@ -6,19 +6,19 @@ MyServer::MyServer(QObject *parent) :
 {
     qDebug() << "Server started on thread: " << QThread::currentThreadId();
     GameWorker *game = new GameWorker;
-    game->moveToThread(&gameThread);
+    game->moveToThread(&gameThread_);
     connect(this, &MyServer::startGame, game, &GameWorker::start);
     connect(this, &MyServer::addPlayer, game, &GameWorker::addPlayer);
     connect(this, &MyServer::removePlayer, game, &GameWorker::removePlayer);
     connect(this, &MyServer::commandPlayerMove, game, &GameWorker::commandPlayerMove);
     connect(game, &GameWorker::gameStateUpdated, this, &MyServer::sendGameState, Qt::QueuedConnection);
-    gameThread.start();
+    gameThread_.start();
 }
 
 MyServer::~MyServer()
 {
-    gameThread.quit();
-    gameThread.wait();
+    gameThread_.quit();
+    gameThread_.wait();
 }
 
 void MyServer::startServer()

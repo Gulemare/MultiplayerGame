@@ -72,8 +72,6 @@ void Client::sendCommand(const std::string& msg)
     out.setVersion(QDataStream::Qt_5_10);
     out << msg.data();
     tcpSocket_->write(block);
-
-    tcpSocket_->write(msg.data());
 }
 
 void Client::sendMoveCommand(QPointF pos)
