@@ -1,6 +1,7 @@
 #include "../Common/protocol.pb.h"
 #include "client.h"
 #include "constants.h"
+#include <QGLWidget>
 
 Client::Client(QWidget *parent)
     : QWidget(parent)
@@ -86,6 +87,20 @@ void Client::sendMoveCommand(QPointF pos)
     sendCommand(msg);
 }
 
+void handleActor(GameScene& scene, const Actor& actor) {
+    if (!scene.containsActor(actor.id())) {
+        scene.createActor(static_cast<GameType>(actor.type()), actor.id());
+    }
+
+    scene.getActor(actor.id())->setPos({
+        actor.position().x() * PIXELS_IN_METER,
+        actor.position().y() * PIXELS_IN_METER });
+}
+
+void handlePlayer(GameScene& scene, const Player& actor) {
+
+}
+
 void Client::getGameState()
 {
     in.startTransaction();
@@ -101,22 +116,20 @@ void Client::getGameState()
     std::string res;
     std::unordered_set<uint64_t> updatedIds;
     for (int i = 0; i < state.actors_size(); ++i) {
-        auto obj = state.actors(i);
-        res += "{";
-        res += std::to_string(obj.id()) + ", ";
-        res += std::to_string(obj.type()) + ", ";
-        res += std::to_string(obj.position().x()) + ", ";
-        res += std::to_string(obj.position().y()) + "} ";
+        const auto& actor = state.actors(i);
+        //res += "{";
+        //res += std::to_string(obj.id()) + ", ";
+        //res += std::to_string(obj.type()) + ", ";
+        //res += std::to_string(obj.position().x()) + ", ";
+        //res += std::to_string(obj.position().y()) + "} ";
+        updatedIds.insert(actor.id());
+        handleActor(*scene_, actor);
+    }
 
-        updatedIds.insert(obj.id());
-
-        if (!scene_->containsActor(obj.id())) {
-            scene_->createActor(static_cast<GameType>(obj.type()), obj.id());
-        }
-
-        scene_->getActor(obj.id())->setPos({
-                obj.position().x() * PIXELS_IN_METER,
-                obj.position().y() * PIXELS_IN_METER });
+    if (state.players_size() > 0) {
+        const auto& player = state.players(0);
+        updatedIds.insert(player.actor().id());
+        handleActor(*scene_, player.actor());
     }
 
     scene_->removeNotUpdated(updatedIds);
@@ -155,6 +168,7 @@ void Client::enableConnectionButton()
 
 void Client::initScene()
 {
+    view_->setViewport(new QGLWidget);
     scene_->addRect(-10 * PIXELS_IN_METER, -10 * PIXELS_IN_METER, 20 * PIXELS_IN_METER, 20 * PIXELS_IN_METER);
     view_->setScene(scene_);
 

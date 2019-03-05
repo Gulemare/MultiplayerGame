@@ -38,7 +38,7 @@ namespace protobuf_protocol_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[4];
+  static const ::google::protobuf::internal::ParseTable schema[5];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -57,12 +57,16 @@ extern GameStateDefaultTypeInternal _GameState_default_instance_;
 class MoveCommand;
 class MoveCommandDefaultTypeInternal;
 extern MoveCommandDefaultTypeInternal _MoveCommand_default_instance_;
+class Player;
+class PlayerDefaultTypeInternal;
+extern PlayerDefaultTypeInternal _Player_default_instance_;
 namespace google {
 namespace protobuf {
 template<> ::Actor* Arena::CreateMaybeMessage<::Actor>(Arena*);
 template<> ::Actor_Position* Arena::CreateMaybeMessage<::Actor_Position>(Arena*);
 template<> ::GameState* Arena::CreateMaybeMessage<::GameState>(Arena*);
 template<> ::MoveCommand* Arena::CreateMaybeMessage<::MoveCommand>(Arena*);
+template<> ::Player* Arena::CreateMaybeMessage<::Player>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 
@@ -155,10 +159,22 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // accessors -------------------------------------------------------
 
-  // repeated .Actor actors = 1;
+  // repeated .Player players = 1;
+  int players_size() const;
+  void clear_players();
+  static const int kPlayersFieldNumber = 1;
+  ::Player* mutable_players(int index);
+  ::google::protobuf::RepeatedPtrField< ::Player >*
+      mutable_players();
+  const ::Player& players(int index) const;
+  ::Player* add_players();
+  const ::google::protobuf::RepeatedPtrField< ::Player >&
+      players() const;
+
+  // repeated .Actor actors = 2;
   int actors_size() const;
   void clear_actors();
-  static const int kActorsFieldNumber = 1;
+  static const int kActorsFieldNumber = 2;
   ::Actor* mutable_actors(int index);
   ::google::protobuf::RepeatedPtrField< ::Actor >*
       mutable_actors();
@@ -171,7 +187,124 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::Player > players_;
   ::google::protobuf::RepeatedPtrField< ::Actor > actors_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Player : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Player) */ {
+ public:
+  Player();
+  virtual ~Player();
+
+  Player(const Player& from);
+
+  inline Player& operator=(const Player& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Player(Player&& from) noexcept
+    : Player() {
+    *this = ::std::move(from);
+  }
+
+  inline Player& operator=(Player&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Player& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Player* internal_default_instance() {
+    return reinterpret_cast<const Player*>(
+               &_Player_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  void Swap(Player* other);
+  friend void swap(Player& a, Player& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Player* New() const final {
+    return CreateMaybeMessage<Player>(NULL);
+  }
+
+  Player* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Player>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Player& from);
+  void MergeFrom(const Player& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Player* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .Actor actor = 1;
+  bool has_actor() const;
+  void clear_actor();
+  static const int kActorFieldNumber = 1;
+  private:
+  const ::Actor& _internal_actor() const;
+  public:
+  const ::Actor& actor() const;
+  ::Actor* release_actor();
+  ::Actor* mutable_actor();
+  void set_allocated_actor(::Actor* actor);
+
+  // uint64 id = 2;
+  void clear_id();
+  static const int kIdFieldNumber = 2;
+  ::google::protobuf::uint64 id() const;
+  void set_id(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:Player)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::Actor* actor_;
+  ::google::protobuf::uint64 id_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -212,7 +345,7 @@ class Actor_Position : public ::google::protobuf::Message /* @@protoc_insertion_
                &_Actor_Position_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   void Swap(Actor_Position* other);
   friend void swap(Actor_Position& a, Actor_Position& b) {
@@ -322,7 +455,7 @@ class Actor : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
                &_Actor_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   void Swap(Actor* other);
   friend void swap(Actor& a, Actor& b) {
@@ -454,7 +587,7 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
                &_MoveCommand_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    4;
 
   void Swap(MoveCommand* other);
   friend void swap(MoveCommand& a, MoveCommand& b) {
@@ -537,7 +670,37 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
 #endif  // __GNUC__
 // GameState
 
-// repeated .Actor actors = 1;
+// repeated .Player players = 1;
+inline int GameState::players_size() const {
+  return players_.size();
+}
+inline void GameState::clear_players() {
+  players_.Clear();
+}
+inline ::Player* GameState::mutable_players(int index) {
+  // @@protoc_insertion_point(field_mutable:GameState.players)
+  return players_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Player >*
+GameState::mutable_players() {
+  // @@protoc_insertion_point(field_mutable_list:GameState.players)
+  return &players_;
+}
+inline const ::Player& GameState::players(int index) const {
+  // @@protoc_insertion_point(field_get:GameState.players)
+  return players_.Get(index);
+}
+inline ::Player* GameState::add_players() {
+  // @@protoc_insertion_point(field_add:GameState.players)
+  return players_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Player >&
+GameState::players() const {
+  // @@protoc_insertion_point(field_list:GameState.players)
+  return players_;
+}
+
+// repeated .Actor actors = 2;
 inline int GameState::actors_size() const {
   return actors_.size();
 }
@@ -565,6 +728,78 @@ inline const ::google::protobuf::RepeatedPtrField< ::Actor >&
 GameState::actors() const {
   // @@protoc_insertion_point(field_list:GameState.actors)
   return actors_;
+}
+
+// -------------------------------------------------------------------
+
+// Player
+
+// .Actor actor = 1;
+inline bool Player::has_actor() const {
+  return this != internal_default_instance() && actor_ != NULL;
+}
+inline void Player::clear_actor() {
+  if (GetArenaNoVirtual() == NULL && actor_ != NULL) {
+    delete actor_;
+  }
+  actor_ = NULL;
+}
+inline const ::Actor& Player::_internal_actor() const {
+  return *actor_;
+}
+inline const ::Actor& Player::actor() const {
+  const ::Actor* p = actor_;
+  // @@protoc_insertion_point(field_get:Player.actor)
+  return p != NULL ? *p : *reinterpret_cast<const ::Actor*>(
+      &::_Actor_default_instance_);
+}
+inline ::Actor* Player::release_actor() {
+  // @@protoc_insertion_point(field_release:Player.actor)
+  
+  ::Actor* temp = actor_;
+  actor_ = NULL;
+  return temp;
+}
+inline ::Actor* Player::mutable_actor() {
+  
+  if (actor_ == NULL) {
+    auto* p = CreateMaybeMessage<::Actor>(GetArenaNoVirtual());
+    actor_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:Player.actor)
+  return actor_;
+}
+inline void Player::set_allocated_actor(::Actor* actor) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete actor_;
+  }
+  if (actor) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      actor = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, actor, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  actor_ = actor;
+  // @@protoc_insertion_point(field_set_allocated:Player.actor)
+}
+
+// uint64 id = 2;
+inline void Player::clear_id() {
+  id_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 Player::id() const {
+  // @@protoc_insertion_point(field_get:Player.id)
+  return id_;
+}
+inline void Player::set_id(::google::protobuf::uint64 value) {
+  
+  id_ = value;
+  // @@protoc_insertion_point(field_set:Player.id)
 }
 
 // -------------------------------------------------------------------
@@ -760,6 +995,8 @@ inline void MoveCommand::set_allocated_target(::Actor_Position* target) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

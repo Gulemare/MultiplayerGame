@@ -101,13 +101,27 @@ GameState Game::getState()
         const auto pos = b->GetPosition();
         const auto data = static_cast<ActorData*>(b->GetUserData());
 
-        auto obj = state.add_actors();
+        const auto objectType = data->type();
+
+        Actor* actor = new Actor();
         auto coords = new Actor::Position();
         coords->set_x(pos.x);
         coords->set_y(pos.y);
-        obj->set_allocated_position(coords);
-        obj->set_type(data->type());
-        obj->set_id(data->id());
+        actor->set_allocated_position(coords);
+        actor->set_type(objectType);
+        actor->set_id(data->id());
+
+        if (objectType == GameType::PLAYER) {
+            const auto playerData = static_cast<PlayerData*>(data);
+            auto player = state.add_players();
+            player->set_allocated_actor(actor);
+            player->set_id(playerData->playerId());
+        }
+        else {
+            auto added_actor = state.add_actors();
+            added_actor->Swap(actor);
+            delete actor;
+        }
     }
 
     return state;
@@ -156,7 +170,7 @@ void Game::handlePlayersMovements()
                 path.pop_front();
                 continue;
             }
-            b->SetLinearVelocity({ 50.f * dx / distance, 50.f * dy / distance });
+            b->SetLinearVelocity({ 10.f * dx / distance, 10.f * dy / distance });
         }
     }
 }

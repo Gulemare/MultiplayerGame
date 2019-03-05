@@ -3,13 +3,17 @@
 using ActorsCreateFunc = std::shared_ptr<QGraphicsItem>(*)();
 
 std::shared_ptr<QGraphicsItem> createPlayer() {
-    return std::make_shared<QGraphicsEllipseItem>(
+    auto player = std::make_shared<QGraphicsEllipseItem>(
         QRect(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER, 2 * PIXELS_IN_METER, 2 * PIXELS_IN_METER));
+    player->setBrush(QBrush(Qt::green, Qt::SolidPattern));
+    return player;
 }
 
 std::shared_ptr<QGraphicsItem> createAnotherPlayer() {
-    return std::make_shared<QGraphicsEllipseItem>(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER,
+    auto player = std::make_shared<QGraphicsEllipseItem>(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER,
         2 * PIXELS_IN_METER, 2 * PIXELS_IN_METER);
+    player->setBrush(QBrush(Qt::red, Qt::SolidPattern));
+    return player;
 }
 
 std::shared_ptr<QGraphicsItem> createUnknown() {
@@ -21,6 +25,7 @@ std::shared_ptr<QGraphicsItem> createUnknown() {
 
 const std::unordered_map<GameType, ActorsCreateFunc> createFuncs = {
     {GameType::PLAYER, createPlayer},
+    {GameType::ENEMY_PLAYER, createAnotherPlayer},
     {GameType::UNKNOWN, createUnknown}
 };
 

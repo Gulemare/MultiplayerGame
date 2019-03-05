@@ -1,7 +1,13 @@
 syntax = "proto3";
 
 message GameState {
-  repeated Actor actors = 1;
+  repeated Player players = 1;	// All players for game, only one for each client
+  repeated Actor actors = 2;	// All other movable objects (including other players)
+}
+
+message Player {
+  Actor actor = 1;
+  uint64 id = 2;
 }
 
 message Actor {

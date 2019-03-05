@@ -1,4 +1,5 @@
 #include "server_thread_worker.h"
+#include "../Common/game_types.h"
 
 void ThreadWorker::start() {
     socket_ = new QTcpSocket();
@@ -44,10 +45,30 @@ void ThreadWorker::disconnected() {
     QThread::currentThread()->exit(0);
 }
 
-void ThreadWorker::sendGameState(const GameState& state) {
+void filterGameState(GameState& state, int playerId) {
+    Player connectedPlayer;
+    for (auto i = 0; i < state.players_size(); ++i) {
+        auto& player = state.players(i);
+        if (player.id() == playerId) {
+            connectedPlayer.CopyFrom(player);
+        }
+        else {
+            auto actor = state.add_actors();
+            actor->CopyFrom(player.actor());
+            actor->set_type(GameType::ENEMY_PLAYER);
+        }
+    }
+    state.clear_players();
+    auto player = state.add_players();
+    player->CopyFrom(connectedPlayer);
+}
 
-    QByteArray msg(state.ByteSize(), Qt::Uninitialized);
-    state.SerializeToArray(msg.data(), msg.size());
+void ThreadWorker::sendGameState(const GameState& state) {
+    GameState filteredState = state;
+    filterGameState(filteredState, socketDescriptor_);
+
+    QByteArray msg(filteredState.ByteSize(), Qt::Uninitialized);
+    filteredState.SerializeToArray(msg.data(), msg.size());
 
     // send game state to client
     QByteArray block;
