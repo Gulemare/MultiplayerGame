@@ -1,5 +1,6 @@
 #include "server_thread_worker.h"
 #include "../Common/game_types.h"
+#include <chrono>
 
 void ThreadWorker::start() {
     socket_ = new QTcpSocket();
@@ -61,6 +62,9 @@ void filterGameState(GameState& state, int playerId) {
     state.clear_players();
     auto player = state.add_players();
     player->CopyFrom(connectedPlayer);
+
+    const auto pos = player->actor().position();
+    qDebug() << QString("%1 pos: (%2, %3)").arg(player->id()).arg(pos.x()).arg(pos.y());
 }
 
 void ThreadWorker::sendGameState(const GameState& state) {
@@ -76,6 +80,22 @@ void ThreadWorker::sendGameState(const GameState& state) {
     out.setVersion(QDataStream::Qt_5_10);
     out << msg;
     socket_->write(block);
+
+    //////////// CONNECTION STATISTICS /////////////////////////
+    static auto last = std::chrono::steady_clock().now();
+    static auto accumulator = 0;
+    static auto packetCounter = 0;
+    auto now = std::chrono::steady_clock().now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+    last = now;
+    packetCounter++;
+    accumulator += elapsed;
+    if (accumulator >= 1000) {
+        //qDebug() << QString("%1 send states in sec: %2").arg(socketDescriptor_).arg(packetCounter);
+        accumulator = 0;
+        packetCounter = 0;
+    }
+    /////////////////////////////////////////////////////////////
 }
 
 

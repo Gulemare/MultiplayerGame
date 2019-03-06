@@ -50,9 +50,9 @@ void Game::init()
 
 void Game::tick()
 {
+    handlePlayersMovements();
     world_.Step(timeStep_, velocityIterations_, positionIterations_);
     deleteRemoved();
-    handlePlayersMovements();
 }
 
 void Game::addPlayer(QPoint pos, const int playerId)
@@ -170,6 +170,7 @@ void Game::handlePlayersMovements()
                 path.pop_front();
                 continue;
             }
+            //qDebug() << QString("%1 moves to (%2, %3)").arg(player->playerId()).arg(nextPoint.x()).arg(nextPoint.y());
             b->SetLinearVelocity({ 10.f * dx / distance, 10.f * dy / distance });
         }
     }

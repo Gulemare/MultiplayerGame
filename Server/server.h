@@ -17,7 +17,7 @@ public slots:
         qDebug() << "Game started on thread: " << QThread::currentThreadId();
         QTimer *timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &GameWorker::gameTick, Qt::ConnectionType::QueuedConnection);
-        timer->start(15);
+        timer->start(30);
     }
 
     void gameTick() {

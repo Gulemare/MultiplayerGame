@@ -1,6 +1,7 @@
 #include "../Common/protocol.pb.h"
 #include "client.h"
 #include "constants.h"
+#include <chrono>
 #include <QGLWidget>
 
 Client::Client(QWidget *parent)
@@ -113,6 +114,24 @@ void Client::getGameState()
     if (!state.ParseFromArray(data.data(), data.size()))
         return;
 
+    //////////// CONNECTION STATISTICS /////////////////////////
+    static auto last = std::chrono::steady_clock().now();
+    static auto accumulator = 0;
+    static auto packetCounter = 0;
+    auto now = std::chrono::steady_clock().now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
+    last = now;
+    packetCounter++;
+    accumulator += elapsed;
+    if (accumulator >= 1000) {
+        serverTextWidget_->append(QString("get states in sec: %1").arg(packetCounter));
+        QScrollBar *sb = serverTextWidget_->verticalScrollBar();
+        sb->setValue(sb->maximum());
+        accumulator = 0;
+        packetCounter = 0;
+    }
+    /////////////////////////////////////////////////////////////
+
     std::string res;
     std::unordered_set<uint64_t> updatedIds;
     for (int i = 0; i < state.actors_size(); ++i) {
@@ -130,6 +149,11 @@ void Client::getGameState()
         const auto& player = state.players(0);
         updatedIds.insert(player.actor().id());
         handleActor(*scene_, player.actor());
+
+        const auto pos = player.actor().position();
+        serverTextWidget_->append(QString("Pos: (%1, %2)").arg(pos.x()).arg(pos.y()));
+        QScrollBar *sb = serverTextWidget_->verticalScrollBar();
+        sb->setValue(sb->maximum());
     }
 
     scene_->removeNotUpdated(updatedIds);
