@@ -1,27 +1,41 @@
 syntax = "proto3";
 
 message GameState {
-  repeated Player players = 1;	// All players for game, only one for each client
-  repeated Actor actors = 2;	// All other movable objects (including other players)
+  uint32 active_player = 1;
+  uint32 player = 2;           // Your order in game sequence
+  map<uint64, Unit> units = 3; // Units in game (by unique id)
 }
 
-message Player {
-  Actor actor = 1;
-  uint64 id = 2;
+message Unit {
+  uint32 player = 1;           // Unit owner
+  uint32 type = 2;             // Unit type
+  Position position = 3;       // Position on grid
+  int32 health = 4;            // Unit health
 }
 
-message Actor {
-  message Position {
-    float x = 1;
-    float y = 2;
+message Command {
+  oneof command {
+    EndTurn end_turn = 1;
+    Move move = 2;
+    Spawn spawn = 3;
   }
-
-  uint64 id = 1;
-  uint32 type = 2;
-  Position position = 3;
-  float angle = 4;
 }
 
-message MoveCommand {
-  Actor.Position target = 1;
+message EndTurn {
+}
+
+message Move {
+  uint64 unit_id = 1;
+  Position position = 2;
+}
+
+message Spawn {
+  uint64 unit_id = 1;
+  uint32 unit_type = 2;
+  Position position = 3;
+}
+
+message Position {
+  uint32 x = 1;
+  uint32 y = 2;
 }

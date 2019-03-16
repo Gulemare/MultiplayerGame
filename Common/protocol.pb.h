@@ -29,6 +29,9 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/map.h>  // IWYU pragma: export
+#include <google/protobuf/map_entry.h>
+#include <google/protobuf/map_field_inl.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #define PROTOBUF_INTERNAL_EXPORT_protobuf_protocol_2eproto 
@@ -38,39 +41,72 @@ namespace protobuf_protocol_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[5];
+  static const ::google::protobuf::internal::ParseTable schema[8];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
 void AddDescriptors();
 }  // namespace protobuf_protocol_2eproto
-class Actor;
-class ActorDefaultTypeInternal;
-extern ActorDefaultTypeInternal _Actor_default_instance_;
-class Actor_Position;
-class Actor_PositionDefaultTypeInternal;
-extern Actor_PositionDefaultTypeInternal _Actor_Position_default_instance_;
+class Command;
+class CommandDefaultTypeInternal;
+extern CommandDefaultTypeInternal _Command_default_instance_;
+class EndTurn;
+class EndTurnDefaultTypeInternal;
+extern EndTurnDefaultTypeInternal _EndTurn_default_instance_;
 class GameState;
 class GameStateDefaultTypeInternal;
 extern GameStateDefaultTypeInternal _GameState_default_instance_;
-class MoveCommand;
-class MoveCommandDefaultTypeInternal;
-extern MoveCommandDefaultTypeInternal _MoveCommand_default_instance_;
-class Player;
-class PlayerDefaultTypeInternal;
-extern PlayerDefaultTypeInternal _Player_default_instance_;
+class GameState_UnitsEntry_DoNotUse;
+class GameState_UnitsEntry_DoNotUseDefaultTypeInternal;
+extern GameState_UnitsEntry_DoNotUseDefaultTypeInternal _GameState_UnitsEntry_DoNotUse_default_instance_;
+class Move;
+class MoveDefaultTypeInternal;
+extern MoveDefaultTypeInternal _Move_default_instance_;
+class Position;
+class PositionDefaultTypeInternal;
+extern PositionDefaultTypeInternal _Position_default_instance_;
+class Spawn;
+class SpawnDefaultTypeInternal;
+extern SpawnDefaultTypeInternal _Spawn_default_instance_;
+class Unit;
+class UnitDefaultTypeInternal;
+extern UnitDefaultTypeInternal _Unit_default_instance_;
 namespace google {
 namespace protobuf {
-template<> ::Actor* Arena::CreateMaybeMessage<::Actor>(Arena*);
-template<> ::Actor_Position* Arena::CreateMaybeMessage<::Actor_Position>(Arena*);
+template<> ::Command* Arena::CreateMaybeMessage<::Command>(Arena*);
+template<> ::EndTurn* Arena::CreateMaybeMessage<::EndTurn>(Arena*);
 template<> ::GameState* Arena::CreateMaybeMessage<::GameState>(Arena*);
-template<> ::MoveCommand* Arena::CreateMaybeMessage<::MoveCommand>(Arena*);
-template<> ::Player* Arena::CreateMaybeMessage<::Player>(Arena*);
+template<> ::GameState_UnitsEntry_DoNotUse* Arena::CreateMaybeMessage<::GameState_UnitsEntry_DoNotUse>(Arena*);
+template<> ::Move* Arena::CreateMaybeMessage<::Move>(Arena*);
+template<> ::Position* Arena::CreateMaybeMessage<::Position>(Arena*);
+template<> ::Spawn* Arena::CreateMaybeMessage<::Spawn>(Arena*);
+template<> ::Unit* Arena::CreateMaybeMessage<::Unit>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 
 // ===================================================================
+
+class GameState_UnitsEntry_DoNotUse : public ::google::protobuf::internal::MapEntry<GameState_UnitsEntry_DoNotUse, 
+    ::google::protobuf::uint64, ::Unit,
+    ::google::protobuf::internal::WireFormatLite::TYPE_UINT64,
+    ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+    0 > {
+public:
+  typedef ::google::protobuf::internal::MapEntry<GameState_UnitsEntry_DoNotUse, 
+    ::google::protobuf::uint64, ::Unit,
+    ::google::protobuf::internal::WireFormatLite::TYPE_UINT64,
+    ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+    0 > SuperType;
+  GameState_UnitsEntry_DoNotUse();
+  GameState_UnitsEntry_DoNotUse(::google::protobuf::Arena* arena);
+  void MergeFrom(const GameState_UnitsEntry_DoNotUse& other);
+  static const GameState_UnitsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const GameState_UnitsEntry_DoNotUse*>(&_GameState_UnitsEntry_DoNotUse_default_instance_); }
+  void MergeFrom(const ::google::protobuf::Message& other) final;
+  ::google::protobuf::Metadata GetMetadata() const;
+};
+
+// -------------------------------------------------------------------
 
 class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:GameState) */ {
  public:
@@ -107,7 +143,7 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
                &_GameState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   void Swap(GameState* other);
   friend void swap(GameState& a, GameState& b) {
@@ -157,61 +193,65 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // nested types ----------------------------------------------------
 
+
   // accessors -------------------------------------------------------
 
-  // repeated .Player players = 1;
-  int players_size() const;
-  void clear_players();
-  static const int kPlayersFieldNumber = 1;
-  ::Player* mutable_players(int index);
-  ::google::protobuf::RepeatedPtrField< ::Player >*
-      mutable_players();
-  const ::Player& players(int index) const;
-  ::Player* add_players();
-  const ::google::protobuf::RepeatedPtrField< ::Player >&
-      players() const;
+  // map<uint64, .Unit> units = 3;
+  int units_size() const;
+  void clear_units();
+  static const int kUnitsFieldNumber = 3;
+  const ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >&
+      units() const;
+  ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >*
+      mutable_units();
 
-  // repeated .Actor actors = 2;
-  int actors_size() const;
-  void clear_actors();
-  static const int kActorsFieldNumber = 2;
-  ::Actor* mutable_actors(int index);
-  ::google::protobuf::RepeatedPtrField< ::Actor >*
-      mutable_actors();
-  const ::Actor& actors(int index) const;
-  ::Actor* add_actors();
-  const ::google::protobuf::RepeatedPtrField< ::Actor >&
-      actors() const;
+  // uint32 active_player = 1;
+  void clear_active_player();
+  static const int kActivePlayerFieldNumber = 1;
+  ::google::protobuf::uint32 active_player() const;
+  void set_active_player(::google::protobuf::uint32 value);
+
+  // uint32 player = 2;
+  void clear_player();
+  static const int kPlayerFieldNumber = 2;
+  ::google::protobuf::uint32 player() const;
+  void set_player(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:GameState)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedPtrField< ::Player > players_;
-  ::google::protobuf::RepeatedPtrField< ::Actor > actors_;
+  ::google::protobuf::internal::MapField<
+      GameState_UnitsEntry_DoNotUse,
+      ::google::protobuf::uint64, ::Unit,
+      ::google::protobuf::internal::WireFormatLite::TYPE_UINT64,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 > units_;
+  ::google::protobuf::uint32 active_player_;
+  ::google::protobuf::uint32 player_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class Player : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Player) */ {
+class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Unit) */ {
  public:
-  Player();
-  virtual ~Player();
+  Unit();
+  virtual ~Unit();
 
-  Player(const Player& from);
+  Unit(const Unit& from);
 
-  inline Player& operator=(const Player& from) {
+  inline Unit& operator=(const Unit& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  Player(Player&& from) noexcept
-    : Player() {
+  Unit(Unit&& from) noexcept
+    : Unit() {
     *this = ::std::move(from);
   }
 
-  inline Player& operator=(Player&& from) noexcept {
+  inline Unit& operator=(Unit&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -221,150 +261,34 @@ class Player : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const Player& default_instance();
+  static const Unit& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Player* internal_default_instance() {
-    return reinterpret_cast<const Player*>(
-               &_Player_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  void Swap(Player* other);
-  friend void swap(Player& a, Player& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Player* New() const final {
-    return CreateMaybeMessage<Player>(NULL);
-  }
-
-  Player* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Player>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Player& from);
-  void MergeFrom(const Player& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Player* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // .Actor actor = 1;
-  bool has_actor() const;
-  void clear_actor();
-  static const int kActorFieldNumber = 1;
-  private:
-  const ::Actor& _internal_actor() const;
-  public:
-  const ::Actor& actor() const;
-  ::Actor* release_actor();
-  ::Actor* mutable_actor();
-  void set_allocated_actor(::Actor* actor);
-
-  // uint64 id = 2;
-  void clear_id();
-  static const int kIdFieldNumber = 2;
-  ::google::protobuf::uint64 id() const;
-  void set_id(::google::protobuf::uint64 value);
-
-  // @@protoc_insertion_point(class_scope:Player)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::Actor* actor_;
-  ::google::protobuf::uint64 id_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_protocol_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class Actor_Position : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Actor.Position) */ {
- public:
-  Actor_Position();
-  virtual ~Actor_Position();
-
-  Actor_Position(const Actor_Position& from);
-
-  inline Actor_Position& operator=(const Actor_Position& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Actor_Position(Actor_Position&& from) noexcept
-    : Actor_Position() {
-    *this = ::std::move(from);
-  }
-
-  inline Actor_Position& operator=(Actor_Position&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Actor_Position& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Actor_Position* internal_default_instance() {
-    return reinterpret_cast<const Actor_Position*>(
-               &_Actor_Position_default_instance_);
+  static inline const Unit* internal_default_instance() {
+    return reinterpret_cast<const Unit*>(
+               &_Unit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  void Swap(Actor_Position* other);
-  friend void swap(Actor_Position& a, Actor_Position& b) {
+  void Swap(Unit* other);
+  friend void swap(Unit& a, Unit& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline Actor_Position* New() const final {
-    return CreateMaybeMessage<Actor_Position>(NULL);
+  inline Unit* New() const final {
+    return CreateMaybeMessage<Unit>(NULL);
   }
 
-  Actor_Position* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Actor_Position>(arena);
+  Unit* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Unit>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Actor_Position& from);
-  void MergeFrom(const Actor_Position& from);
+  void CopyFrom(const Unit& from);
+  void MergeFrom(const Unit& from);
   void Clear() final;
   bool IsInitialized() const final;
 
@@ -381,7 +305,7 @@ class Actor_Position : public ::google::protobuf::Message /* @@protoc_insertion_
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Actor_Position* other);
+  void InternalSwap(Unit* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -397,135 +321,23 @@ class Actor_Position : public ::google::protobuf::Message /* @@protoc_insertion_
 
   // accessors -------------------------------------------------------
 
-  // float x = 1;
-  void clear_x();
-  static const int kXFieldNumber = 1;
-  float x() const;
-  void set_x(float value);
-
-  // float y = 2;
-  void clear_y();
-  static const int kYFieldNumber = 2;
-  float y() const;
-  void set_y(float value);
-
-  // @@protoc_insertion_point(class_scope:Actor.Position)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  float x_;
-  float y_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_protocol_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class Actor : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Actor) */ {
- public:
-  Actor();
-  virtual ~Actor();
-
-  Actor(const Actor& from);
-
-  inline Actor& operator=(const Actor& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Actor(Actor&& from) noexcept
-    : Actor() {
-    *this = ::std::move(from);
-  }
-
-  inline Actor& operator=(Actor&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Actor& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Actor* internal_default_instance() {
-    return reinterpret_cast<const Actor*>(
-               &_Actor_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    3;
-
-  void Swap(Actor* other);
-  friend void swap(Actor& a, Actor& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Actor* New() const final {
-    return CreateMaybeMessage<Actor>(NULL);
-  }
-
-  Actor* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Actor>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Actor& from);
-  void MergeFrom(const Actor& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Actor* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  typedef Actor_Position Position;
-
-  // accessors -------------------------------------------------------
-
-  // .Actor.Position position = 3;
+  // .Position position = 3;
   bool has_position() const;
   void clear_position();
   static const int kPositionFieldNumber = 3;
   private:
-  const ::Actor_Position& _internal_position() const;
+  const ::Position& _internal_position() const;
   public:
-  const ::Actor_Position& position() const;
-  ::Actor_Position* release_position();
-  ::Actor_Position* mutable_position();
-  void set_allocated_position(::Actor_Position* position);
+  const ::Position& position() const;
+  ::Position* release_position();
+  ::Position* mutable_position();
+  void set_allocated_position(::Position* position);
 
-  // uint64 id = 1;
-  void clear_id();
-  static const int kIdFieldNumber = 1;
-  ::google::protobuf::uint64 id() const;
-  void set_id(::google::protobuf::uint64 value);
+  // uint32 player = 1;
+  void clear_player();
+  static const int kPlayerFieldNumber = 1;
+  ::google::protobuf::uint32 player() const;
+  void set_player(::google::protobuf::uint32 value);
 
   // uint32 type = 2;
   void clear_type();
@@ -533,43 +345,43 @@ class Actor : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::google::protobuf::uint32 type() const;
   void set_type(::google::protobuf::uint32 value);
 
-  // float angle = 4;
-  void clear_angle();
-  static const int kAngleFieldNumber = 4;
-  float angle() const;
-  void set_angle(float value);
+  // int32 health = 4;
+  void clear_health();
+  static const int kHealthFieldNumber = 4;
+  ::google::protobuf::int32 health() const;
+  void set_health(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:Actor)
+  // @@protoc_insertion_point(class_scope:Unit)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::Actor_Position* position_;
-  ::google::protobuf::uint64 id_;
+  ::Position* position_;
+  ::google::protobuf::uint32 player_;
   ::google::protobuf::uint32 type_;
-  float angle_;
+  ::google::protobuf::int32 health_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:MoveCommand) */ {
+class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Command) */ {
  public:
-  MoveCommand();
-  virtual ~MoveCommand();
+  Command();
+  virtual ~Command();
 
-  MoveCommand(const MoveCommand& from);
+  Command(const Command& from);
 
-  inline MoveCommand& operator=(const MoveCommand& from) {
+  inline Command& operator=(const Command& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  MoveCommand(MoveCommand&& from) noexcept
-    : MoveCommand() {
+  Command(Command&& from) noexcept
+    : Command() {
     *this = ::std::move(from);
   }
 
-  inline MoveCommand& operator=(MoveCommand&& from) noexcept {
+  inline Command& operator=(Command&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -579,34 +391,41 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const MoveCommand& default_instance();
+  static const Command& default_instance();
+
+  enum CommandCase {
+    kEndTurn = 1,
+    kMove = 2,
+    kSpawn = 3,
+    COMMAND_NOT_SET = 0,
+  };
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const MoveCommand* internal_default_instance() {
-    return reinterpret_cast<const MoveCommand*>(
-               &_MoveCommand_default_instance_);
+  static inline const Command* internal_default_instance() {
+    return reinterpret_cast<const Command*>(
+               &_Command_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    3;
 
-  void Swap(MoveCommand* other);
-  friend void swap(MoveCommand& a, MoveCommand& b) {
+  void Swap(Command* other);
+  friend void swap(Command& a, Command& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline MoveCommand* New() const final {
-    return CreateMaybeMessage<MoveCommand>(NULL);
+  inline Command* New() const final {
+    return CreateMaybeMessage<Command>(NULL);
   }
 
-  MoveCommand* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<MoveCommand>(arena);
+  Command* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Command>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const MoveCommand& from);
-  void MergeFrom(const MoveCommand& from);
+  void CopyFrom(const Command& from);
+  void MergeFrom(const Command& from);
   void Clear() final;
   bool IsInitialized() const final;
 
@@ -623,7 +442,7 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(MoveCommand* other);
+  void InternalSwap(Command* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -639,23 +458,507 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // .Actor.Position target = 1;
-  bool has_target() const;
-  void clear_target();
-  static const int kTargetFieldNumber = 1;
+  // .EndTurn end_turn = 1;
+  bool has_end_turn() const;
+  void clear_end_turn();
+  static const int kEndTurnFieldNumber = 1;
   private:
-  const ::Actor_Position& _internal_target() const;
+  const ::EndTurn& _internal_end_turn() const;
   public:
-  const ::Actor_Position& target() const;
-  ::Actor_Position* release_target();
-  ::Actor_Position* mutable_target();
-  void set_allocated_target(::Actor_Position* target);
+  const ::EndTurn& end_turn() const;
+  ::EndTurn* release_end_turn();
+  ::EndTurn* mutable_end_turn();
+  void set_allocated_end_turn(::EndTurn* end_turn);
 
-  // @@protoc_insertion_point(class_scope:MoveCommand)
+  // .Move move = 2;
+  bool has_move() const;
+  void clear_move();
+  static const int kMoveFieldNumber = 2;
+  private:
+  const ::Move& _internal_move() const;
+  public:
+  const ::Move& move() const;
+  ::Move* release_move();
+  ::Move* mutable_move();
+  void set_allocated_move(::Move* move);
+
+  // .Spawn spawn = 3;
+  bool has_spawn() const;
+  void clear_spawn();
+  static const int kSpawnFieldNumber = 3;
+  private:
+  const ::Spawn& _internal_spawn() const;
+  public:
+  const ::Spawn& spawn() const;
+  ::Spawn* release_spawn();
+  ::Spawn* mutable_spawn();
+  void set_allocated_spawn(::Spawn* spawn);
+
+  void clear_command();
+  CommandCase command_case() const;
+  // @@protoc_insertion_point(class_scope:Command)
+ private:
+  void set_has_end_turn();
+  void set_has_move();
+  void set_has_spawn();
+
+  inline bool has_command() const;
+  inline void clear_has_command();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  union CommandUnion {
+    CommandUnion() {}
+    ::EndTurn* end_turn_;
+    ::Move* move_;
+    ::Spawn* spawn_;
+  } command_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class EndTurn : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:EndTurn) */ {
+ public:
+  EndTurn();
+  virtual ~EndTurn();
+
+  EndTurn(const EndTurn& from);
+
+  inline EndTurn& operator=(const EndTurn& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  EndTurn(EndTurn&& from) noexcept
+    : EndTurn() {
+    *this = ::std::move(from);
+  }
+
+  inline EndTurn& operator=(EndTurn&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const EndTurn& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const EndTurn* internal_default_instance() {
+    return reinterpret_cast<const EndTurn*>(
+               &_EndTurn_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  void Swap(EndTurn* other);
+  friend void swap(EndTurn& a, EndTurn& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline EndTurn* New() const final {
+    return CreateMaybeMessage<EndTurn>(NULL);
+  }
+
+  EndTurn* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<EndTurn>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const EndTurn& from);
+  void MergeFrom(const EndTurn& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(EndTurn* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:EndTurn)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::Actor_Position* target_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Move : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Move) */ {
+ public:
+  Move();
+  virtual ~Move();
+
+  Move(const Move& from);
+
+  inline Move& operator=(const Move& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Move(Move&& from) noexcept
+    : Move() {
+    *this = ::std::move(from);
+  }
+
+  inline Move& operator=(Move&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Move& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Move* internal_default_instance() {
+    return reinterpret_cast<const Move*>(
+               &_Move_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  void Swap(Move* other);
+  friend void swap(Move& a, Move& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Move* New() const final {
+    return CreateMaybeMessage<Move>(NULL);
+  }
+
+  Move* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Move>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Move& from);
+  void MergeFrom(const Move& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Move* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .Position position = 2;
+  bool has_position() const;
+  void clear_position();
+  static const int kPositionFieldNumber = 2;
+  private:
+  const ::Position& _internal_position() const;
+  public:
+  const ::Position& position() const;
+  ::Position* release_position();
+  ::Position* mutable_position();
+  void set_allocated_position(::Position* position);
+
+  // uint64 unit_id = 1;
+  void clear_unit_id();
+  static const int kUnitIdFieldNumber = 1;
+  ::google::protobuf::uint64 unit_id() const;
+  void set_unit_id(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:Move)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::Position* position_;
+  ::google::protobuf::uint64 unit_id_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Spawn) */ {
+ public:
+  Spawn();
+  virtual ~Spawn();
+
+  Spawn(const Spawn& from);
+
+  inline Spawn& operator=(const Spawn& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Spawn(Spawn&& from) noexcept
+    : Spawn() {
+    *this = ::std::move(from);
+  }
+
+  inline Spawn& operator=(Spawn&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Spawn& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Spawn* internal_default_instance() {
+    return reinterpret_cast<const Spawn*>(
+               &_Spawn_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  void Swap(Spawn* other);
+  friend void swap(Spawn& a, Spawn& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Spawn* New() const final {
+    return CreateMaybeMessage<Spawn>(NULL);
+  }
+
+  Spawn* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Spawn>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Spawn& from);
+  void MergeFrom(const Spawn& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Spawn* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .Position position = 3;
+  bool has_position() const;
+  void clear_position();
+  static const int kPositionFieldNumber = 3;
+  private:
+  const ::Position& _internal_position() const;
+  public:
+  const ::Position& position() const;
+  ::Position* release_position();
+  ::Position* mutable_position();
+  void set_allocated_position(::Position* position);
+
+  // uint64 unit_id = 1;
+  void clear_unit_id();
+  static const int kUnitIdFieldNumber = 1;
+  ::google::protobuf::uint64 unit_id() const;
+  void set_unit_id(::google::protobuf::uint64 value);
+
+  // uint32 unit_type = 2;
+  void clear_unit_type();
+  static const int kUnitTypeFieldNumber = 2;
+  ::google::protobuf::uint32 unit_type() const;
+  void set_unit_type(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Spawn)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::Position* position_;
+  ::google::protobuf::uint64 unit_id_;
+  ::google::protobuf::uint32 unit_type_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Position : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Position) */ {
+ public:
+  Position();
+  virtual ~Position();
+
+  Position(const Position& from);
+
+  inline Position& operator=(const Position& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Position(Position&& from) noexcept
+    : Position() {
+    *this = ::std::move(from);
+  }
+
+  inline Position& operator=(Position&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Position& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Position* internal_default_instance() {
+    return reinterpret_cast<const Position*>(
+               &_Position_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  void Swap(Position* other);
+  friend void swap(Position& a, Position& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Position* New() const final {
+    return CreateMaybeMessage<Position>(NULL);
+  }
+
+  Position* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Position>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Position& from);
+  void MergeFrom(const Position& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Position* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // uint32 x = 1;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  ::google::protobuf::uint32 x() const;
+  void set_x(::google::protobuf::uint32 value);
+
+  // uint32 y = 2;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  ::google::protobuf::uint32 y() const;
+  void set_y(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Position)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 x_;
+  ::google::protobuf::uint32 y_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -668,240 +971,124 @@ class MoveCommand : public ::google::protobuf::Message /* @@protoc_insertion_poi
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // GameState
 
-// repeated .Player players = 1;
-inline int GameState::players_size() const {
-  return players_.size();
+// uint32 active_player = 1;
+inline void GameState::clear_active_player() {
+  active_player_ = 0u;
 }
-inline void GameState::clear_players() {
-  players_.Clear();
+inline ::google::protobuf::uint32 GameState::active_player() const {
+  // @@protoc_insertion_point(field_get:GameState.active_player)
+  return active_player_;
 }
-inline ::Player* GameState::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:GameState.players)
-  return players_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::Player >*
-GameState::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:GameState.players)
-  return &players_;
-}
-inline const ::Player& GameState::players(int index) const {
-  // @@protoc_insertion_point(field_get:GameState.players)
-  return players_.Get(index);
-}
-inline ::Player* GameState::add_players() {
-  // @@protoc_insertion_point(field_add:GameState.players)
-  return players_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::Player >&
-GameState::players() const {
-  // @@protoc_insertion_point(field_list:GameState.players)
-  return players_;
+inline void GameState::set_active_player(::google::protobuf::uint32 value) {
+  
+  active_player_ = value;
+  // @@protoc_insertion_point(field_set:GameState.active_player)
 }
 
-// repeated .Actor actors = 2;
-inline int GameState::actors_size() const {
-  return actors_.size();
+// uint32 player = 2;
+inline void GameState::clear_player() {
+  player_ = 0u;
 }
-inline void GameState::clear_actors() {
-  actors_.Clear();
+inline ::google::protobuf::uint32 GameState::player() const {
+  // @@protoc_insertion_point(field_get:GameState.player)
+  return player_;
 }
-inline ::Actor* GameState::mutable_actors(int index) {
-  // @@protoc_insertion_point(field_mutable:GameState.actors)
-  return actors_.Mutable(index);
+inline void GameState::set_player(::google::protobuf::uint32 value) {
+  
+  player_ = value;
+  // @@protoc_insertion_point(field_set:GameState.player)
 }
-inline ::google::protobuf::RepeatedPtrField< ::Actor >*
-GameState::mutable_actors() {
-  // @@protoc_insertion_point(field_mutable_list:GameState.actors)
-  return &actors_;
+
+// map<uint64, .Unit> units = 3;
+inline int GameState::units_size() const {
+  return units_.size();
 }
-inline const ::Actor& GameState::actors(int index) const {
-  // @@protoc_insertion_point(field_get:GameState.actors)
-  return actors_.Get(index);
+inline void GameState::clear_units() {
+  units_.Clear();
 }
-inline ::Actor* GameState::add_actors() {
-  // @@protoc_insertion_point(field_add:GameState.actors)
-  return actors_.Add();
+inline const ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >&
+GameState::units() const {
+  // @@protoc_insertion_point(field_map:GameState.units)
+  return units_.GetMap();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::Actor >&
-GameState::actors() const {
-  // @@protoc_insertion_point(field_list:GameState.actors)
-  return actors_;
+inline ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >*
+GameState::mutable_units() {
+  // @@protoc_insertion_point(field_mutable_map:GameState.units)
+  return units_.MutableMap();
 }
 
 // -------------------------------------------------------------------
 
-// Player
+// Unit
 
-// .Actor actor = 1;
-inline bool Player::has_actor() const {
-  return this != internal_default_instance() && actor_ != NULL;
+// uint32 player = 1;
+inline void Unit::clear_player() {
+  player_ = 0u;
 }
-inline void Player::clear_actor() {
-  if (GetArenaNoVirtual() == NULL && actor_ != NULL) {
-    delete actor_;
-  }
-  actor_ = NULL;
+inline ::google::protobuf::uint32 Unit::player() const {
+  // @@protoc_insertion_point(field_get:Unit.player)
+  return player_;
 }
-inline const ::Actor& Player::_internal_actor() const {
-  return *actor_;
-}
-inline const ::Actor& Player::actor() const {
-  const ::Actor* p = actor_;
-  // @@protoc_insertion_point(field_get:Player.actor)
-  return p != NULL ? *p : *reinterpret_cast<const ::Actor*>(
-      &::_Actor_default_instance_);
-}
-inline ::Actor* Player::release_actor() {
-  // @@protoc_insertion_point(field_release:Player.actor)
+inline void Unit::set_player(::google::protobuf::uint32 value) {
   
-  ::Actor* temp = actor_;
-  actor_ = NULL;
-  return temp;
-}
-inline ::Actor* Player::mutable_actor() {
-  
-  if (actor_ == NULL) {
-    auto* p = CreateMaybeMessage<::Actor>(GetArenaNoVirtual());
-    actor_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:Player.actor)
-  return actor_;
-}
-inline void Player::set_allocated_actor(::Actor* actor) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete actor_;
-  }
-  if (actor) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      actor = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, actor, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  actor_ = actor;
-  // @@protoc_insertion_point(field_set_allocated:Player.actor)
-}
-
-// uint64 id = 2;
-inline void Player::clear_id() {
-  id_ = GOOGLE_ULONGLONG(0);
-}
-inline ::google::protobuf::uint64 Player::id() const {
-  // @@protoc_insertion_point(field_get:Player.id)
-  return id_;
-}
-inline void Player::set_id(::google::protobuf::uint64 value) {
-  
-  id_ = value;
-  // @@protoc_insertion_point(field_set:Player.id)
-}
-
-// -------------------------------------------------------------------
-
-// Actor_Position
-
-// float x = 1;
-inline void Actor_Position::clear_x() {
-  x_ = 0;
-}
-inline float Actor_Position::x() const {
-  // @@protoc_insertion_point(field_get:Actor.Position.x)
-  return x_;
-}
-inline void Actor_Position::set_x(float value) {
-  
-  x_ = value;
-  // @@protoc_insertion_point(field_set:Actor.Position.x)
-}
-
-// float y = 2;
-inline void Actor_Position::clear_y() {
-  y_ = 0;
-}
-inline float Actor_Position::y() const {
-  // @@protoc_insertion_point(field_get:Actor.Position.y)
-  return y_;
-}
-inline void Actor_Position::set_y(float value) {
-  
-  y_ = value;
-  // @@protoc_insertion_point(field_set:Actor.Position.y)
-}
-
-// -------------------------------------------------------------------
-
-// Actor
-
-// uint64 id = 1;
-inline void Actor::clear_id() {
-  id_ = GOOGLE_ULONGLONG(0);
-}
-inline ::google::protobuf::uint64 Actor::id() const {
-  // @@protoc_insertion_point(field_get:Actor.id)
-  return id_;
-}
-inline void Actor::set_id(::google::protobuf::uint64 value) {
-  
-  id_ = value;
-  // @@protoc_insertion_point(field_set:Actor.id)
+  player_ = value;
+  // @@protoc_insertion_point(field_set:Unit.player)
 }
 
 // uint32 type = 2;
-inline void Actor::clear_type() {
+inline void Unit::clear_type() {
   type_ = 0u;
 }
-inline ::google::protobuf::uint32 Actor::type() const {
-  // @@protoc_insertion_point(field_get:Actor.type)
+inline ::google::protobuf::uint32 Unit::type() const {
+  // @@protoc_insertion_point(field_get:Unit.type)
   return type_;
 }
-inline void Actor::set_type(::google::protobuf::uint32 value) {
+inline void Unit::set_type(::google::protobuf::uint32 value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:Actor.type)
+  // @@protoc_insertion_point(field_set:Unit.type)
 }
 
-// .Actor.Position position = 3;
-inline bool Actor::has_position() const {
+// .Position position = 3;
+inline bool Unit::has_position() const {
   return this != internal_default_instance() && position_ != NULL;
 }
-inline void Actor::clear_position() {
+inline void Unit::clear_position() {
   if (GetArenaNoVirtual() == NULL && position_ != NULL) {
     delete position_;
   }
   position_ = NULL;
 }
-inline const ::Actor_Position& Actor::_internal_position() const {
+inline const ::Position& Unit::_internal_position() const {
   return *position_;
 }
-inline const ::Actor_Position& Actor::position() const {
-  const ::Actor_Position* p = position_;
-  // @@protoc_insertion_point(field_get:Actor.position)
-  return p != NULL ? *p : *reinterpret_cast<const ::Actor_Position*>(
-      &::_Actor_Position_default_instance_);
+inline const ::Position& Unit::position() const {
+  const ::Position* p = position_;
+  // @@protoc_insertion_point(field_get:Unit.position)
+  return p != NULL ? *p : *reinterpret_cast<const ::Position*>(
+      &::_Position_default_instance_);
 }
-inline ::Actor_Position* Actor::release_position() {
-  // @@protoc_insertion_point(field_release:Actor.position)
+inline ::Position* Unit::release_position() {
+  // @@protoc_insertion_point(field_release:Unit.position)
   
-  ::Actor_Position* temp = position_;
+  ::Position* temp = position_;
   position_ = NULL;
   return temp;
 }
-inline ::Actor_Position* Actor::mutable_position() {
+inline ::Position* Unit::mutable_position() {
   
   if (position_ == NULL) {
-    auto* p = CreateMaybeMessage<::Actor_Position>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::Position>(GetArenaNoVirtual());
     position_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:Actor.position)
+  // @@protoc_insertion_point(field_mutable:Unit.position)
   return position_;
 }
-inline void Actor::set_allocated_position(::Actor_Position* position) {
+inline void Unit::set_allocated_position(::Position* position) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == NULL) {
     delete position_;
@@ -917,84 +1104,371 @@ inline void Actor::set_allocated_position(::Actor_Position* position) {
     
   }
   position_ = position;
-  // @@protoc_insertion_point(field_set_allocated:Actor.position)
+  // @@protoc_insertion_point(field_set_allocated:Unit.position)
 }
 
-// float angle = 4;
-inline void Actor::clear_angle() {
-  angle_ = 0;
+// int32 health = 4;
+inline void Unit::clear_health() {
+  health_ = 0;
 }
-inline float Actor::angle() const {
-  // @@protoc_insertion_point(field_get:Actor.angle)
-  return angle_;
+inline ::google::protobuf::int32 Unit::health() const {
+  // @@protoc_insertion_point(field_get:Unit.health)
+  return health_;
 }
-inline void Actor::set_angle(float value) {
+inline void Unit::set_health(::google::protobuf::int32 value) {
   
-  angle_ = value;
-  // @@protoc_insertion_point(field_set:Actor.angle)
+  health_ = value;
+  // @@protoc_insertion_point(field_set:Unit.health)
 }
 
 // -------------------------------------------------------------------
 
-// MoveCommand
+// Command
 
-// .Actor.Position target = 1;
-inline bool MoveCommand::has_target() const {
-  return this != internal_default_instance() && target_ != NULL;
+// .EndTurn end_turn = 1;
+inline bool Command::has_end_turn() const {
+  return command_case() == kEndTurn;
 }
-inline void MoveCommand::clear_target() {
-  if (GetArenaNoVirtual() == NULL && target_ != NULL) {
-    delete target_;
+inline void Command::set_has_end_turn() {
+  _oneof_case_[0] = kEndTurn;
+}
+inline void Command::clear_end_turn() {
+  if (has_end_turn()) {
+    delete command_.end_turn_;
+    clear_has_command();
   }
-  target_ = NULL;
 }
-inline const ::Actor_Position& MoveCommand::_internal_target() const {
-  return *target_;
+inline const ::EndTurn& Command::_internal_end_turn() const {
+  return *command_.end_turn_;
 }
-inline const ::Actor_Position& MoveCommand::target() const {
-  const ::Actor_Position* p = target_;
-  // @@protoc_insertion_point(field_get:MoveCommand.target)
-  return p != NULL ? *p : *reinterpret_cast<const ::Actor_Position*>(
-      &::_Actor_Position_default_instance_);
+inline ::EndTurn* Command::release_end_turn() {
+  // @@protoc_insertion_point(field_release:Command.end_turn)
+  if (has_end_turn()) {
+    clear_has_command();
+      ::EndTurn* temp = command_.end_turn_;
+    command_.end_turn_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
 }
-inline ::Actor_Position* MoveCommand::release_target() {
-  // @@protoc_insertion_point(field_release:MoveCommand.target)
+inline const ::EndTurn& Command::end_turn() const {
+  // @@protoc_insertion_point(field_get:Command.end_turn)
+  return has_end_turn()
+      ? *command_.end_turn_
+      : *reinterpret_cast< ::EndTurn*>(&::_EndTurn_default_instance_);
+}
+inline ::EndTurn* Command::mutable_end_turn() {
+  if (!has_end_turn()) {
+    clear_command();
+    set_has_end_turn();
+    command_.end_turn_ = CreateMaybeMessage< ::EndTurn >(
+        GetArenaNoVirtual());
+  }
+  // @@protoc_insertion_point(field_mutable:Command.end_turn)
+  return command_.end_turn_;
+}
+
+// .Move move = 2;
+inline bool Command::has_move() const {
+  return command_case() == kMove;
+}
+inline void Command::set_has_move() {
+  _oneof_case_[0] = kMove;
+}
+inline void Command::clear_move() {
+  if (has_move()) {
+    delete command_.move_;
+    clear_has_command();
+  }
+}
+inline const ::Move& Command::_internal_move() const {
+  return *command_.move_;
+}
+inline ::Move* Command::release_move() {
+  // @@protoc_insertion_point(field_release:Command.move)
+  if (has_move()) {
+    clear_has_command();
+      ::Move* temp = command_.move_;
+    command_.move_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline const ::Move& Command::move() const {
+  // @@protoc_insertion_point(field_get:Command.move)
+  return has_move()
+      ? *command_.move_
+      : *reinterpret_cast< ::Move*>(&::_Move_default_instance_);
+}
+inline ::Move* Command::mutable_move() {
+  if (!has_move()) {
+    clear_command();
+    set_has_move();
+    command_.move_ = CreateMaybeMessage< ::Move >(
+        GetArenaNoVirtual());
+  }
+  // @@protoc_insertion_point(field_mutable:Command.move)
+  return command_.move_;
+}
+
+// .Spawn spawn = 3;
+inline bool Command::has_spawn() const {
+  return command_case() == kSpawn;
+}
+inline void Command::set_has_spawn() {
+  _oneof_case_[0] = kSpawn;
+}
+inline void Command::clear_spawn() {
+  if (has_spawn()) {
+    delete command_.spawn_;
+    clear_has_command();
+  }
+}
+inline const ::Spawn& Command::_internal_spawn() const {
+  return *command_.spawn_;
+}
+inline ::Spawn* Command::release_spawn() {
+  // @@protoc_insertion_point(field_release:Command.spawn)
+  if (has_spawn()) {
+    clear_has_command();
+      ::Spawn* temp = command_.spawn_;
+    command_.spawn_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline const ::Spawn& Command::spawn() const {
+  // @@protoc_insertion_point(field_get:Command.spawn)
+  return has_spawn()
+      ? *command_.spawn_
+      : *reinterpret_cast< ::Spawn*>(&::_Spawn_default_instance_);
+}
+inline ::Spawn* Command::mutable_spawn() {
+  if (!has_spawn()) {
+    clear_command();
+    set_has_spawn();
+    command_.spawn_ = CreateMaybeMessage< ::Spawn >(
+        GetArenaNoVirtual());
+  }
+  // @@protoc_insertion_point(field_mutable:Command.spawn)
+  return command_.spawn_;
+}
+
+inline bool Command::has_command() const {
+  return command_case() != COMMAND_NOT_SET;
+}
+inline void Command::clear_has_command() {
+  _oneof_case_[0] = COMMAND_NOT_SET;
+}
+inline Command::CommandCase Command::command_case() const {
+  return Command::CommandCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// EndTurn
+
+// -------------------------------------------------------------------
+
+// Move
+
+// uint64 unit_id = 1;
+inline void Move::clear_unit_id() {
+  unit_id_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 Move::unit_id() const {
+  // @@protoc_insertion_point(field_get:Move.unit_id)
+  return unit_id_;
+}
+inline void Move::set_unit_id(::google::protobuf::uint64 value) {
   
-  ::Actor_Position* temp = target_;
-  target_ = NULL;
+  unit_id_ = value;
+  // @@protoc_insertion_point(field_set:Move.unit_id)
+}
+
+// .Position position = 2;
+inline bool Move::has_position() const {
+  return this != internal_default_instance() && position_ != NULL;
+}
+inline void Move::clear_position() {
+  if (GetArenaNoVirtual() == NULL && position_ != NULL) {
+    delete position_;
+  }
+  position_ = NULL;
+}
+inline const ::Position& Move::_internal_position() const {
+  return *position_;
+}
+inline const ::Position& Move::position() const {
+  const ::Position* p = position_;
+  // @@protoc_insertion_point(field_get:Move.position)
+  return p != NULL ? *p : *reinterpret_cast<const ::Position*>(
+      &::_Position_default_instance_);
+}
+inline ::Position* Move::release_position() {
+  // @@protoc_insertion_point(field_release:Move.position)
+  
+  ::Position* temp = position_;
+  position_ = NULL;
   return temp;
 }
-inline ::Actor_Position* MoveCommand::mutable_target() {
+inline ::Position* Move::mutable_position() {
   
-  if (target_ == NULL) {
-    auto* p = CreateMaybeMessage<::Actor_Position>(GetArenaNoVirtual());
-    target_ = p;
+  if (position_ == NULL) {
+    auto* p = CreateMaybeMessage<::Position>(GetArenaNoVirtual());
+    position_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:MoveCommand.target)
-  return target_;
+  // @@protoc_insertion_point(field_mutable:Move.position)
+  return position_;
 }
-inline void MoveCommand::set_allocated_target(::Actor_Position* target) {
+inline void Move::set_allocated_position(::Position* position) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == NULL) {
-    delete target_;
+    delete position_;
   }
-  if (target) {
+  if (position) {
     ::google::protobuf::Arena* submessage_arena = NULL;
     if (message_arena != submessage_arena) {
-      target = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, target, submessage_arena);
+      position = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, position, submessage_arena);
     }
     
   } else {
     
   }
-  target_ = target;
-  // @@protoc_insertion_point(field_set_allocated:MoveCommand.target)
+  position_ = position;
+  // @@protoc_insertion_point(field_set_allocated:Move.position)
+}
+
+// -------------------------------------------------------------------
+
+// Spawn
+
+// uint64 unit_id = 1;
+inline void Spawn::clear_unit_id() {
+  unit_id_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 Spawn::unit_id() const {
+  // @@protoc_insertion_point(field_get:Spawn.unit_id)
+  return unit_id_;
+}
+inline void Spawn::set_unit_id(::google::protobuf::uint64 value) {
+  
+  unit_id_ = value;
+  // @@protoc_insertion_point(field_set:Spawn.unit_id)
+}
+
+// uint32 unit_type = 2;
+inline void Spawn::clear_unit_type() {
+  unit_type_ = 0u;
+}
+inline ::google::protobuf::uint32 Spawn::unit_type() const {
+  // @@protoc_insertion_point(field_get:Spawn.unit_type)
+  return unit_type_;
+}
+inline void Spawn::set_unit_type(::google::protobuf::uint32 value) {
+  
+  unit_type_ = value;
+  // @@protoc_insertion_point(field_set:Spawn.unit_type)
+}
+
+// .Position position = 3;
+inline bool Spawn::has_position() const {
+  return this != internal_default_instance() && position_ != NULL;
+}
+inline void Spawn::clear_position() {
+  if (GetArenaNoVirtual() == NULL && position_ != NULL) {
+    delete position_;
+  }
+  position_ = NULL;
+}
+inline const ::Position& Spawn::_internal_position() const {
+  return *position_;
+}
+inline const ::Position& Spawn::position() const {
+  const ::Position* p = position_;
+  // @@protoc_insertion_point(field_get:Spawn.position)
+  return p != NULL ? *p : *reinterpret_cast<const ::Position*>(
+      &::_Position_default_instance_);
+}
+inline ::Position* Spawn::release_position() {
+  // @@protoc_insertion_point(field_release:Spawn.position)
+  
+  ::Position* temp = position_;
+  position_ = NULL;
+  return temp;
+}
+inline ::Position* Spawn::mutable_position() {
+  
+  if (position_ == NULL) {
+    auto* p = CreateMaybeMessage<::Position>(GetArenaNoVirtual());
+    position_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:Spawn.position)
+  return position_;
+}
+inline void Spawn::set_allocated_position(::Position* position) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete position_;
+  }
+  if (position) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      position = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, position, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  position_ = position;
+  // @@protoc_insertion_point(field_set_allocated:Spawn.position)
+}
+
+// -------------------------------------------------------------------
+
+// Position
+
+// uint32 x = 1;
+inline void Position::clear_x() {
+  x_ = 0u;
+}
+inline ::google::protobuf::uint32 Position::x() const {
+  // @@protoc_insertion_point(field_get:Position.x)
+  return x_;
+}
+inline void Position::set_x(::google::protobuf::uint32 value) {
+  
+  x_ = value;
+  // @@protoc_insertion_point(field_set:Position.x)
+}
+
+// uint32 y = 2;
+inline void Position::clear_y() {
+  y_ = 0u;
+}
+inline ::google::protobuf::uint32 Position::y() const {
+  // @@protoc_insertion_point(field_get:Position.y)
+  return y_;
+}
+inline void Position::set_y(::google::protobuf::uint32 value) {
+  
+  y_ = value;
+  // @@protoc_insertion_point(field_set:Position.y)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

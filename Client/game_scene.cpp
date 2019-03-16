@@ -1,64 +1,47 @@
 #include "game_scene.h"
 
-using ActorsCreateFunc = std::shared_ptr<QGraphicsItem>(*)();
+using UnitCreateFunc = std::shared_ptr<QGraphicsItem>(*)(Qt::GlobalColor);
 
-std::shared_ptr<QGraphicsItem> createPlayer() {
-    auto player = std::make_shared<QGraphicsEllipseItem>(
-        QRect(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER, 2 * PIXELS_IN_METER, 2 * PIXELS_IN_METER));
-    player->setBrush(QBrush(Qt::green, Qt::SolidPattern));
-    return player;
+std::shared_ptr<QGraphicsItem> createWorker(Qt::GlobalColor color) {
+    auto worker = std::make_shared<QGraphicsEllipseItem>(
+        QRect(0, 0, PIXELS_IN_TILE, PIXELS_IN_TILE));
+    worker->setBrush(QBrush(color, Qt::SolidPattern));
+    return worker;
 }
 
-std::shared_ptr<QGraphicsItem> createAnotherPlayer() {
-    auto player = std::make_shared<QGraphicsEllipseItem>(-1 * PIXELS_IN_METER, -1 * PIXELS_IN_METER,
-        2 * PIXELS_IN_METER, 2 * PIXELS_IN_METER);
-    player->setBrush(QBrush(Qt::red, Qt::SolidPattern));
-    return player;
-}
-
-std::shared_ptr<QGraphicsItem> createUnknown() {
-    std::shared_ptr<QGraphicsItem> res = 
-        std::make_shared<QGraphicsEllipseItem>(-3, -3, 6, 6);
-    res->setVisible(false);
-    return res;
-}
-
-const std::unordered_map<GameType, ActorsCreateFunc> createFuncs = {
-    {GameType::PLAYER, createPlayer},
-    {GameType::ENEMY_PLAYER, createAnotherPlayer},
-    {GameType::UNKNOWN, createUnknown}
+const std::unordered_map<UnitType, UnitCreateFunc> createFuncs = {
+    {UnitType::WORKER, createWorker},
 };
 
-void GameScene::createActor(GameType type, int id)
+void GameScene::update(const GameState& state)
 {
-    auto item = createFuncs.at(type)();
-    actors_[id] = item;
-    addItem(item.get());
+    auto player = state.player();
+
+    for (auto it = state.units().begin(); it != state.units().end(); ++it) {
+        auto id = it->first;
+        auto data = it->second;
+        std::shared_ptr<QGraphicsItem> item = nullptr;
+        if (units_.count(id) == 0) {
+            // Create unit if not exist
+            auto color = data.player() == player ? Qt::green : Qt::red;
+            item = createFuncs.at(static_cast<UnitType>(data.type()))(color);
+            
+            units_[id] = item;
+            addItem(item.get());
+        }
+        else {
+            item = units_[id];
+        }
+
+        item->setPos(data.position().x() * PIXELS_IN_TILE, data.position().y() * PIXELS_IN_TILE);
+        if (data.health() < 0) {
+            removeItem(item.get());
+            units_.erase(id);
+        }
+    }
 }
 
 void GameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     emit clickedOnScene(event->scenePos());
-}
-
-std::shared_ptr<QGraphicsItem> GameScene::getActor(int id)
-{
-    return actors_.at(id);
-}
-
-void GameScene::removeNotUpdated(const std::unordered_set<uint64_t>& ids)
-{
-    for (auto it = actors_.begin(); it != actors_.end();) {
-        if (ids.count(it->first) == 0) {
-            removeItem(it->second.get());
-            it = actors_.erase(it);
-        }
-        else
-            ++it;
-    }
-}
-
-bool GameScene::containsActor(int id)
-{
-    return actors_.count(id) != 0;
 }

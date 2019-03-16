@@ -30,10 +30,12 @@ private:
     QDataStream in;
     void initScene();
 
+    void sendMessage(const QByteArray& msg);
+
 private slots:
     void connectButtonClicked();
-    void sendCommand(const QByteArray& msg);
-    void sendMoveCommand(QPointF pos);
+    
+    void sendCommand(QPointF pos);
     void getGameState();
     void displayError(QAbstractSocket::SocketError socketError);
     void enableConnectionButton();

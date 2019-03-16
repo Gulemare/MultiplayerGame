@@ -1,2 +1,2 @@
 #pragma once
-const float PIXELS_IN_METER = 20.f;
+const float PIXELS_IN_TILE = 20.f;

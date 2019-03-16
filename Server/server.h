@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QTimer>
 #include "../Common/protocol.pb.h"
-#include "game.h"
+#include "../Game/game.h"
 
 /*! Worker for game, lives in separate thread */
 class GameWorker : public QObject
@@ -13,36 +13,37 @@ class GameWorker : public QObject
 
 public slots:
 
-    void start() {
+    void restart(int playerCount) {
         qDebug() << "Game started on thread: " << QThread::currentThreadId();
-        QTimer *timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &GameWorker::gameTick, Qt::ConnectionType::QueuedConnection);
-        timer->start(30);
+        game_.restart(playerCount);
     }
 
-    void gameTick() {
-        game_.tick();
-        emit gameStateUpdated(game_.getState());
-    }
-
-    void addPlayer(QPoint pos, const int playerId) {
-        game_.addPlayer(pos, playerId);
+    void addPlayer() {
+        game_.addPlayer();
         qDebug() << "Player added";
+
+        if (game_.started()) {
+            emit gameStateUpdated(game_.getState());
+            emit started();
+        }
     }
 
-    void removePlayer(const int id) {
-        game_.removePlayer(id);
-    }
+    void consumeCommand(Command command, int player) {
+        if (!game_.started())
+            return;
 
-    void commandPlayerMove(int playerId, float x, float y) {
-        game_.updatePlayerMovePath(playerId, { { x, y } });
+        if (game_.consumeCommand(player, command)) {
+            qDebug() << player << ": command";
+            emit gameStateUpdated(game_.getState());
+        }
     }
 
 signals:
-    void gameStateUpdated(const GameState& state);
+    void started();
+    void gameStateUpdated(GameState state);
 
 private:
-    Game game_;
+    game::Game game_;
 };
 
 class MyServer : public QTcpServer
@@ -54,18 +55,21 @@ public:
     void startServer();
 
 signals:
-    void startGame();
-    void addPlayer(QPoint pos, const int playerId);
-    void removePlayer(const int id);
-    void sendGameState(const GameState& state);
+    void restartGame(int playerCount);
+    void addPlayer();
+    void sendGameState(GameState state);
     void startThreadWorker();
-
-    void commandPlayerMove(int playerId, float x, float y);
+    void closeConnections();
+    void command(Command command, int player);
 
 protected:
     void incomingConnection(qintptr socketDescriptor);
 
 private:
     QThread gameThread_;
+    int currentPlayer_ = 0;
+    const int maxClients = 2;
 
+private slots:
+    void connectionLost(int player);
 };

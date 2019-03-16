@@ -66,7 +66,7 @@ void Client::connectButtonClicked()
         portLineEdit_->text().toInt());
 }
 
-void Client::sendCommand(const QByteArray& msg)
+void Client::sendMessage(const QByteArray& msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -75,31 +75,22 @@ void Client::sendCommand(const QByteArray& msg)
     tcpSocket_->write(block);
 }
 
-void Client::sendMoveCommand(QPointF pos)
+void Client::sendCommand(QPointF pos)
 {
+    /*
     MoveCommand cmd;
     auto target = new Actor::Position;
     target->set_x(pos.x() / PIXELS_IN_METER);
     target->set_y(pos.y() / PIXELS_IN_METER);
     cmd.set_allocated_target(target);
+    */
+
+    Command cmd;
+    cmd.set_allocated_end_turn(new EndTurn);
 
     QByteArray msg(cmd.ByteSize(), Qt::Uninitialized);
     cmd.SerializeToArray(msg.data(), msg.size());
-    sendCommand(msg);
-}
-
-void handleActor(GameScene& scene, const Actor& actor) {
-    if (!scene.containsActor(actor.id())) {
-        scene.createActor(static_cast<GameType>(actor.type()), actor.id());
-    }
-
-    scene.getActor(actor.id())->setPos({
-        actor.position().x() * PIXELS_IN_METER,
-        actor.position().y() * PIXELS_IN_METER });
-}
-
-void handlePlayer(GameScene& scene, const Player& actor) {
-
+    sendMessage(msg);
 }
 
 void Client::getGameState()
@@ -114,6 +105,21 @@ void Client::getGameState()
     if (!state.ParseFromArray(data.data(), data.size()))
         return;
 
+    auto info = QString("%1, %2, ").arg(state.active_player()).arg(state.player());
+
+    for (auto it = state.units().begin(); it != state.units().end(); ++it) {
+        const auto& unit = it->second;
+        info.append(QString("{%1|%2|(%3, %4)}")
+            .arg(it->first)
+            .arg(unit.type())
+            .arg(unit.position().x())
+            .arg(unit.position().y()));
+    }
+
+    scene_->update(state);
+
+    serverTextWidget_->append(info);
+    /*
     //////////// CONNECTION STATISTICS /////////////////////////
     static auto last = std::chrono::steady_clock().now();
     static auto accumulator = 0;
@@ -159,6 +165,7 @@ void Client::getGameState()
     scene_->removeNotUpdated(updatedIds);
 
     //serverTextWidget_->append(QString::fromStdString(res));
+    */
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
@@ -193,8 +200,8 @@ void Client::enableConnectionButton()
 void Client::initScene()
 {
     view_->setViewport(new QGLWidget);
-    scene_->addRect(-10 * PIXELS_IN_METER, -10 * PIXELS_IN_METER, 20 * PIXELS_IN_METER, 20 * PIXELS_IN_METER);
+    scene_->addRect(0, 0, 20 * PIXELS_IN_TILE, 20 * PIXELS_IN_TILE);
     view_->setScene(scene_);
 
-    connect(scene_, &GameScene::clickedOnScene, this, &Client::sendMoveCommand, Qt::QueuedConnection);
+    connect(scene_, &GameScene::clickedOnScene, this, &Client::sendCommand, Qt::QueuedConnection);
 }

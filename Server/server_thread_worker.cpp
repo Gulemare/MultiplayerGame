@@ -10,8 +10,8 @@ void ThreadWorker::start() {
         return;
     }
 
-    in.setDevice(socket_);
-    in.setVersion(QDataStream::Qt_5_10);
+    in_.setDevice(socket_);
+    in_.setVersion(QDataStream::Qt_5_10);
 
     connect(socket_, &QIODevice::readyRead, this, &ThreadWorker::readyRead, Qt::DirectConnection);
     connect(socket_, &QTcpSocket::disconnected, this, &ThreadWorker::disconnected);
@@ -20,22 +20,26 @@ void ThreadWorker::start() {
 
 void ThreadWorker::readyRead() {
     // get the commands from client
-    in.startTransaction();
+    in_.startTransaction();
     QByteArray data;
-    in >> data;
-    if (!in.commitTransaction())
+    in_ >> data;
+    if (!in_.commitTransaction())
         return;
 
-    MoveCommand cmd;
+    Command cmd;
     if (!cmd.ParseFromArray(data.data(), data.size()))
         return;
 
+    emit command(cmd, player_);
+
+    /*
     qDebug() << QString("%1(%2): (%3, %4)")
         .arg(socketDescriptor_)
         .arg((int)QThread::currentThreadId())
         .arg(cmd.target().x())
         .arg(cmd.target().y());
     emit moveCommand(socketDescriptor_, cmd.target().x(), cmd.target().y());
+    */
 }
 
 void ThreadWorker::disconnected() {
@@ -46,33 +50,16 @@ void ThreadWorker::disconnected() {
     QThread::currentThread()->exit(0);
 }
 
-void filterGameState(GameState& state, int playerId) {
-    Player connectedPlayer;
-    for (auto i = 0; i < state.players_size(); ++i) {
-        auto& player = state.players(i);
-        if (player.id() == playerId) {
-            connectedPlayer.CopyFrom(player);
-        }
-        else {
-            auto actor = state.add_actors();
-            actor->CopyFrom(player.actor());
-            actor->set_type(GameType::ENEMY_PLAYER);
-        }
-    }
-    state.clear_players();
-    auto player = state.add_players();
-    player->CopyFrom(connectedPlayer);
+void filterGameState(GameState& state, int player) {
 
-    const auto pos = player->actor().position();
-    qDebug() << QString("%1 pos: (%2, %3)").arg(player->id()).arg(pos.x()).arg(pos.y());
+    state.set_player(player);
 }
 
-void ThreadWorker::sendGameState(const GameState& state) {
-    GameState filteredState = state;
-    filterGameState(filteredState, socketDescriptor_);
+void ThreadWorker::sendGameState(GameState state) {
+    filterGameState(state, player_);
 
-    QByteArray msg(filteredState.ByteSize(), Qt::Uninitialized);
-    filteredState.SerializeToArray(msg.data(), msg.size());
+    QByteArray msg(state.ByteSize(), Qt::Uninitialized);
+    state.SerializeToArray(msg.data(), msg.size());
 
     // send game state to client
     QByteArray block;
@@ -98,5 +85,8 @@ void ThreadWorker::sendGameState(const GameState& state) {
     /////////////////////////////////////////////////////////////
 }
 
-
+void ThreadWorker::closeConnection()
+{
+    socket_->close();
+}
 

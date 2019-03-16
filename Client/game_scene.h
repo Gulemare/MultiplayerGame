@@ -5,8 +5,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
-#include "../Common/game_types.h"
+#include "../Common/unit_types.h"
 #include "constants.h"
+#include "../Common/protocol.pb.h"
 
 class GameScene : public QGraphicsScene
 {
@@ -14,16 +15,9 @@ class GameScene : public QGraphicsScene
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    std::unordered_map<int, std::shared_ptr<QGraphicsItem>> actors_;
-
+    std::unordered_map<uint64_t, std::shared_ptr<QGraphicsItem>> units_;
 public:
-    void createActor(GameType type, int id);
-
-    std::shared_ptr<QGraphicsItem> getActor(int id);
-
-    void removeNotUpdated(const std::unordered_set<uint64_t>& ids);
-
-    bool containsActor(int id);
+    void update(const GameState& state);
 
 signals:
     void clickedOnScene(QPointF pos);
