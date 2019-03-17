@@ -41,7 +41,7 @@ namespace protobuf_protocol_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[8];
+  static const ::google::protobuf::internal::ParseTable schema[9];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -69,6 +69,9 @@ extern PositionDefaultTypeInternal _Position_default_instance_;
 class Spawn;
 class SpawnDefaultTypeInternal;
 extern SpawnDefaultTypeInternal _Spawn_default_instance_;
+class Tile;
+class TileDefaultTypeInternal;
+extern TileDefaultTypeInternal _Tile_default_instance_;
 class Unit;
 class UnitDefaultTypeInternal;
 extern UnitDefaultTypeInternal _Unit_default_instance_;
@@ -81,6 +84,7 @@ template<> ::GameState_UnitsEntry_DoNotUse* Arena::CreateMaybeMessage<::GameStat
 template<> ::Move* Arena::CreateMaybeMessage<::Move>(Arena*);
 template<> ::Position* Arena::CreateMaybeMessage<::Position>(Arena*);
 template<> ::Spawn* Arena::CreateMaybeMessage<::Spawn>(Arena*);
+template<> ::Tile* Arena::CreateMaybeMessage<::Tile>(Arena*);
 template<> ::Unit* Arena::CreateMaybeMessage<::Unit>(Arena*);
 }  // namespace protobuf
 }  // namespace google
@@ -205,6 +209,18 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >*
       mutable_units();
 
+  // repeated .Tile tiles = 4;
+  int tiles_size() const;
+  void clear_tiles();
+  static const int kTilesFieldNumber = 4;
+  ::Tile* mutable_tiles(int index);
+  ::google::protobuf::RepeatedPtrField< ::Tile >*
+      mutable_tiles();
+  const ::Tile& tiles(int index) const;
+  ::Tile* add_tiles();
+  const ::google::protobuf::RepeatedPtrField< ::Tile >&
+      tiles() const;
+
   // uint32 active_player = 1;
   void clear_active_player();
   static const int kActivePlayerFieldNumber = 1;
@@ -227,8 +243,242 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
       ::google::protobuf::internal::WireFormatLite::TYPE_UINT64,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > units_;
+  ::google::protobuf::RepeatedPtrField< ::Tile > tiles_;
   ::google::protobuf::uint32 active_player_;
   ::google::protobuf::uint32 player_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Position : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Position) */ {
+ public:
+  Position();
+  virtual ~Position();
+
+  Position(const Position& from);
+
+  inline Position& operator=(const Position& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Position(Position&& from) noexcept
+    : Position() {
+    *this = ::std::move(from);
+  }
+
+  inline Position& operator=(Position&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Position& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Position* internal_default_instance() {
+    return reinterpret_cast<const Position*>(
+               &_Position_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  void Swap(Position* other);
+  friend void swap(Position& a, Position& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Position* New() const final {
+    return CreateMaybeMessage<Position>(NULL);
+  }
+
+  Position* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Position>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Position& from);
+  void MergeFrom(const Position& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Position* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // uint32 x = 1;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  ::google::protobuf::uint32 x() const;
+  void set_x(::google::protobuf::uint32 value);
+
+  // uint32 y = 2;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  ::google::protobuf::uint32 y() const;
+  void set_y(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:Position)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 x_;
+  ::google::protobuf::uint32 y_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Tile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Tile) */ {
+ public:
+  Tile();
+  virtual ~Tile();
+
+  Tile(const Tile& from);
+
+  inline Tile& operator=(const Tile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Tile(Tile&& from) noexcept
+    : Tile() {
+    *this = ::std::move(from);
+  }
+
+  inline Tile& operator=(Tile&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Tile& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Tile* internal_default_instance() {
+    return reinterpret_cast<const Tile*>(
+               &_Tile_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  void Swap(Tile* other);
+  friend void swap(Tile& a, Tile& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Tile* New() const final {
+    return CreateMaybeMessage<Tile>(NULL);
+  }
+
+  Tile* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Tile>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Tile& from);
+  void MergeFrom(const Tile& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Tile* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .Position pos = 1;
+  bool has_pos() const;
+  void clear_pos();
+  static const int kPosFieldNumber = 1;
+  private:
+  const ::Position& _internal_pos() const;
+  public:
+  const ::Position& pos() const;
+  ::Position* release_pos();
+  ::Position* mutable_pos();
+  void set_allocated_pos(::Position* pos);
+
+  // uint32 terrain = 2;
+  void clear_terrain();
+  static const int kTerrainFieldNumber = 2;
+  ::google::protobuf::uint32 terrain() const;
+  void set_terrain(::google::protobuf::uint32 value);
+
+  // bool occupied = 3;
+  void clear_occupied();
+  static const int kOccupiedFieldNumber = 3;
+  bool occupied() const;
+  void set_occupied(bool value);
+
+  // @@protoc_insertion_point(class_scope:Tile)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::Position* pos_;
+  ::google::protobuf::uint32 terrain_;
+  bool occupied_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -269,7 +519,7 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
                &_Unit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    4;
 
   void Swap(Unit* other);
   friend void swap(Unit& a, Unit& b) {
@@ -406,7 +656,7 @@ class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_Command_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    5;
 
   void Swap(Command* other);
   friend void swap(Command& a, Command& b) {
@@ -554,7 +804,7 @@ class EndTurn : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_EndTurn_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    6;
 
   void Swap(EndTurn* other);
   friend void swap(EndTurn& a, EndTurn& b) {
@@ -650,7 +900,7 @@ class Move : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
                &_Move_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   void Swap(Move* other);
   friend void swap(Move& a, Move& b) {
@@ -766,7 +1016,7 @@ class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
                &_Spawn_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   void Swap(Spawn* other);
   friend void swap(Spawn& a, Spawn& b) {
@@ -852,116 +1102,6 @@ class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
-// -------------------------------------------------------------------
-
-class Position : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Position) */ {
- public:
-  Position();
-  virtual ~Position();
-
-  Position(const Position& from);
-
-  inline Position& operator=(const Position& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Position(Position&& from) noexcept
-    : Position() {
-    *this = ::std::move(from);
-  }
-
-  inline Position& operator=(Position&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Position& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Position* internal_default_instance() {
-    return reinterpret_cast<const Position*>(
-               &_Position_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    7;
-
-  void Swap(Position* other);
-  friend void swap(Position& a, Position& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Position* New() const final {
-    return CreateMaybeMessage<Position>(NULL);
-  }
-
-  Position* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Position>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Position& from);
-  void MergeFrom(const Position& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Position* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // uint32 x = 1;
-  void clear_x();
-  static const int kXFieldNumber = 1;
-  ::google::protobuf::uint32 x() const;
-  void set_x(::google::protobuf::uint32 value);
-
-  // uint32 y = 2;
-  void clear_y();
-  static const int kYFieldNumber = 2;
-  ::google::protobuf::uint32 y() const;
-  void set_y(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:Position)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 x_;
-  ::google::protobuf::uint32 y_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_protocol_2eproto::TableStruct;
-};
 // ===================================================================
 
 
@@ -1019,6 +1159,154 @@ inline ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >*
 GameState::mutable_units() {
   // @@protoc_insertion_point(field_mutable_map:GameState.units)
   return units_.MutableMap();
+}
+
+// repeated .Tile tiles = 4;
+inline int GameState::tiles_size() const {
+  return tiles_.size();
+}
+inline void GameState::clear_tiles() {
+  tiles_.Clear();
+}
+inline ::Tile* GameState::mutable_tiles(int index) {
+  // @@protoc_insertion_point(field_mutable:GameState.tiles)
+  return tiles_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Tile >*
+GameState::mutable_tiles() {
+  // @@protoc_insertion_point(field_mutable_list:GameState.tiles)
+  return &tiles_;
+}
+inline const ::Tile& GameState::tiles(int index) const {
+  // @@protoc_insertion_point(field_get:GameState.tiles)
+  return tiles_.Get(index);
+}
+inline ::Tile* GameState::add_tiles() {
+  // @@protoc_insertion_point(field_add:GameState.tiles)
+  return tiles_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Tile >&
+GameState::tiles() const {
+  // @@protoc_insertion_point(field_list:GameState.tiles)
+  return tiles_;
+}
+
+// -------------------------------------------------------------------
+
+// Position
+
+// uint32 x = 1;
+inline void Position::clear_x() {
+  x_ = 0u;
+}
+inline ::google::protobuf::uint32 Position::x() const {
+  // @@protoc_insertion_point(field_get:Position.x)
+  return x_;
+}
+inline void Position::set_x(::google::protobuf::uint32 value) {
+  
+  x_ = value;
+  // @@protoc_insertion_point(field_set:Position.x)
+}
+
+// uint32 y = 2;
+inline void Position::clear_y() {
+  y_ = 0u;
+}
+inline ::google::protobuf::uint32 Position::y() const {
+  // @@protoc_insertion_point(field_get:Position.y)
+  return y_;
+}
+inline void Position::set_y(::google::protobuf::uint32 value) {
+  
+  y_ = value;
+  // @@protoc_insertion_point(field_set:Position.y)
+}
+
+// -------------------------------------------------------------------
+
+// Tile
+
+// .Position pos = 1;
+inline bool Tile::has_pos() const {
+  return this != internal_default_instance() && pos_ != NULL;
+}
+inline void Tile::clear_pos() {
+  if (GetArenaNoVirtual() == NULL && pos_ != NULL) {
+    delete pos_;
+  }
+  pos_ = NULL;
+}
+inline const ::Position& Tile::_internal_pos() const {
+  return *pos_;
+}
+inline const ::Position& Tile::pos() const {
+  const ::Position* p = pos_;
+  // @@protoc_insertion_point(field_get:Tile.pos)
+  return p != NULL ? *p : *reinterpret_cast<const ::Position*>(
+      &::_Position_default_instance_);
+}
+inline ::Position* Tile::release_pos() {
+  // @@protoc_insertion_point(field_release:Tile.pos)
+  
+  ::Position* temp = pos_;
+  pos_ = NULL;
+  return temp;
+}
+inline ::Position* Tile::mutable_pos() {
+  
+  if (pos_ == NULL) {
+    auto* p = CreateMaybeMessage<::Position>(GetArenaNoVirtual());
+    pos_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:Tile.pos)
+  return pos_;
+}
+inline void Tile::set_allocated_pos(::Position* pos) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete pos_;
+  }
+  if (pos) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      pos = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, pos, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  pos_ = pos;
+  // @@protoc_insertion_point(field_set_allocated:Tile.pos)
+}
+
+// bool occupied = 3;
+inline void Tile::clear_occupied() {
+  occupied_ = false;
+}
+inline bool Tile::occupied() const {
+  // @@protoc_insertion_point(field_get:Tile.occupied)
+  return occupied_;
+}
+inline void Tile::set_occupied(bool value) {
+  
+  occupied_ = value;
+  // @@protoc_insertion_point(field_set:Tile.occupied)
+}
+
+// uint32 terrain = 2;
+inline void Tile::clear_terrain() {
+  terrain_ = 0u;
+}
+inline ::google::protobuf::uint32 Tile::terrain() const {
+  // @@protoc_insertion_point(field_get:Tile.terrain)
+  return terrain_;
+}
+inline void Tile::set_terrain(::google::protobuf::uint32 value) {
+  
+  terrain_ = value;
+  // @@protoc_insertion_point(field_set:Tile.terrain)
 }
 
 // -------------------------------------------------------------------
@@ -1428,41 +1716,11 @@ inline void Spawn::set_allocated_position(::Position* position) {
   // @@protoc_insertion_point(field_set_allocated:Spawn.position)
 }
 
-// -------------------------------------------------------------------
-
-// Position
-
-// uint32 x = 1;
-inline void Position::clear_x() {
-  x_ = 0u;
-}
-inline ::google::protobuf::uint32 Position::x() const {
-  // @@protoc_insertion_point(field_get:Position.x)
-  return x_;
-}
-inline void Position::set_x(::google::protobuf::uint32 value) {
-  
-  x_ = value;
-  // @@protoc_insertion_point(field_set:Position.x)
-}
-
-// uint32 y = 2;
-inline void Position::clear_y() {
-  y_ = 0u;
-}
-inline ::google::protobuf::uint32 Position::y() const {
-  // @@protoc_insertion_point(field_get:Position.y)
-  return y_;
-}
-inline void Position::set_y(::google::protobuf::uint32 value) {
-  
-  y_ = value;
-  // @@protoc_insertion_point(field_set:Position.y)
-}
-
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

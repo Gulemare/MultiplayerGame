@@ -9,6 +9,7 @@ Client::Client(QWidget *parent)
     , hostEdit_(new QLineEdit)
     , portLineEdit_(new QLineEdit)
     , connectButton_(new QPushButton(tr("Connect")))
+    , endTurnButton_(new QPushButton(tr("End turn")))
     , serverTextWidget_(new QTextEdit(tr("Connect to server first")))
     , tcpSocket_(new QTcpSocket(this))
     , scene_(new GameScene)
@@ -48,11 +49,13 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(hostEdit_, 0, 1);
     mainLayout->addWidget(portLabel, 1, 0);
     mainLayout->addWidget(portLineEdit_, 1, 1);
-    mainLayout->addWidget(serverTextWidget_, 3, 0, 1, 2);
-    mainLayout->addWidget(buttonBox, 4, 0, 1, 2);
-    mainLayout->addWidget(view_, 5, 0, 1, 2);
+    mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
+    mainLayout->addWidget(serverTextWidget_, 4, 0, 1, 2);
+    mainLayout->addWidget(endTurnButton_, 5, 0, 1, 2);
+    mainLayout->addWidget(view_, 6, 0, 1, 2);
 
     enableConnectionButton();
+    enableEndTurnButton();
     initScene();
 
     setMinimumSize(500, 900);
@@ -75,22 +78,45 @@ void Client::sendMessage(const QByteArray& msg)
     tcpSocket_->write(block);
 }
 
-void Client::sendCommand(QPointF pos)
+void Client::sendCommand(const Command& cmd)
 {
-    /*
-    MoveCommand cmd;
-    auto target = new Actor::Position;
-    target->set_x(pos.x() / PIXELS_IN_METER);
-    target->set_y(pos.y() / PIXELS_IN_METER);
-    cmd.set_allocated_target(target);
-    */
-
-    Command cmd;
-    cmd.set_allocated_end_turn(new EndTurn);
-
     QByteArray msg(cmd.ByteSize(), Qt::Uninitialized);
     cmd.SerializeToArray(msg.data(), msg.size());
     sendMessage(msg);
+}
+
+void Client::sendEndTurnCommand()
+{
+    Command cmd;
+    cmd.set_allocated_end_turn(new EndTurn);
+    sendCommand(cmd);
+}
+
+void Client::sendMoveCommand(uint64_t unitId, const QPoint& target)
+{
+    Command cmd;
+    auto move = new Move();
+    move->set_unit_id(unitId);
+    auto pos = new Position;
+    pos->set_x(target.x());
+    pos->set_y(target.y());
+    move->set_allocated_position(pos);
+    cmd.set_allocated_move(move);
+    sendCommand(cmd);
+}
+
+void Client::sendSpawnCommand(uint64_t unitId, const QPoint& targetPos, UnitType unitType)
+{
+    Command cmd;
+    auto spawn = new Spawn();
+    spawn->set_unit_id(unitId);
+    auto pos = new Position;
+    pos->set_x(targetPos.x());
+    pos->set_y(targetPos.y());
+    spawn->set_allocated_position(pos);
+    spawn->set_unit_type(unitType);
+    cmd.set_allocated_spawn(spawn);
+    sendCommand(cmd);
 }
 
 void Client::getGameState()
@@ -116,56 +142,11 @@ void Client::getGameState()
             .arg(unit.position().y()));
     }
 
+    endTurnButton_->setEnabled(state.player() == state.active_player());
+
     scene_->update(state);
 
     serverTextWidget_->append(info);
-    /*
-    //////////// CONNECTION STATISTICS /////////////////////////
-    static auto last = std::chrono::steady_clock().now();
-    static auto accumulator = 0;
-    static auto packetCounter = 0;
-    auto now = std::chrono::steady_clock().now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count();
-    last = now;
-    packetCounter++;
-    accumulator += elapsed;
-    if (accumulator >= 1000) {
-        serverTextWidget_->append(QString("get states in sec: %1").arg(packetCounter));
-        QScrollBar *sb = serverTextWidget_->verticalScrollBar();
-        sb->setValue(sb->maximum());
-        accumulator = 0;
-        packetCounter = 0;
-    }
-    /////////////////////////////////////////////////////////////
-
-    std::string res;
-    std::unordered_set<uint64_t> updatedIds;
-    for (int i = 0; i < state.actors_size(); ++i) {
-        const auto& actor = state.actors(i);
-        //res += "{";
-        //res += std::to_string(obj.id()) + ", ";
-        //res += std::to_string(obj.type()) + ", ";
-        //res += std::to_string(obj.position().x()) + ", ";
-        //res += std::to_string(obj.position().y()) + "} ";
-        updatedIds.insert(actor.id());
-        handleActor(*scene_, actor);
-    }
-
-    if (state.players_size() > 0) {
-        const auto& player = state.players(0);
-        updatedIds.insert(player.actor().id());
-        handleActor(*scene_, player.actor());
-
-        const auto pos = player.actor().position();
-        serverTextWidget_->append(QString("Pos: (%1, %2)").arg(pos.x()).arg(pos.y()));
-        QScrollBar *sb = serverTextWidget_->verticalScrollBar();
-        sb->setValue(sb->maximum());
-    }
-
-    scene_->removeNotUpdated(updatedIds);
-
-    //serverTextWidget_->append(QString::fromStdString(res));
-    */
 }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
@@ -187,7 +168,10 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
             tcpSocket_->errorString());
     }
 
-    connectButton_->setEnabled(true);
+    serverTextWidget_->append("Disconnected from server");
+    scene_->clear();
+    enableConnectionButton();
+    enableEndTurnButton();
 }
 
 void Client::enableConnectionButton()
@@ -197,11 +181,15 @@ void Client::enableConnectionButton()
         !portLineEdit_->text().isEmpty());
 }
 
+void Client::enableEndTurnButton()
+{
+    endTurnButton_->setEnabled(tcpSocket_->isOpen());
+}
+
 void Client::initScene()
 {
     view_->setViewport(new QGLWidget);
-    scene_->addRect(0, 0, 20 * PIXELS_IN_TILE, 20 * PIXELS_IN_TILE);
     view_->setScene(scene_);
 
-    connect(scene_, &GameScene::clickedOnScene, this, &Client::sendCommand, Qt::QueuedConnection);
+    connect(endTurnButton_, &QPushButton::clicked, this, &Client::sendEndTurnCommand, Qt::QueuedConnection);
 }

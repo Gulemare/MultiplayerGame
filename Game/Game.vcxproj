@@ -27,6 +27,7 @@
     <ClInclude Include="..\Common\unit_types.h" />
     <ClInclude Include="fsa.h" />
     <ClInclude Include="map.h" />
+    <ClInclude Include="map_tile.h" />
     <ClInclude Include="stlastar.h" />
     <ClInclude Include="units_holder.h" />
     <ClInclude Include="unit_interface.h" />

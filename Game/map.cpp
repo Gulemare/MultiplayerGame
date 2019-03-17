@@ -29,25 +29,25 @@ public:
         }
         MapSearchNode NewNode;
         // push each possible move except allowing the search to go backwards
-        if ((map_->getTerrain(x - 1, y) < MOUNTAIN) && !((parent_x == x - 1) && (parent_y == y)))
+        if ((map_->getTile(x - 1, y).terrain < MOUNTAIN) && !((parent_x == x - 1) && (parent_y == y)))
         {
             NewNode = MapSearchNode(x - 1, y, map_);
             astarsearch->AddSuccessor(NewNode);
         }
 
-        if ((map_->getTerrain(x, y - 1) < MOUNTAIN) && !((parent_x == x) && (parent_y == y - 1)))
+        if ((map_->getTile(x, y - 1).terrain < MOUNTAIN) && !((parent_x == x) && (parent_y == y - 1)))
         {
             NewNode = MapSearchNode(x, y - 1, map_);
             astarsearch->AddSuccessor(NewNode);
         }
 
-        if ((map_->getTerrain(x + 1, y) < MOUNTAIN) && !((parent_x == x + 1) && (parent_y == y)))
+        if ((map_->getTile(x + 1, y).terrain < MOUNTAIN) && !((parent_x == x + 1) && (parent_y == y)))
         {
             NewNode = MapSearchNode(x + 1, y, map_);
             astarsearch->AddSuccessor(NewNode);
         }
 
-        if ((map_->getTerrain(x, y + 1) < MOUNTAIN) && !((parent_x == x) && (parent_y == y + 1)))
+        if ((map_->getTile(x, y + 1).terrain < MOUNTAIN) && !((parent_x == x) && (parent_y == y + 1)))
         {
             NewNode = MapSearchNode(x, y + 1, map_);
             astarsearch->AddSuccessor(NewNode);
@@ -56,7 +56,7 @@ public:
         return true;
     }
     float GetCost(MapSearchNode &successor) {
-        return (float)(map_->getTerrain(x, y));
+        return (float)(map_->getTile(x, y).terrain);
     }
     bool IsSameState(MapSearchNode &rhs) {
         // same state in a maze search is simply when (x,y) are the same
@@ -76,14 +76,26 @@ public:
 
 Map::Map(size_t width, size_t height) : width_(width), height_(height)
 {
-    terrain.assign(width * height, Terrain::GROUND);
+    tiles_.assign(width * height, { Terrain::GROUND, false });
 }
 
-Terrain Map::getTerrain(int x, int y) const
+Tile Map::getTile(int x, int y) const
 {
     if (x < 0 || x >= width_ || y < 0 || y >= height_)
-        return MOUNTAIN;
-    return terrain.at(coordsToIndex(x, y));
+        return {MOUNTAIN, true};
+    return tiles_.at(coordsToIndex(x, y));
+}
+
+void game::Map::updateOccupied(const UnitsHolder& units)
+{
+    for (auto& tile : tiles_)
+        tile.isOccupied = false;
+
+    for (auto it = units.begin(); it != units.end(); ++it) {
+        const auto& unit = it->second;
+        const auto& pos = unit->getCoords();
+        tiles_[pos.y * width_ + pos.x].isOccupied = true;
+    }
 }
 
 std::vector<Coords> Map::getPath(const Coords& start, const Coords& goal) const
@@ -154,12 +166,12 @@ std::vector<Coords> Map::getPath(const Coords& start, const Coords& goal) const
     return res;
 }
 
-size_t game::Map::width()
+size_t game::Map::width() const
 {
     return width_;
 }
 
-size_t game::Map::height()
+size_t game::Map::height() const
 {
     return height_;
 }

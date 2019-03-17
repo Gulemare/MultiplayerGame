@@ -53,5 +53,8 @@
     <ClInclude Include="units_holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="map_tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

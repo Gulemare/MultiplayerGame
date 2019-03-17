@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common/unit_types.h"
 #include "unit_visitor.h"
-#include "map.h"
+#include "map_tile.h"
 
 namespace game {
 

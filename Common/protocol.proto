@@ -4,6 +4,18 @@ message GameState {
   uint32 active_player = 1;
   uint32 player = 2;           // Your order in game sequence
   map<uint64, Unit> units = 3; // Units in game (by unique id)
+  repeated Tile tiles = 4;     // Updated map tiles
+}
+
+message Position {
+  uint32 x = 1;
+  uint32 y = 2;
+}
+
+message Tile {
+  Position pos = 1;
+  bool occupied = 3;
+  uint32 terrain = 2;
 }
 
 message Unit {
@@ -33,9 +45,4 @@ message Spawn {
   uint64 unit_id = 1;
   uint32 unit_type = 2;
   Position position = 3;
-}
-
-message Position {
-  uint32 x = 1;
-  uint32 y = 2;
 }

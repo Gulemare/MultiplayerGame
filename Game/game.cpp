@@ -3,7 +3,7 @@
 
 using namespace game;
 
-Game::Game() : map_(20, 20)
+Game::Game() : map_(10, 10)
 {
     restart(2);
 }
@@ -40,6 +40,7 @@ bool Game::consumeCommand(size_t player, const Command& command)
         return false;
 
     removeDeadUnits();
+    map_.updateOccupied(units_);
     return gameChanged;
 }
 
@@ -86,6 +87,20 @@ GameState Game::getState() const
         data.set_allocated_position(pos);
         (*state.mutable_units())[id] = data;
     }
+
+    for (int y = 0; y < map_.height(); ++y) {
+        for (int x = 0; x < map_.width(); ++x) {
+            auto tile = state.add_tiles();
+            auto pos = new Position;
+            pos->set_x(x);
+            pos->set_y(y);
+            tile->set_allocated_pos(pos);
+            tile->set_terrain(map_.getTile(x, y).terrain);
+            tile->set_terrain(map_.getTile(x, y).isOccupied);
+        }
+    }
+
+
     return state;
 }
 

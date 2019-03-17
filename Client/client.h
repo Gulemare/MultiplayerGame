@@ -22,6 +22,7 @@ private:
     QLineEdit* portLineEdit_ = nullptr;
     QTextEdit* serverTextWidget_ = nullptr;
     QPushButton* connectButton_ = nullptr;
+    QPushButton* endTurnButton_ = nullptr;
     QGraphicsView* view_ = nullptr;
     GameScene* scene_ = nullptr;
     
@@ -31,12 +32,18 @@ private:
     void initScene();
 
     void sendMessage(const QByteArray& msg);
+    void sendCommand(const Command& cmd);
 
 private slots:
     void connectButtonClicked();
-    
-    void sendCommand(QPointF pos);
+
+    void sendEndTurnCommand();
+    void sendMoveCommand(uint64_t unitId, const QPoint& target);
+    void sendSpawnCommand(uint64_t unitId, const QPoint& targetPos, UnitType unitType);
+
+
     void getGameState();
     void displayError(QAbstractSocket::SocketError socketError);
     void enableConnectionButton();
+    void enableEndTurnButton();
 };
