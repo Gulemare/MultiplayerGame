@@ -269,6 +269,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Unit, type_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Unit, position_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Unit, health_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Unit, action_points_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Command, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -305,10 +306,10 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 18, -1, sizeof(::Position)},
   { 25, -1, sizeof(::Tile)},
   { 33, -1, sizeof(::Unit)},
-  { 42, -1, sizeof(::Command)},
-  { 51, -1, sizeof(::EndTurn)},
-  { 56, -1, sizeof(::Move)},
-  { 63, -1, sizeof(::Spawn)},
+  { 43, -1, sizeof(::Command)},
+  { 52, -1, sizeof(::EndTurn)},
+  { 57, -1, sizeof(::Move)},
+  { 64, -1, sizeof(::Spawn)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -351,18 +352,18 @@ void AddDescriptorsImpl() {
       "value\030\002 \001(\0132\005.Unit:\0028\001\" \n\010Position\022\t\n\001x\030"
       "\001 \001(\r\022\t\n\001y\030\002 \001(\r\"A\n\004Tile\022\026\n\003pos\030\001 \001(\0132\t."
       "Position\022\020\n\010occupied\030\003 \001(\010\022\017\n\007terrain\030\002 "
-      "\001(\r\"Q\n\004Unit\022\016\n\006player\030\001 \001(\r\022\014\n\004type\030\002 \001("
+      "\001(\r\"h\n\004Unit\022\016\n\006player\030\001 \001(\r\022\014\n\004type\030\002 \001("
       "\r\022\033\n\010position\030\003 \001(\0132\t.Position\022\016\n\006health"
-      "\030\004 \001(\005\"b\n\007Command\022\034\n\010end_turn\030\001 \001(\0132\010.En"
-      "dTurnH\000\022\025\n\004move\030\002 \001(\0132\005.MoveH\000\022\027\n\005spawn\030"
-      "\003 \001(\0132\006.SpawnH\000B\t\n\007command\"\t\n\007EndTurn\"4\n"
-      "\004Move\022\017\n\007unit_id\030\001 \001(\004\022\033\n\010position\030\002 \001(\013"
-      "2\t.Position\"H\n\005Spawn\022\017\n\007unit_id\030\001 \001(\004\022\021\n"
-      "\tunit_type\030\002 \001(\r\022\033\n\010position\030\003 \001(\0132\t.Pos"
-      "itionb\006proto3"
+      "\030\004 \001(\005\022\025\n\raction_points\030\005 \001(\005\"b\n\007Command"
+      "\022\034\n\010end_turn\030\001 \001(\0132\010.EndTurnH\000\022\025\n\004move\030\002"
+      " \001(\0132\005.MoveH\000\022\027\n\005spawn\030\003 \001(\0132\006.SpawnH\000B\t"
+      "\n\007command\"\t\n\007EndTurn\"4\n\004Move\022\017\n\007unit_id\030"
+      "\001 \001(\004\022\033\n\010position\030\002 \001(\0132\t.Position\"H\n\005Sp"
+      "awn\022\017\n\007unit_id\030\001 \001(\004\022\021\n\tunit_type\030\002 \001(\r\022"
+      "\033\n\010position\030\003 \001(\0132\t.Positionb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 613);
+      descriptor, 636);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "protocol.proto", &protobuf_RegisterTypes);
 }
@@ -1414,6 +1415,7 @@ const int Unit::kPlayerFieldNumber;
 const int Unit::kTypeFieldNumber;
 const int Unit::kPositionFieldNumber;
 const int Unit::kHealthFieldNumber;
+const int Unit::kActionPointsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Unit::Unit()
@@ -1433,15 +1435,15 @@ Unit::Unit(const Unit& from)
     position_ = NULL;
   }
   ::memcpy(&player_, &from.player_,
-    static_cast<size_t>(reinterpret_cast<char*>(&health_) -
-    reinterpret_cast<char*>(&player_)) + sizeof(health_));
+    static_cast<size_t>(reinterpret_cast<char*>(&action_points_) -
+    reinterpret_cast<char*>(&player_)) + sizeof(action_points_));
   // @@protoc_insertion_point(copy_constructor:Unit)
 }
 
 void Unit::SharedCtor() {
   ::memset(&position_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&health_) -
-      reinterpret_cast<char*>(&position_)) + sizeof(health_));
+      reinterpret_cast<char*>(&action_points_) -
+      reinterpret_cast<char*>(&position_)) + sizeof(action_points_));
 }
 
 Unit::~Unit() {
@@ -1478,8 +1480,8 @@ void Unit::Clear() {
   }
   position_ = NULL;
   ::memset(&player_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&health_) -
-      reinterpret_cast<char*>(&player_)) + sizeof(health_));
+      reinterpret_cast<char*>(&action_points_) -
+      reinterpret_cast<char*>(&player_)) + sizeof(action_points_));
   _internal_metadata_.Clear();
 }
 
@@ -1547,6 +1549,20 @@ bool Unit::MergePartialFromCodedStream(
         break;
       }
 
+      // int32 action_points = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(40u /* 40 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &action_points_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -1594,6 +1610,11 @@ void Unit::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->health(), output);
   }
 
+  // int32 action_points = 5;
+  if (this->action_points() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->action_points(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -1628,6 +1649,11 @@ void Unit::SerializeWithCachedSizes(
   // int32 health = 4;
   if (this->health() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->health(), target);
+  }
+
+  // int32 action_points = 5;
+  if (this->action_points() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->action_points(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1675,6 +1701,13 @@ size_t Unit::ByteSizeLong() const {
         this->health());
   }
 
+  // int32 action_points = 5;
+  if (this->action_points() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->action_points());
+  }
+
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
@@ -1714,6 +1747,9 @@ void Unit::MergeFrom(const Unit& from) {
   if (from.health() != 0) {
     set_health(from.health());
   }
+  if (from.action_points() != 0) {
+    set_action_points(from.action_points());
+  }
 }
 
 void Unit::CopyFrom(const ::google::protobuf::Message& from) {
@@ -1744,6 +1780,7 @@ void Unit::InternalSwap(Unit* other) {
   swap(player_, other->player_);
   swap(type_, other->type_);
   swap(health_, other->health_);
+  swap(action_points_, other->action_points_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 

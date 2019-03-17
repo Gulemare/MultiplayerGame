@@ -23,6 +23,7 @@ message Unit {
   uint32 type = 2;             // Unit type
   Position position = 3;       // Position on grid
   int32 health = 4;            // Unit health
+  int32 action_points = 5;     // Unit action points
 }
 
 message Command {

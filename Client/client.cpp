@@ -192,4 +192,14 @@ void Client::initScene()
     view_->setScene(scene_);
 
     connect(endTurnButton_, &QPushButton::clicked, this, &Client::sendEndTurnCommand, Qt::QueuedConnection);
+    connect(scene_, &GameScene::clickedOnScene, [this](QPoint pos) {
+        
+        QString text = "LMB: ";
+        for (auto item : scene_->selectedItems())
+            text.append(QString(" %1,").arg((int)item));
+
+        text = QString("(%1, %2)").arg(pos.x()).arg(pos.y());
+        serverTextWidget_->append(text);
+        serverTextWidget_->verticalScrollBar()->setValue(serverTextWidget_->verticalScrollBar()->maximum());
+    });
 }

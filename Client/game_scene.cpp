@@ -1,17 +1,21 @@
 #include "game_scene.h"
+#include "constants.h"
 
-using UnitCreateFunc = QGraphicsItem*(*)(Qt::GlobalColor);
+using UnitCreateFunc = UnitGraphicsItem*(*)(Qt::GlobalColor);
 
-QGraphicsItem* createWorker(Qt::GlobalColor color) {
-    auto worker = new QGraphicsEllipseItem(
-        QRect(-HALF_WIDTH * 0.8, -HALF_HEIGHT * 0.8, PIXELS_IN_TILE * 0.8, PIXELS_IN_TILE* 0.8));
-    worker->setBrush(QBrush(color, Qt::SolidPattern));
+UnitGraphicsItem* createWorker(Qt::GlobalColor color) {
+    auto worker = new UnitGraphicsItem(QBrush(color, Qt::SolidPattern));
     return worker;
 }
 
 const std::unordered_map<UnitType, UnitCreateFunc> createFuncs = {
     {UnitType::WORKER, createWorker},
 };
+
+GameScene::GameScene()
+{
+    connect(this, &QGraphicsScene::selectionChanged, this, &GameScene::onSelectionChanged);
+}
 
 void GameScene::update(const GameState& state)
 {
@@ -20,7 +24,7 @@ void GameScene::update(const GameState& state)
     for (auto it = state.units().begin(); it != state.units().end(); ++it) {
         auto id = it->first;
         auto data = it->second;
-        QGraphicsItem* item = nullptr;
+        UnitGraphicsItem* item = nullptr;
         if (units_.count(id) == 0) {
             // Create unit if not exist
             auto color = data.player() == player ? Qt::green : Qt::red;
@@ -34,9 +38,7 @@ void GameScene::update(const GameState& state)
         }
 
         // Update/Remove unit
-        item->setPos(gridPosToSceneCoords({
-            static_cast<int>(data.position().x()),
-            static_cast<int>(data.position().y()) }));
+        item->setUnit(data);
         if (data.health() < 0) {
             removeItem(item);
             units_.erase(id);
@@ -70,7 +72,33 @@ void GameScene::clear()
     tiles_.clear();
 }
 
+void GameScene::onSelectionChanged()
+{
+    auto items = selectedItems();
+
+    if (items.empty()) {
+        if (lastSelectedItem) {
+            lastSelectedItem->setSelected(true);
+            return;
+        }
+    }
+    
+    lastSelectedItem = items.front();
+}
+
 void GameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit clickedOnScene(event->scenePos());
+    QGraphicsScene::mouseReleaseEvent(event);
+    auto mousePos = event->scenePos();
+    emit clickedOnScene(scenePosToOddr(mousePos));
 }
+
+UnitGraphicsItem* GameScene::getSelectedUnit() const
+{
+    if (!lastSelectedItem)
+        return nullptr;
+
+    auto item = dynamic_cast<UnitGraphicsItem*>(lastSelectedItem);
+    return item;
+}
+

@@ -76,16 +76,18 @@ GameState Game::getState() const
 
     for (auto it = units_.begin(); it != units_.end(); ++it) {
         const auto id = it->first;
-        auto unit = it->second;
-        Unit data;
-        data.set_type(unit->getType());
-        data.set_health(unit->getHealth());
-        data.set_player(unit->owner());
+        auto data = it->second;
+        Unit unit;
+        unit.set_type(data->getType());
+        unit.set_health(data->getHealth());
+        unit.set_action_points(data->getActionPoints());
+        unit.set_player(data->owner());
+        
         auto pos = new Position();
-        pos->set_x(unit->getCoords().x);
-        pos->set_y(unit->getCoords().y);
-        data.set_allocated_position(pos);
-        (*state.mutable_units())[id] = data;
+        pos->set_x(data->getCoords().x);
+        pos->set_y(data->getCoords().y);
+        unit.set_allocated_position(pos);
+        (*state.mutable_units())[id] = unit;
     }
 
     for (int y = 0; y < map_.height(); ++y) {
@@ -114,13 +116,25 @@ bool Game::applyCommand(const Spawn& spawnCommand)
     return false;
 }
 
-bool Game::applyCommand(const EndTurn& endCommand)
+bool Game::applyCommand(const EndTurn& endTurnCommand)
 {
     activePlayer_++;
     if (activePlayer_ >= playerCount_)
         activePlayer_ = 0;
 
+    restoreActivePlayerUnits();
     return true;
+}
+
+void Game::restoreActivePlayerUnits()
+{
+    RestorationVisitor restoration;
+    for (auto it = units_.begin(); it != units_.end(); ++it)
+    {
+        auto& unit = *(it->second);
+        if (unit.owner() == activePlayer_)
+            unit.accept(restoration);
+    }
 }
 
 void Game::removeDeadUnits()

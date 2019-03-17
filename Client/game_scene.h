@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "../Common/protocol.pb.h"
 #include "hex_tile.h"
+#include "unit_graphics_item.h"
 
 namespace std {
 
@@ -29,14 +30,23 @@ class GameScene : public QGraphicsScene
 {
     Q_OBJECT
 
-protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    std::unordered_map<uint64_t, QGraphicsItem*> units_;
-    std::unordered_map<QPoint, HexTile*> tiles_;
 public:
+    GameScene();
     void update(const GameState& state);
     void clear();
+    UnitGraphicsItem* getSelectedUnit() const;
+
+protected:
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    std::unordered_map<uint64_t, UnitGraphicsItem*> units_;
+    std::unordered_map<QPoint, HexTile*> tiles_;
+
+private:
+    QGraphicsItem* lastSelectedItem = nullptr;
+
+private slots:
+    void onSelectionChanged();
 
 signals:
-    void clickedOnScene(QPointF pos);
+    void clickedOnScene(QPoint gridPos);
 };

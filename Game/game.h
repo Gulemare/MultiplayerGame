@@ -5,6 +5,7 @@
 #include "map.h"
 #include "unit_interface.h"
 #include "units_holder.h"
+#include "restoration_visitor.h"
 #include "../Common/protocol.pb.h"
 
 namespace game {
@@ -39,6 +40,7 @@ namespace game {
         bool applyCommand(const Spawn& spawnCommand);
         bool applyCommand(const EndTurn& endCommand);
 
+        void restoreActivePlayerUnits();
         void removeDeadUnits();
     };
 

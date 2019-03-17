@@ -56,5 +56,8 @@
     <ClInclude Include="map_tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="restoration_visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

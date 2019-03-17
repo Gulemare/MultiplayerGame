@@ -601,6 +601,12 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::int32 health() const;
   void set_health(::google::protobuf::int32 value);
 
+  // int32 action_points = 5;
+  void clear_action_points();
+  static const int kActionPointsFieldNumber = 5;
+  ::google::protobuf::int32 action_points() const;
+  void set_action_points(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:Unit)
  private:
 
@@ -609,6 +615,7 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::uint32 player_;
   ::google::protobuf::uint32 type_;
   ::google::protobuf::int32 health_;
+  ::google::protobuf::int32 action_points_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -1407,6 +1414,20 @@ inline void Unit::set_health(::google::protobuf::int32 value) {
   
   health_ = value;
   // @@protoc_insertion_point(field_set:Unit.health)
+}
+
+// int32 action_points = 5;
+inline void Unit::clear_action_points() {
+  action_points_ = 0;
+}
+inline ::google::protobuf::int32 Unit::action_points() const {
+  // @@protoc_insertion_point(field_get:Unit.action_points)
+  return action_points_;
+}
+inline void Unit::set_action_points(::google::protobuf::int32 value) {
+  
+  action_points_ = value;
+  // @@protoc_insertion_point(field_set:Unit.action_points)
 }
 
 // -------------------------------------------------------------------

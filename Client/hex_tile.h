@@ -5,6 +5,8 @@
 class HexTile : public QGraphicsPolygonItem {
 public:
     HexTile(const QPoint& gridPos) {
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+
         gridPos_ = gridPos;
         QPolygonF vertices;
         center_ = gridPosToSceneCoords(gridPos);
