@@ -63,6 +63,8 @@ void GameScene::update(const GameState& state)
         }
         // Update tile here
     }
+
+    QGraphicsScene::update(sceneRect());
 }
 
 void GameScene::clear()
