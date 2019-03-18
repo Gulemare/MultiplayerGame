@@ -1,4 +1,5 @@
 #include "unit_graphics_item.h"
+#include "hex_utils.h"
 
 UnitGraphicsItem::UnitGraphicsItem(const QBrush& brush) : brush_(brush), initialBrush_(brush), initialPen_(QPen())
 {

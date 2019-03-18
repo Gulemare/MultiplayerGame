@@ -2,7 +2,6 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
-#include "constants.h"
 #include "../Common/protocol.pb.h"
 
 class UnitGraphicsItem : public QGraphicsItem {

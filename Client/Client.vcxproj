@@ -129,6 +129,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\devel\tools\vcpkg-master\installed\x64-windows\include;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\devel\tools\vcpkg-master\installed\x64-windows\include;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL</IncludePath>
     </ClInclude>
+    <ClInclude Include="hex_utils.h" />
     <ClInclude Include="unit_graphics_item.h" />
     <QtMoc Include="game_scene.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\devel\tools\vcpkg-master\installed\x64-windows\include;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtWidgets</IncludePath>
