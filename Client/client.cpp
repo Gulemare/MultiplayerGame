@@ -94,6 +94,10 @@ void Client::sendEndTurnCommand()
 
 void Client::sendMoveCommand(uint64_t unitId, const QPoint& target)
 {
+    auto text = QString("MOVE %1 TO (%2, %3)").arg(unitId).arg(target.x()).arg(target.y());
+    serverTextWidget_->append(text);
+    serverTextWidget_->verticalScrollBar()->setValue(serverTextWidget_->verticalScrollBar()->maximum());
+
     Command cmd;
     auto move = new Move();
     move->set_unit_id(unitId);
@@ -192,14 +196,13 @@ void Client::initScene()
     view_->setScene(scene_);
 
     connect(endTurnButton_, &QPushButton::clicked, this, &Client::sendEndTurnCommand, Qt::QueuedConnection);
-    connect(scene_, &GameScene::clickedOnScene, [this](QPoint pos) {
+    connect(scene_, &GameScene::tileSelected, [this](QPoint pos) {
         
-        QString text = "LMB: ";
-        for (auto item : scene_->selectedItems())
-            text.append(QString(" %1,").arg((int)item));
+        auto unit = scene_->getSelectedUnit();
+        if (!unit)
+            return;
 
-        text = QString("(%1, %2)").arg(pos.x()).arg(pos.y());
-        serverTextWidget_->append(text);
-        serverTextWidget_->verticalScrollBar()->setValue(serverTextWidget_->verticalScrollBar()->maximum());
+        const auto id = unit->getId();
+        sendMoveCommand(id, pos);
     });
 }

@@ -14,5 +14,9 @@ namespace game {
     struct Coords {
         int x;
         int y;
+
+        bool operator==(const Coords& rhs) const {
+            return x == rhs.x && y == rhs.y;
+        }
     };
 }

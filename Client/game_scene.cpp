@@ -1,10 +1,10 @@
 #include "game_scene.h"
 #include "constants.h"
 
-using UnitCreateFunc = UnitGraphicsItem*(*)(Qt::GlobalColor);
+using UnitCreateFunc = UnitGraphicsItem*(*)(uint64_t, Qt::GlobalColor);
 
-UnitGraphicsItem* createWorker(Qt::GlobalColor color) {
-    auto worker = new UnitGraphicsItem(QBrush(color, Qt::SolidPattern));
+UnitGraphicsItem* createWorker(uint64_t id, Qt::GlobalColor color) {
+    auto worker = new UnitGraphicsItem(id, QBrush(color, Qt::SolidPattern));
     return worker;
 }
 
@@ -28,7 +28,7 @@ void GameScene::update(const GameState& state)
         if (units_.count(id) == 0) {
             // Create unit if not exist
             auto color = data.player() == player ? Qt::green : Qt::red;
-            item = createFuncs.at(static_cast<UnitType>(data.type()))(color);
+            item = createFuncs.at(static_cast<UnitType>(data.type()))(id, color);
             
             units_[id] = item;
             addItem(item);
@@ -86,18 +86,22 @@ void GameScene::onSelectionChanged()
     lastSelectedItem = items.front();
 }
 
-void GameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void GameScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsScene::mouseReleaseEvent(event);
+    QGraphicsScene::mousePressEvent(event);
     auto mousePos = event->scenePos();
-    emit clickedOnScene(scenePosToOddr(mousePos));
+
+    if (event->buttons() & Qt::RightButton)
+    {
+        emit tileSelected(scenePosToOddr(mousePos));
+    }
 }
 
 UnitGraphicsItem* GameScene::getSelectedUnit() const
 {
     if (!lastSelectedItem)
         return nullptr;
-
+    
     auto item = dynamic_cast<UnitGraphicsItem*>(lastSelectedItem);
     return item;
 }

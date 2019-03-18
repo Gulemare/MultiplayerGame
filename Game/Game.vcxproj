@@ -28,6 +28,7 @@
     <ClInclude Include="fsa.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="map_tile.h" />
+    <ClInclude Include="movement_visitor.h" />
     <ClInclude Include="restoration_visitor.h" />
     <ClInclude Include="stlastar.h" />
     <ClInclude Include="units_holder.h" />

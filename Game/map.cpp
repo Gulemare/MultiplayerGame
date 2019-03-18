@@ -81,7 +81,7 @@ Map::Map(size_t width, size_t height) : width_(width), height_(height)
 
 Tile Map::getTile(int x, int y) const
 {
-    if (x < 0 || x >= width_ || y < 0 || y >= height_)
+    if (!isValidCoord({x, y}))
         return {MOUNTAIN, true};
     return tiles_.at(coordsToIndex(x, y));
 }
@@ -94,6 +94,8 @@ void game::Map::updateOccupied(const UnitsHolder& units)
     for (auto it = units.begin(); it != units.end(); ++it) {
         const auto& unit = it->second;
         const auto& pos = unit->getCoords();
+        if (!isValidCoord(pos))
+            continue;
         tiles_[pos.y * width_ + pos.x].isOccupied = true;
     }
 }
@@ -179,6 +181,11 @@ size_t game::Map::height() const
 size_t Map::coordsToIndex(size_t x, size_t y) const
 {
     return y * width_ + x;
+}
+
+bool game::Map::isValidCoord(const Coords& pos) const
+{
+    return pos.x >= 0 && pos.x < width_ && pos.y >= 0 && pos.y < height_;
 }
 
 

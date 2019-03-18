@@ -1,7 +1,8 @@
 #include "unit_graphics_item.h"
 #include "hex_utils.h"
 
-UnitGraphicsItem::UnitGraphicsItem(const QBrush& brush) : brush_(brush), initialBrush_(brush), initialPen_(QPen())
+UnitGraphicsItem::UnitGraphicsItem(uint64_t id, const QBrush & brush)
+    : id_(id), brush_(brush), initialBrush_(brush), initialPen_(QPen())
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
@@ -50,6 +51,16 @@ void UnitGraphicsItem::setUnit(const Unit& unit)
     setPos(gridPosToSceneCoords({
         static_cast<int>(unit_.position().x()),
         static_cast<int>(unit_.position().y()) }));
+}
+
+const Unit& UnitGraphicsItem::getData() const
+{
+    return unit_;
+}
+
+uint64_t UnitGraphicsItem::getId() const
+{
+    return id_;
 }
 
 void UnitGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * mouseEvent)

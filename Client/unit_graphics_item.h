@@ -6,7 +6,7 @@
 
 class UnitGraphicsItem : public QGraphicsItem {
 public:
-    UnitGraphicsItem(const QBrush& brush);
+    UnitGraphicsItem(uint64_t id, const QBrush& brush);
 
     QRectF boundingRect() const override;
 
@@ -17,6 +17,9 @@ public:
 
     void setUnit(const Unit& unit);
 
+    const Unit& getData() const;
+    uint64_t getId() const;
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
@@ -26,5 +29,6 @@ private:
     QBrush brush_;
     QPen pen_;
 
+    uint64_t id_;
     Unit unit_;
 };

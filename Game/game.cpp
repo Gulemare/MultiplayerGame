@@ -1,4 +1,5 @@
 #include "game.h"
+#include "movement_visitor.h"
 #include "../Common/protocol.pb.h"
 
 using namespace game;
@@ -34,6 +35,9 @@ bool Game::consumeCommand(size_t player, const Command& command)
     }
     else if (command.has_spawn()) {
         gameChanged = applyCommand(command.spawn());
+    }
+    else if (command.has_move()) {
+        gameChanged = applyCommand(command.move());
     }
 
     if (!gameChanged)
@@ -98,7 +102,7 @@ GameState Game::getState() const
             pos->set_y(y);
             tile->set_allocated_pos(pos);
             tile->set_terrain(map_.getTile(x, y).terrain);
-            tile->set_terrain(map_.getTile(x, y).isOccupied);
+            tile->set_occupied(map_.getTile(x, y).isOccupied);
         }
     }
 
@@ -108,7 +112,19 @@ GameState Game::getState() const
 
 bool Game::applyCommand(const Move& moveCommand)
 {
-    return false;
+    auto unit = units_.get(moveCommand.unit_id());
+    if (!unit)
+        return false;
+
+    if (unit->owner() != activePlayer_)
+        return false;
+
+    const auto& pos = moveCommand.position();
+    const Coords goal{ static_cast<int>(pos.x()), static_cast<int>(pos.y()) };
+
+    MovementVisitor move(goal, map_);
+    unit->accept(move);
+    return move.isSuccess();
 }
 
 bool Game::applyCommand(const Spawn& spawnCommand)

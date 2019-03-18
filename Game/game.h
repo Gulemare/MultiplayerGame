@@ -24,8 +24,6 @@ namespace game {
 
         bool consumeCommand(size_t player, const Command& command); // apply command and returns true if game changed
 
-        
-
     private:
         size_t playerCount_ = 0;
         size_t currentPlayerCount_ = 0;

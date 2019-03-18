@@ -37,7 +37,7 @@ public:
     UnitGraphicsItem* getSelectedUnit() const;
 
 protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     std::unordered_map<uint64_t, UnitGraphicsItem*> units_;
     std::unordered_map<QPoint, HexTile*> tiles_;
 
@@ -48,5 +48,5 @@ private slots:
     void onSelectionChanged();
 
 signals:
-    void clickedOnScene(QPoint gridPos);
+    void tileSelected(QPoint gridPos);
 };
