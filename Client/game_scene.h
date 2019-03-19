@@ -35,6 +35,7 @@ public:
     void update(const GameState& state);
     void clear();
     UnitGraphicsItem* getSelectedUnit() const;
+    UnitGraphicsItem* getUnitOnTile(const QPoint& pos) const;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

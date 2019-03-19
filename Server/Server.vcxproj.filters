@@ -54,8 +54,5 @@
     <ClInclude Include="..\Common\protocol.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\game_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

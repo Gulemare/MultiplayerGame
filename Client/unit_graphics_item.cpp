@@ -1,5 +1,5 @@
 #include "unit_graphics_item.h"
-#include "hex_utils.h"
+#include "utils.h"
 
 UnitGraphicsItem::UnitGraphicsItem(uint64_t id, const QBrush & brush)
     : id_(id), brush_(brush), initialBrush_(brush), initialPen_(QPen())
@@ -49,8 +49,8 @@ void UnitGraphicsItem::setUnit(const Unit& unit)
 {
     unit_ = unit;
     setPos(gridPosToSceneCoords({
-        static_cast<int>(unit_.position().x()),
-        static_cast<int>(unit_.position().y()) }));
+        static_cast<int>(unit_.position().col()),
+        static_cast<int>(unit_.position().row()) }));
 }
 
 const Unit& UnitGraphicsItem::getData() const

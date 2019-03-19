@@ -40,6 +40,7 @@ private slots:
     void sendEndTurnCommand();
     void sendMoveCommand(uint64_t unitId, const QPoint& target);
     void sendSpawnCommand(uint64_t unitId, const QPoint& targetPos, UnitType unitType);
+    void sendDirectAttackCommand(uint64_t unitId, uint64_t targetId);
 
 
     void getGameState();

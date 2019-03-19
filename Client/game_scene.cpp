@@ -39,7 +39,7 @@ void GameScene::update(const GameState& state)
 
         // Update/Remove unit
         item->setUnit(data);
-        if (data.health() < 0) {
+        if (data.health() <= 0) {
             removeItem(item);
             units_.erase(id);
         }
@@ -48,7 +48,7 @@ void GameScene::update(const GameState& state)
     for (int i = 0; i < state.tiles_size(); ++i) {
         const auto& data = state.tiles(i);
 
-        QPoint pos(data.pos().x(), data.pos().y());
+        QPoint pos(data.pos().col(), data.pos().row());
 
         HexTile* item = nullptr;
         if (tiles_.count(pos) == 0) {
@@ -106,5 +106,16 @@ UnitGraphicsItem* GameScene::getSelectedUnit() const
     
     auto item = dynamic_cast<UnitGraphicsItem*>(lastSelectedItem);
     return item;
+}
+
+UnitGraphicsItem* GameScene::getUnitOnTile(const QPoint& pos) const
+{
+    UnitGraphicsItem* res = nullptr;
+    for (const auto& p : units_) {
+        const auto& coords = p.second->getData().position();
+        if (coords.col() == pos.x() && coords.row() == pos.y())
+            return p.second;
+    }
+    return res;
 }
 

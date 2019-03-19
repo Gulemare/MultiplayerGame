@@ -102,8 +102,8 @@ void Client::sendMoveCommand(uint64_t unitId, const QPoint& target)
     auto move = new Move();
     move->set_unit_id(unitId);
     auto pos = new Position;
-    pos->set_x(target.x());
-    pos->set_y(target.y());
+    pos->set_col(target.x());
+    pos->set_row(target.y());
     move->set_allocated_position(pos);
     cmd.set_allocated_move(move);
     sendCommand(cmd);
@@ -115,11 +115,25 @@ void Client::sendSpawnCommand(uint64_t unitId, const QPoint& targetPos, UnitType
     auto spawn = new Spawn();
     spawn->set_unit_id(unitId);
     auto pos = new Position;
-    pos->set_x(targetPos.x());
-    pos->set_y(targetPos.y());
+    pos->set_col(targetPos.x());
+    pos->set_row(targetPos.y());
     spawn->set_allocated_position(pos);
     spawn->set_unit_type(unitType);
     cmd.set_allocated_spawn(spawn);
+    sendCommand(cmd);
+}
+
+void Client::sendDirectAttackCommand(uint64_t unitId, uint64_t targetId)
+{
+    auto text = QString("ATTACK %1 ON %2").arg(unitId).arg(targetId);
+    serverTextWidget_->append(text);
+    serverTextWidget_->verticalScrollBar()->setValue(serverTextWidget_->verticalScrollBar()->maximum());
+
+    Command cmd;
+    auto attack = new DirectAttack();
+    attack->set_unit_id(unitId);
+    attack->set_target_id(targetId);
+    cmd.set_allocated_direct_attack(attack);
     sendCommand(cmd);
 }
 
@@ -139,11 +153,9 @@ void Client::getGameState()
 
     for (auto it = state.units().begin(); it != state.units().end(); ++it) {
         const auto& unit = it->second;
-        info.append(QString("{%1|%2|(%3, %4)}")
+        info.append(QString("{%1 : %2}")
             .arg(it->first)
-            .arg(unit.type())
-            .arg(unit.position().x())
-            .arg(unit.position().y()));
+            .arg(unit.health()));
     }
 
     endTurnButton_->setEnabled(state.player() == state.active_player());
@@ -202,7 +214,12 @@ void Client::initScene()
         if (!unit)
             return;
 
-        const auto id = unit->getId();
-        sendMoveCommand(id, pos);
+        auto unitOnTile = scene_->getUnitOnTile(pos);
+        if (unitOnTile) {
+            sendDirectAttackCommand(unit->getId(), unitOnTile->getId());
+        }
+        else {
+            sendMoveCommand(unit->getId(), pos);
+        }
     });
 }

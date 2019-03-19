@@ -70,7 +70,7 @@
     <ClInclude Include="unit_graphics_item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hex_utils.h">
+    <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,7 @@
 
 using namespace game;
 
+/*
 class MapSearchNode : public Coords
 {
 public:
@@ -72,18 +73,18 @@ public:
     }
 };
 
-
+*/
 
 Map::Map(size_t width, size_t height) : width_(width), height_(height)
 {
     tiles_.assign(width * height, { Terrain::GROUND, false });
 }
 
-Tile Map::getTile(int x, int y) const
+Tile Map::getTile(const Coords& coords) const
 {
-    if (!isValidCoord({x, y}))
+    if (!isValidCoord(coords))
         return {MOUNTAIN, true};
-    return tiles_.at(coordsToIndex(x, y));
+    return tiles_.at(coordsToIndex(coords));
 }
 
 void game::Map::updateOccupied(const UnitsHolder& units)
@@ -96,7 +97,7 @@ void game::Map::updateOccupied(const UnitsHolder& units)
         const auto& pos = unit->getCoords();
         if (!isValidCoord(pos))
             continue;
-        tiles_[pos.y * width_ + pos.x].isOccupied = true;
+        tiles_[pos.row * width_ + pos.col].isOccupied = true;
     }
 }
 
@@ -104,6 +105,7 @@ std::vector<Coords> Map::getPath(const Coords& start, const Coords& goal) const
 {
     std::vector<Coords> res;
 
+    /*
     AStarSearch<MapSearchNode> astarsearch;
 
     unsigned int SearchCount = 0;
@@ -164,6 +166,7 @@ std::vector<Coords> Map::getPath(const Coords& start, const Coords& goal) const
         SearchCount++;
         astarsearch.EnsureMemoryFreed();
     }
+    */
 
     return res;
 }
@@ -178,14 +181,14 @@ size_t game::Map::height() const
     return height_;
 }
 
-size_t Map::coordsToIndex(size_t x, size_t y) const
+size_t Map::coordsToIndex(const Coords& coords) const
 {
-    return y * width_ + x;
+    return coords.row * width_ + coords.col;
 }
 
 bool game::Map::isValidCoord(const Coords& pos) const
 {
-    return pos.x >= 0 && pos.x < width_ && pos.y >= 0 && pos.y < height_;
+    return pos.col >= 0 && pos.col < width_ && pos.row >= 0 && pos.row < height_;
 }
 
 

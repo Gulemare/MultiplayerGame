@@ -1,5 +1,6 @@
 #include "game.h"
 #include "movement_visitor.h"
+#include "direct_attack_visitor.h"
 #include "../Common/protocol.pb.h"
 
 using namespace game;
@@ -26,6 +27,8 @@ bool Game::consumeCommand(size_t player, const Command& command)
     if (player != activePlayer_)
         return false;
 
+    removeDeadUnits();
+
     units_.setUser(activePlayer_);
 
     bool gameChanged = false;
@@ -39,11 +42,13 @@ bool Game::consumeCommand(size_t player, const Command& command)
     else if (command.has_move()) {
         gameChanged = applyCommand(command.move());
     }
+    else if (command.has_direct_attack()) {
+        gameChanged = applyCommand(command.direct_attack());
+    }
 
     if (!gameChanged)
         return false;
-
-    removeDeadUnits();
+    
     map_.updateOccupied(units_);
     return gameChanged;
 }
@@ -88,21 +93,21 @@ GameState Game::getState() const
         unit.set_player(data->owner());
         
         auto pos = new Position();
-        pos->set_x(data->getCoords().x);
-        pos->set_y(data->getCoords().y);
+        pos->set_col(data->getCoords().col);
+        pos->set_row(data->getCoords().row);
         unit.set_allocated_position(pos);
         (*state.mutable_units())[id] = unit;
     }
 
-    for (int y = 0; y < map_.height(); ++y) {
-        for (int x = 0; x < map_.width(); ++x) {
+    for (int row = 0; row < map_.height(); ++row) {
+        for (int col = 0; col < map_.width(); ++col) {
             auto tile = state.add_tiles();
             auto pos = new Position;
-            pos->set_x(x);
-            pos->set_y(y);
+            pos->set_col(col);
+            pos->set_row(row);
             tile->set_allocated_pos(pos);
-            tile->set_terrain(map_.getTile(x, y).terrain);
-            tile->set_occupied(map_.getTile(x, y).isOccupied);
+            tile->set_terrain(map_.getTile({ col, row}).terrain);
+            tile->set_occupied(map_.getTile({ col, row }).isOccupied);
         }
     }
 
@@ -120,7 +125,7 @@ bool Game::applyCommand(const Move& moveCommand)
         return false;
 
     const auto& pos = moveCommand.position();
-    const Coords goal{ static_cast<int>(pos.x()), static_cast<int>(pos.y()) };
+    const Coords goal{ static_cast<int>(pos.col()), static_cast<int>(pos.row()) };
 
     MovementVisitor move(goal, map_);
     unit->accept(move);
@@ -140,6 +145,27 @@ bool Game::applyCommand(const EndTurn& endTurnCommand)
 
     restoreActivePlayerUnits();
     return true;
+}
+
+bool game::Game::applyCommand(const DirectAttack& directAttackCommand)
+{
+    auto attacker = units_.get(directAttackCommand.unit_id());
+    if (!attacker)
+        return false;
+
+    if (attacker->owner() != activePlayer_)
+        return false;
+
+    auto target = units_.get(directAttackCommand.target_id());
+    if (!target)
+        return false;
+
+    if (attacker->owner() == target->owner())
+        return false;
+
+    DirectAttackVisitor attack(*target, map_);
+    attacker->accept(attack);
+    return attack.isSuccess();
 }
 
 void Game::restoreActivePlayerUnits()

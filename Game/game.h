@@ -37,6 +37,7 @@ namespace game {
         bool applyCommand(const Move& moveCommand);
         bool applyCommand(const Spawn& spawnCommand);
         bool applyCommand(const EndTurn& endCommand);
+        bool applyCommand(const DirectAttack& directAttackCommand);
 
         void restoreActivePlayerUnits();
         void removeDeadUnits();

@@ -14,9 +14,9 @@ namespace game {
     };
 
     Coords oddrOffsetNeighbor(const Coords& pos, size_t direction) {
-        auto parity = pos.y % 2;
+        auto parity = pos.row % 2;
         auto dir = oddrDirections[parity][direction];
-        return Coords{ pos.x + dir.x, pos.y + dir.y };
+        return Coords{ pos.col + dir.col, pos.row + dir.row };
     }
 
     std::array<Coords, 6> getNeighbours(const Coords& pos) {
@@ -37,7 +37,10 @@ namespace game {
         }
 
         void visit(Worker& worker) override {
-            if (worker.getActionPoints() == 0 || !map_.isValidCoord(goal_)) {
+            if (worker.getActionPoints() == 0 ||
+                !map_.isValidCoord(goal_) ||
+                map_.getTile(goal_).isOccupied)
+            {
                 success_ = false;
                 return;
             }
@@ -55,8 +58,6 @@ namespace game {
 
             success_ = false;
         }
-
-
 
     private:
         bool success_ = false;

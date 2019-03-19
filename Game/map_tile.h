@@ -1,4 +1,5 @@
 #pragma once
+#include "../Common/hex_utils.h"
 
 namespace game {
     enum Terrain {
@@ -11,12 +12,5 @@ namespace game {
         bool isOccupied = false;
     };
 
-    struct Coords {
-        int x;
-        int y;
-
-        bool operator==(const Coords& rhs) const {
-            return x == rhs.x && y == rhs.y;
-        }
-    };
+    using Coords = Oddr<int>;
 }

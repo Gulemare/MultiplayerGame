@@ -8,14 +8,14 @@ message GameState {
 }
 
 message Position {
-  uint32 x = 1;
-  uint32 y = 2;
+  uint32 col = 1;
+  uint32 row = 2;
 }
 
 message Tile {
   Position pos = 1;
-  bool occupied = 3;
   uint32 terrain = 2;
+  bool occupied = 3;
 }
 
 message Unit {
@@ -30,7 +30,8 @@ message Command {
   oneof command {
     EndTurn end_turn = 1;
     Move move = 2;
-    Spawn spawn = 3;
+    DirectAttack direct_attack = 3;
+    Spawn spawn = 4;
   }
 }
 
@@ -42,8 +43,14 @@ message Move {
   Position position = 2;
 }
 
+message DirectAttack {
+  uint64 unit_id = 1;
+  uint64 target_id = 2;
+}
+
 message Spawn {
   uint64 unit_id = 1;
   uint32 unit_type = 2;
   Position position = 3;
 }
+

@@ -10,7 +10,7 @@ namespace game {
             worker.setActionPoints(Worker::maxActionPoints);
 
             auto newHealth = worker.getHealth() + Worker::healthRegeneration;
-            worker.setHealth(std::max(Worker::maxHealth, newHealth));
+            worker.setHealth(std::min(Worker::maxHealth, newHealth));
         }
     };
 }

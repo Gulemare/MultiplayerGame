@@ -41,7 +41,7 @@ namespace protobuf_protocol_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[9];
+  static const ::google::protobuf::internal::ParseTable schema[10];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -51,6 +51,9 @@ void AddDescriptors();
 class Command;
 class CommandDefaultTypeInternal;
 extern CommandDefaultTypeInternal _Command_default_instance_;
+class DirectAttack;
+class DirectAttackDefaultTypeInternal;
+extern DirectAttackDefaultTypeInternal _DirectAttack_default_instance_;
 class EndTurn;
 class EndTurnDefaultTypeInternal;
 extern EndTurnDefaultTypeInternal _EndTurn_default_instance_;
@@ -78,6 +81,7 @@ extern UnitDefaultTypeInternal _Unit_default_instance_;
 namespace google {
 namespace protobuf {
 template<> ::Command* Arena::CreateMaybeMessage<::Command>(Arena*);
+template<> ::DirectAttack* Arena::CreateMaybeMessage<::DirectAttack>(Arena*);
 template<> ::EndTurn* Arena::CreateMaybeMessage<::EndTurn>(Arena*);
 template<> ::GameState* Arena::CreateMaybeMessage<::GameState>(Arena*);
 template<> ::GameState_UnitsEntry_DoNotUse* Arena::CreateMaybeMessage<::GameState_UnitsEntry_DoNotUse>(Arena*);
@@ -338,24 +342,24 @@ class Position : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // accessors -------------------------------------------------------
 
-  // uint32 x = 1;
-  void clear_x();
-  static const int kXFieldNumber = 1;
-  ::google::protobuf::uint32 x() const;
-  void set_x(::google::protobuf::uint32 value);
+  // uint32 col = 1;
+  void clear_col();
+  static const int kColFieldNumber = 1;
+  ::google::protobuf::uint32 col() const;
+  void set_col(::google::protobuf::uint32 value);
 
-  // uint32 y = 2;
-  void clear_y();
-  static const int kYFieldNumber = 2;
-  ::google::protobuf::uint32 y() const;
-  void set_y(::google::protobuf::uint32 value);
+  // uint32 row = 2;
+  void clear_row();
+  static const int kRowFieldNumber = 2;
+  ::google::protobuf::uint32 row() const;
+  void set_row(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:Position)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 x_;
-  ::google::protobuf::uint32 y_;
+  ::google::protobuf::uint32 col_;
+  ::google::protobuf::uint32 row_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -653,7 +657,8 @@ class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   enum CommandCase {
     kEndTurn = 1,
     kMove = 2,
-    kSpawn = 3,
+    kDirectAttack = 3,
+    kSpawn = 4,
     COMMAND_NOT_SET = 0,
   };
 
@@ -739,10 +744,22 @@ class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::Move* mutable_move();
   void set_allocated_move(::Move* move);
 
-  // .Spawn spawn = 3;
+  // .DirectAttack direct_attack = 3;
+  bool has_direct_attack() const;
+  void clear_direct_attack();
+  static const int kDirectAttackFieldNumber = 3;
+  private:
+  const ::DirectAttack& _internal_direct_attack() const;
+  public:
+  const ::DirectAttack& direct_attack() const;
+  ::DirectAttack* release_direct_attack();
+  ::DirectAttack* mutable_direct_attack();
+  void set_allocated_direct_attack(::DirectAttack* direct_attack);
+
+  // .Spawn spawn = 4;
   bool has_spawn() const;
   void clear_spawn();
-  static const int kSpawnFieldNumber = 3;
+  static const int kSpawnFieldNumber = 4;
   private:
   const ::Spawn& _internal_spawn() const;
   public:
@@ -757,6 +774,7 @@ class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(c
  private:
   void set_has_end_turn();
   void set_has_move();
+  void set_has_direct_attack();
   void set_has_spawn();
 
   inline bool has_command() const;
@@ -767,6 +785,7 @@ class Command : public ::google::protobuf::Message /* @@protoc_insertion_point(c
     CommandUnion() {}
     ::EndTurn* end_turn_;
     ::Move* move_;
+    ::DirectAttack* direct_attack_;
     ::Spawn* spawn_;
   } command_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -988,6 +1007,116 @@ class Move : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
 };
 // -------------------------------------------------------------------
 
+class DirectAttack : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:DirectAttack) */ {
+ public:
+  DirectAttack();
+  virtual ~DirectAttack();
+
+  DirectAttack(const DirectAttack& from);
+
+  inline DirectAttack& operator=(const DirectAttack& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  DirectAttack(DirectAttack&& from) noexcept
+    : DirectAttack() {
+    *this = ::std::move(from);
+  }
+
+  inline DirectAttack& operator=(DirectAttack&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const DirectAttack& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const DirectAttack* internal_default_instance() {
+    return reinterpret_cast<const DirectAttack*>(
+               &_DirectAttack_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  void Swap(DirectAttack* other);
+  friend void swap(DirectAttack& a, DirectAttack& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline DirectAttack* New() const final {
+    return CreateMaybeMessage<DirectAttack>(NULL);
+  }
+
+  DirectAttack* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<DirectAttack>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const DirectAttack& from);
+  void MergeFrom(const DirectAttack& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DirectAttack* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // uint64 unit_id = 1;
+  void clear_unit_id();
+  static const int kUnitIdFieldNumber = 1;
+  ::google::protobuf::uint64 unit_id() const;
+  void set_unit_id(::google::protobuf::uint64 value);
+
+  // uint64 target_id = 2;
+  void clear_target_id();
+  static const int kTargetIdFieldNumber = 2;
+  ::google::protobuf::uint64 target_id() const;
+  void set_target_id(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:DirectAttack)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint64 unit_id_;
+  ::google::protobuf::uint64 target_id_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_protocol_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Spawn) */ {
  public:
   Spawn();
@@ -1023,7 +1152,7 @@ class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
                &_Spawn_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   void Swap(Spawn* other);
   friend void swap(Spawn& a, Spawn& b) {
@@ -1202,32 +1331,32 @@ GameState::tiles() const {
 
 // Position
 
-// uint32 x = 1;
-inline void Position::clear_x() {
-  x_ = 0u;
+// uint32 col = 1;
+inline void Position::clear_col() {
+  col_ = 0u;
 }
-inline ::google::protobuf::uint32 Position::x() const {
-  // @@protoc_insertion_point(field_get:Position.x)
-  return x_;
+inline ::google::protobuf::uint32 Position::col() const {
+  // @@protoc_insertion_point(field_get:Position.col)
+  return col_;
 }
-inline void Position::set_x(::google::protobuf::uint32 value) {
+inline void Position::set_col(::google::protobuf::uint32 value) {
   
-  x_ = value;
-  // @@protoc_insertion_point(field_set:Position.x)
+  col_ = value;
+  // @@protoc_insertion_point(field_set:Position.col)
 }
 
-// uint32 y = 2;
-inline void Position::clear_y() {
-  y_ = 0u;
+// uint32 row = 2;
+inline void Position::clear_row() {
+  row_ = 0u;
 }
-inline ::google::protobuf::uint32 Position::y() const {
-  // @@protoc_insertion_point(field_get:Position.y)
-  return y_;
+inline ::google::protobuf::uint32 Position::row() const {
+  // @@protoc_insertion_point(field_get:Position.row)
+  return row_;
 }
-inline void Position::set_y(::google::protobuf::uint32 value) {
+inline void Position::set_row(::google::protobuf::uint32 value) {
   
-  y_ = value;
-  // @@protoc_insertion_point(field_set:Position.y)
+  row_ = value;
+  // @@protoc_insertion_point(field_set:Position.row)
 }
 
 // -------------------------------------------------------------------
@@ -1288,20 +1417,6 @@ inline void Tile::set_allocated_pos(::Position* pos) {
   // @@protoc_insertion_point(field_set_allocated:Tile.pos)
 }
 
-// bool occupied = 3;
-inline void Tile::clear_occupied() {
-  occupied_ = false;
-}
-inline bool Tile::occupied() const {
-  // @@protoc_insertion_point(field_get:Tile.occupied)
-  return occupied_;
-}
-inline void Tile::set_occupied(bool value) {
-  
-  occupied_ = value;
-  // @@protoc_insertion_point(field_set:Tile.occupied)
-}
-
 // uint32 terrain = 2;
 inline void Tile::clear_terrain() {
   terrain_ = 0u;
@@ -1314,6 +1429,20 @@ inline void Tile::set_terrain(::google::protobuf::uint32 value) {
   
   terrain_ = value;
   // @@protoc_insertion_point(field_set:Tile.terrain)
+}
+
+// bool occupied = 3;
+inline void Tile::clear_occupied() {
+  occupied_ = false;
+}
+inline bool Tile::occupied() const {
+  // @@protoc_insertion_point(field_get:Tile.occupied)
+  return occupied_;
+}
+inline void Tile::set_occupied(bool value) {
+  
+  occupied_ = value;
+  // @@protoc_insertion_point(field_set:Tile.occupied)
 }
 
 // -------------------------------------------------------------------
@@ -1522,7 +1651,51 @@ inline ::Move* Command::mutable_move() {
   return command_.move_;
 }
 
-// .Spawn spawn = 3;
+// .DirectAttack direct_attack = 3;
+inline bool Command::has_direct_attack() const {
+  return command_case() == kDirectAttack;
+}
+inline void Command::set_has_direct_attack() {
+  _oneof_case_[0] = kDirectAttack;
+}
+inline void Command::clear_direct_attack() {
+  if (has_direct_attack()) {
+    delete command_.direct_attack_;
+    clear_has_command();
+  }
+}
+inline const ::DirectAttack& Command::_internal_direct_attack() const {
+  return *command_.direct_attack_;
+}
+inline ::DirectAttack* Command::release_direct_attack() {
+  // @@protoc_insertion_point(field_release:Command.direct_attack)
+  if (has_direct_attack()) {
+    clear_has_command();
+      ::DirectAttack* temp = command_.direct_attack_;
+    command_.direct_attack_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline const ::DirectAttack& Command::direct_attack() const {
+  // @@protoc_insertion_point(field_get:Command.direct_attack)
+  return has_direct_attack()
+      ? *command_.direct_attack_
+      : *reinterpret_cast< ::DirectAttack*>(&::_DirectAttack_default_instance_);
+}
+inline ::DirectAttack* Command::mutable_direct_attack() {
+  if (!has_direct_attack()) {
+    clear_command();
+    set_has_direct_attack();
+    command_.direct_attack_ = CreateMaybeMessage< ::DirectAttack >(
+        GetArenaNoVirtual());
+  }
+  // @@protoc_insertion_point(field_mutable:Command.direct_attack)
+  return command_.direct_attack_;
+}
+
+// .Spawn spawn = 4;
 inline bool Command::has_spawn() const {
   return command_case() == kSpawn;
 }
@@ -1653,6 +1826,38 @@ inline void Move::set_allocated_position(::Position* position) {
 
 // -------------------------------------------------------------------
 
+// DirectAttack
+
+// uint64 unit_id = 1;
+inline void DirectAttack::clear_unit_id() {
+  unit_id_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 DirectAttack::unit_id() const {
+  // @@protoc_insertion_point(field_get:DirectAttack.unit_id)
+  return unit_id_;
+}
+inline void DirectAttack::set_unit_id(::google::protobuf::uint64 value) {
+  
+  unit_id_ = value;
+  // @@protoc_insertion_point(field_set:DirectAttack.unit_id)
+}
+
+// uint64 target_id = 2;
+inline void DirectAttack::clear_target_id() {
+  target_id_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 DirectAttack::target_id() const {
+  // @@protoc_insertion_point(field_get:DirectAttack.target_id)
+  return target_id_;
+}
+inline void DirectAttack::set_target_id(::google::protobuf::uint64 value) {
+  
+  target_id_ = value;
+  // @@protoc_insertion_point(field_set:DirectAttack.target_id)
+}
+
+// -------------------------------------------------------------------
+
 // Spawn
 
 // uint64 unit_id = 1;
@@ -1740,6 +1945,8 @@ inline void Spawn::set_allocated_position(::Position* position) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

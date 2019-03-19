@@ -1,6 +1,6 @@
 #pragma once
 #include <QGraphicsPolygonItem>
-#include "hex_utils.h"
+#include "utils.h"
 
 class HexTile : public QGraphicsPolygonItem {
 public:

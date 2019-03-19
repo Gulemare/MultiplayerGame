@@ -1,5 +1,4 @@
 #include "server_thread_worker.h"
-#include "../Common/game_types.h"
 #include <chrono>
 
 void ThreadWorker::start() {
