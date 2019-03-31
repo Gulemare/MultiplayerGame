@@ -1,0 +1,3 @@
+Get all dependencies and closure compiler.
+Generate "/generated/game_protocol.js" using common .proto with protoc.
+Compile all together

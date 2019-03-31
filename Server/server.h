@@ -1,8 +1,6 @@
 #pragma once
-
-#include <QTcpServer>
+#include <QWebSocketServer>
 #include <QThread>
-#include <QTimer>
 #include "../Common/protocol.pb.h"
 #include "../Game/game.h"
 
@@ -46,7 +44,7 @@ private:
     game::Game game_;
 };
 
-class MyServer : public QTcpServer
+class MyServer : public QWebSocketServer
 {
     Q_OBJECT
 public:
@@ -58,12 +56,8 @@ signals:
     void restartGame(int playerCount);
     void addPlayer();
     void sendGameState(GameState state);
-    void startThreadWorker();
     void closeConnections();
     void command(Command command, int player);
-
-protected:
-    void incomingConnection(qintptr socketDescriptor);
 
 private:
     QThread gameThread_;
@@ -72,4 +66,5 @@ private:
 
 private slots:
     void connectionLost(int player);
+    void onNewConnection();
 };

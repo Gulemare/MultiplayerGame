@@ -31,7 +31,7 @@
 *.out
 *.app
 
-# Other
+# C++
 *.user
 .vs
 packages
@@ -40,3 +40,9 @@ Client/x64
 Server/GeneratedFiles
 Server/x64
 x64
+
+# JavaScript
+html5/script/closure-library
+html5/script/compiler
+html5/script/generated
+html5/script/protobuf

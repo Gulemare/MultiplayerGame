@@ -16,7 +16,10 @@ namespace game {
         auto begin() const  { return IdToUnit::begin(); };
         auto end() const { return IdToUnit::end(); }
         auto erase(IdToUnit::const_iterator it) { return IdToUnit::erase(it); }
-        auto reset() { IdToUnit::clear(); }
+        auto reset() {
+            IdToUnit::clear();
+            lastId_ = 0;
+        }
 
     private:
         uint64_t lastId_ = 0;

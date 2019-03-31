@@ -1,8 +1,8 @@
 #pragma once
 #include <QtWidgets>
-#include <QDataStream>
-#include <QTcpSocket>
+#include <QWebSocket>
 #include <QHash>
+#include <QByteArray>
 #include <memory>
 #include <unordered_map>
 #include <algorithm>
@@ -25,10 +25,9 @@ private:
     QPushButton* endTurnButton_ = nullptr;
     QGraphicsView* view_ = nullptr;
     GameScene* scene_ = nullptr;
-    
 
-    QTcpSocket *tcpSocket_ = nullptr;
-    QDataStream in;
+    QWebSocket *socket_ = nullptr;
+
     void initScene();
 
     void sendMessage(const QByteArray& msg);
@@ -43,8 +42,8 @@ private slots:
     void sendDirectAttackCommand(uint64_t unitId, uint64_t targetId);
 
 
-    void getGameState();
-    void displayError(QAbstractSocket::SocketError socketError);
+    void getGameState(const QByteArray& data);
+    void onDisconnected();
     void enableConnectionButton();
     void enableEndTurnButton();
 };

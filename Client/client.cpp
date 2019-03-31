@@ -11,7 +11,7 @@ Client::Client(QWidget *parent)
     , connectButton_(new QPushButton(tr("Connect")))
     , endTurnButton_(new QPushButton(tr("End turn")))
     , serverTextWidget_(new QTextEdit(tr("Connect to server first")))
-    , tcpSocket_(new QTcpSocket(this))
+    , socket_(new QWebSocket)
     , scene_(new GameScene)
     , view_(new QGraphicsView)
 {
@@ -35,12 +35,8 @@ Client::Client(QWidget *parent)
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
 
     // Connect socket signals
-    in.setDevice(tcpSocket_);
-    in.setVersion(QDataStream::Qt_5_10);
-
-    connect(tcpSocket_, &QIODevice::readyRead, this, &Client::getGameState);
-    connect(tcpSocket_, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
-        this, &Client::displayError);
+    connect(socket_, &QWebSocket::binaryMessageReceived, this, &Client::getGameState);
+    connect(socket_, &QWebSocket::disconnected, this, &Client::onDisconnected);
 
     connect(connectButton_, &QPushButton::clicked, this, &Client::connectButtonClicked);
 
@@ -64,18 +60,13 @@ Client::Client(QWidget *parent)
 void Client::connectButtonClicked()
 {
     connectButton_->setEnabled(false);
-    tcpSocket_->abort();
-    tcpSocket_->connectToHost(hostEdit_->text(),
-        portLineEdit_->text().toInt());
+    socket_->abort();
+    socket_->open(QString("ws://%1:%2").arg(hostEdit_->text()).arg(portLineEdit_->text()));
 }
 
 void Client::sendMessage(const QByteArray& msg)
 {
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_10);
-    out << msg;
-    tcpSocket_->write(block);
+    socket_->sendBinaryMessage(msg);
 }
 
 void Client::sendCommand(const Command& cmd)
@@ -137,14 +128,8 @@ void Client::sendDirectAttackCommand(uint64_t unitId, uint64_t targetId)
     sendCommand(cmd);
 }
 
-void Client::getGameState()
+void Client::getGameState(const QByteArray& data)
 {
-    in.startTransaction();
-    QByteArray data;
-    in >> data;
-    if (!in.commitTransaction())
-        return;
-
     GameState state;
     if (!state.ParseFromArray(data.data(), data.size()))
         return;
@@ -165,25 +150,8 @@ void Client::getGameState()
     serverTextWidget_->append(info);
 }
 
-void Client::displayError(QAbstractSocket::SocketError socketError)
+void Client::onDisconnected()
 {
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Client"),
-            tr("The host was not found. Please check the "
-                "host name and port settings."));
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Client"),
-            tr("The connection was refused by the peer"));
-        break;
-    default:
-        QMessageBox::information(this, tr("Client"),
-            tcpSocket_->errorString());
-    }
-
     serverTextWidget_->append("Disconnected from server");
     scene_->clear();
     enableConnectionButton();
@@ -199,7 +167,7 @@ void Client::enableConnectionButton()
 
 void Client::enableEndTurnButton()
 {
-    endTurnButton_->setEnabled(tcpSocket_->isOpen());
+    endTurnButton_->setEnabled(true);
 }
 
 void Client::initScene()

@@ -1,8 +1,10 @@
+#include <QWebSocket>
 #include "server.h"
 #include "server_thread_worker.h"
 
+
 MyServer::MyServer(QObject *parent) :
-    QTcpServer(parent)
+    QWebSocketServer("Game server", QWebSocketServer::NonSecureMode)
 {
     qDebug() << "Server started on thread: " << QThread::currentThreadId();
     GameWorker *game = new GameWorker;
@@ -30,6 +32,7 @@ void MyServer::startServer()
     }
     else
     {
+        connect(this, &QWebSocketServer::newConnection, this, &MyServer::onNewConnection);
         qDebug() << "Listening to port " << port << "...";
         emit restartGame(maxClients);
         //qDebug() << "Start game";
@@ -37,36 +40,41 @@ void MyServer::startServer()
     }
 }
 
-// This function is called by QTcpServer when a new connection is available. 
-void MyServer::incomingConnection(qintptr socketDescriptor)
+void MyServer::onNewConnection()
 {
-    // We have a new connection
-    qDebug() << socketDescriptor << " Connecting...";
+    QWebSocket *pSocket = this->nextPendingConnection();
 
+    // We have a new connection
+    qDebug() << " Connecting...";
     if (currentPlayer_ == maxClients) {
-        qDebug() << socketDescriptor << " Max players reached";
         return;
     }
 
-    emit addPlayer();
-
-    // Every new connection will be run in a newly created thread
-    QThread *thread = new QThread(this);
-    auto worker = new ThreadWorker(socketDescriptor, currentPlayer_);
+    //connect(pSocket, &QWebSocket::textMessageReceived, this, &EchoServer::processTextMessage);
+    const auto playerNumber = currentPlayer_;
     currentPlayer_++;
-    
-    worker->moveToThread(thread);
+    connect(pSocket, &QWebSocket::binaryMessageReceived, [this, playerNumber](const QByteArray& data) {
+        Command cmd;
+        if (!cmd.ParseFromArray(data.data(), data.size()))
+            return;
 
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-    connect(this, &MyServer::sendGameState, worker, &ThreadWorker::sendGameState);
-    connect(this, &MyServer::closeConnections, worker, &ThreadWorker::closeConnection);
-    connect(worker, &ThreadWorker::connectionLost, this, &MyServer::connectionLost);
-    connect(worker, &ThreadWorker::command, this, &MyServer::command);
-    auto conn = connect(this, &MyServer::startThreadWorker, worker, &ThreadWorker::start);
+        emit command(cmd, playerNumber);
+    });
 
-    thread->start();
-    emit startThreadWorker();
-    disconnect(conn);
+    connect(pSocket, &QWebSocket::disconnected, [this, playerNumber]{
+        qDebug() << playerNumber << ": disconnected";
+        this->connectionLost(playerNumber);
+    });
+
+    connect(this, &MyServer::closeConnections, [pSocket]() { pSocket->close(); });
+    connect(this, &MyServer::sendGameState, [this, playerNumber, pSocket](GameState state) {
+        state.set_player(playerNumber);
+        QByteArray msg(state.ByteSize(), Qt::Uninitialized);
+        state.SerializeToArray(msg.data(), msg.size());
+        pSocket->sendBinaryMessage(msg);
+    });
+
+    emit addPlayer();
 }
 
 void MyServer::connectionLost(int player)
