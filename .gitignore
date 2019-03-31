@@ -42,7 +42,8 @@ Server/x64
 x64
 
 # JavaScript
-html5/script/closure-library
-html5/script/compiler
-html5/script/generated
-html5/script/protobuf
+html5/public/js/closure-library
+html5/public/js/compiler
+html5/public/js/generated
+html5/public/js/protobuf
+html5/node_modules
