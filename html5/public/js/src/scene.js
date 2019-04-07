@@ -27,6 +27,38 @@ game.initScene = function (newScene, socket) {
     scene.sendCommand = function (concreteCmd) {
         socket.send(concreteCmd.serializeBinary());
     }
+
+    game.initAnimations(scene);
+}
+
+game.initAnimations = function (scene) {
+
+    var config = {
+        key: 'idle',
+        frames: scene.anims.generateFrameNumbers('swordsman',
+            { start: 0, end: 3 }),
+        frameRate: 6,
+        repeat: -1
+    };
+    scene.anims.create(config);
+
+    var config = {
+        key: 'idle_selected',
+        frames: scene.anims.generateFrameNumbers('swordsman',
+            { start: 4, end: 7 }),
+        frameRate: 6,
+        repeat: -1
+    };
+    scene.anims.create(config);
+
+    config = {
+        key: 'walk',
+        frames: scene.anims.generateFrameNumbers('swordsman',
+            { start: 8, end: 15 }),
+        frameRate: 6,
+        repeat: -1
+    };
+    scene.anims.create(config);
 }
 
 game.scene.clear = function () {
@@ -45,16 +77,16 @@ game.scene.clear = function () {
 
 
 game.scene.handleStart = function () {
-    alert("Connected to server");
+    //alert("Connected to server");
 }
 
 game.scene.handleConnectionClosed = function (event) {
     game.scene.clear();
 
     if (event.wasClean) {
-        alert('Connection closed nicely');
+        //alert('Connection closed nicely');
     } else {
-        alert('Connection closed badly');
+        //alert('Connection closed badly');
     }
 };
 
@@ -144,7 +176,14 @@ game.scene.handleGameStateRecieved = function (event) {
         // update unit
         if (id in scene.units) {
             let sceneUnit = scene.units[id];
+
+            if (oddr.row == sceneUnit.oddr.row && oddr.col == sceneUnit.oddr.col) {
+                return;
+            }
+            const prevPos = hex.oddrToScenePos(sceneUnit.oddr.row, sceneUnit.oddr.col);
             sceneUnit.oddr = oddr;
+            sceneUnit.setFlipX(pos.x > prevPos.x);
+            sceneUnit.anims.play('walk');
             scene.tweens.add({
                 targets: sceneUnit,
                 x: pos.x - hex.WIDTH / 2,
@@ -154,17 +193,30 @@ game.scene.handleGameStateRecieved = function (event) {
                 onComplete: function (tween, targets) {
                     if (scene.selectedUnit && scene.selectedUnit.id == id) {
                         game.scene.updatePossibleMoves(sceneUnit);
+                        sceneUnit.anims.play('idle_selected');
+                    }
+                    else {
+                        sceneUnit.anims.play('idle');
                     }
                 }
             });
             return;
         }
 
-        // create new
-        const color = isControllable ? 0x00ff00 : 0xff0000;
-        let sceneUnit = scene.add.ellipse(pos.x - hex.WIDTH / 2, pos.y - hex.HEIGHT / 2, hex.HEIGHT / 2, hex.HEIGHT / 2, color)
-        sceneUnit.setStrokeStyle(1, 0x000000, 1.0);
+        // create new unit
+        const color = isControllable ? 0xccffcc : 0xffcccc;
+        //let sceneUnit = scene.add.ellipse(pos.x - hex.WIDTH / 2, pos.y - hex.HEIGHT / 2, hex.HEIGHT / 2, hex.HEIGHT / 2, color)
+
+        let sceneUnit = scene.add.sprite(pos.x - hex.WIDTH / 2, pos.y - hex.HEIGHT / 2, 'swordsman').setScale(3);
+        sceneUnit.setTint(color);
+
+        //sceneUnit.setStrokeStyle(1, 0x000000, 1.0);
         sceneUnit.setDepth(1000);
+
+        sceneUnit.setFlipX(true);
+        sceneUnit.anims.load('idle');
+        sceneUnit.anims.load('walk');
+        sceneUnit.anims.play('idle');
 
         sceneUnit.oddr = oddr;
         sceneUnit.id = id;
@@ -173,11 +225,13 @@ game.scene.handleGameStateRecieved = function (event) {
             sceneUnit.setInteractive();
 
             sceneUnit.unselect = function () {
-                sceneUnit.setStrokeStyle(1, 0x000000, 1.0);
+                //sceneUnit.setStrokeStyle(1, 0x000000, 1.0);
+                sceneUnit.anims.play('idle');
             };
 
             sceneUnit.select = function () {
-                sceneUnit.setStrokeStyle(5, 0x000000, 1.0);
+                //sceneUnit.setStrokeStyle(5, 0x000000, 1.0);
+                sceneUnit.anims.play('idle_selected');
             };
 
             sceneUnit.on('pointerdown', function (pointer) {

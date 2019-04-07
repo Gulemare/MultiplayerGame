@@ -23,6 +23,7 @@ game.startClient = function () {
 
     function preload() {
         //this.load.image('grass_tile', 'assets/grass_tile.png');
+        this.load.spritesheet('swordsman', 'assets/swordsman.png', { frameWidth: 48, frameHeight: 48 });
     }
 
     function create() {
