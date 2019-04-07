@@ -66,6 +66,7 @@ void Game::addPlayer()
     // Create starting units for player
     units_.setUser(currentPlayerCount_);
     units_.create(UnitType::WORKER, { static_cast<int>(currentPlayerCount_), 0 });
+    map_.updateOccupied(units_);
 
     currentPlayerCount_++;
 }
