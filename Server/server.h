@@ -32,7 +32,10 @@ public slots:
 
         if (game_.consumeCommand(player, command)) {
             qDebug() << player << ": command";
-            emit gameStateUpdated(game_.getState());
+            auto state = game_.getState();
+            auto cmd = state.add_commands();
+            cmd->CopyFrom(command);
+            emit gameStateUpdated(state);
         }
     }
 

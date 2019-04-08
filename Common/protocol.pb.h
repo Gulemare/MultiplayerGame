@@ -225,6 +225,18 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
   const ::google::protobuf::RepeatedPtrField< ::Tile >&
       tiles() const;
 
+  // repeated .Command commands = 5;
+  int commands_size() const;
+  void clear_commands();
+  static const int kCommandsFieldNumber = 5;
+  ::Command* mutable_commands(int index);
+  ::google::protobuf::RepeatedPtrField< ::Command >*
+      mutable_commands();
+  const ::Command& commands(int index) const;
+  ::Command* add_commands();
+  const ::google::protobuf::RepeatedPtrField< ::Command >&
+      commands() const;
+
   // uint32 active_player = 1;
   void clear_active_player();
   static const int kActivePlayerFieldNumber = 1;
@@ -248,6 +260,7 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > units_;
   ::google::protobuf::RepeatedPtrField< ::Tile > tiles_;
+  ::google::protobuf::RepeatedPtrField< ::Command > commands_;
   ::google::protobuf::uint32 active_player_;
   ::google::protobuf::uint32 player_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -1325,6 +1338,36 @@ inline const ::google::protobuf::RepeatedPtrField< ::Tile >&
 GameState::tiles() const {
   // @@protoc_insertion_point(field_list:GameState.tiles)
   return tiles_;
+}
+
+// repeated .Command commands = 5;
+inline int GameState::commands_size() const {
+  return commands_.size();
+}
+inline void GameState::clear_commands() {
+  commands_.Clear();
+}
+inline ::Command* GameState::mutable_commands(int index) {
+  // @@protoc_insertion_point(field_mutable:GameState.commands)
+  return commands_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Command >*
+GameState::mutable_commands() {
+  // @@protoc_insertion_point(field_mutable_list:GameState.commands)
+  return &commands_;
+}
+inline const ::Command& GameState::commands(int index) const {
+  // @@protoc_insertion_point(field_get:GameState.commands)
+  return commands_.Get(index);
+}
+inline ::Command* GameState::add_commands() {
+  // @@protoc_insertion_point(field_add:GameState.commands)
+  return commands_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Command >&
+GameState::commands() const {
+  // @@protoc_insertion_point(field_list:GameState.commands)
+  return commands_;
 }
 
 // -------------------------------------------------------------------

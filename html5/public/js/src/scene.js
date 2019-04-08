@@ -215,6 +215,7 @@ game.scene.handleGameStateRecieved = function (event) {
 
         sceneUnit.setFlipX(true);
         sceneUnit.anims.load('idle');
+        sceneUnit.anims.load('idle_selected');
         sceneUnit.anims.load('walk');
         sceneUnit.anims.play('idle');
 
@@ -253,6 +254,9 @@ game.scene.handleGameStateRecieved = function (event) {
 
         scene.units[id] = sceneUnit;
     });
+
+
+    // TODO: handle applied commands
 };
 
 game.scene.handleConnectionError = function (error) {
