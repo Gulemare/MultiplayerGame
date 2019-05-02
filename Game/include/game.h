@@ -5,8 +5,7 @@
 #include "map.h"
 #include "unit_interface.h"
 #include "units_holder.h"
-#include "restoration_visitor.h"
-#include "../Common/protocol.pb.h"
+#include "protocol.pb.h"
 
 namespace game {
 

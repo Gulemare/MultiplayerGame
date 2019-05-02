@@ -1,6 +1,7 @@
 #include "game.h"
 #include "movement_visitor.h"
 #include "direct_attack_visitor.h"
+#include "restoration_visitor.h"
 #include "../Common/protocol.pb.h"
 
 using namespace game;

@@ -9,14 +9,14 @@ namespace game {
 
     public:
         UnitInterface(const Coords& position, int player, int health, int actionPoints)
-            : position_(position), owner_(player), health_(health), actionPoints_(actionPoints){}
+            : position_(position), owner_(player), health_(health), actionPoints_(actionPoints) {}
         virtual ~UnitInterface() = default;
 
         virtual UnitType getType() = 0;
         virtual void accept(UnitVisitor& visitor) = 0;
 
         const auto& getCoords() const { return position_; }
-        void setCoords(const Coords& newPos) { position_ = newPos;}
+        void setCoords(const Coords& newPos) { position_ = newPos; }
 
         int getHealth() const { return health_; }
         void setHealth(int health) { health_ = health; }
@@ -32,4 +32,5 @@ namespace game {
         int owner_;
         int actionPoints_;
     };
+
 }

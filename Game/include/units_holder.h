@@ -5,6 +5,7 @@
 #include "unit_interface.h"
 
 namespace game {
+
     using IdToUnit = std::unordered_map<uint64_t, std::shared_ptr<UnitInterface>>;
     class UnitsHolder : private IdToUnit {
     public:
@@ -13,7 +14,7 @@ namespace game {
 
         void setUser(int player) { player_ = player; }
 
-        auto begin() const  { return IdToUnit::begin(); };
+        auto begin() const { return IdToUnit::begin(); };
         auto end() const { return IdToUnit::end(); }
         auto erase(IdToUnit::const_iterator it) { return IdToUnit::erase(it); }
         auto reset() {
@@ -25,5 +26,4 @@ namespace game {
         uint64_t lastId_ = 0;
         int player_ = -1;
     };
-
 }

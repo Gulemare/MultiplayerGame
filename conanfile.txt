@@ -1,0 +1,8 @@
+[requires]
+protobuf/3.6.1@bincrafters/stable
+websocketpp/0.8.1@bincrafters/stable
+# boost_beast/1.69.0@bincrafters/stable
+# boost_signals2/1.69.0@bincrafters/stable
+
+[generators]
+cmake

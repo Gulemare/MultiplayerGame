@@ -5,6 +5,7 @@
 #include "map_tile.h"
 
 namespace game {
+
     class Map {
     public:
         Map(size_t width, size_t height);
@@ -22,8 +23,5 @@ namespace game {
         size_t width_;
         size_t height_;
         size_t coordsToIndex(const Coords& coords) const;
-
-        
     };
-
 }

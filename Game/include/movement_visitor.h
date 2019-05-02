@@ -3,8 +3,7 @@
 #include "unit_visitor.h"
 #include "worker.h"
 #include "map.h"
-
-
+#include "map_tile.h"
 
 namespace game {
 
