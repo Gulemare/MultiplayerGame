@@ -5,7 +5,7 @@ include_directories(
 )
 
 add_executable(Client
-    ../../Common/protocol.pb.h
+    ../../Common/protocol.pb.h ../../Common/protocol.pb.cc
     main.cpp
 )
 

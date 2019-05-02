@@ -54,8 +54,8 @@ private:
     ConnectionsContainer connections_;
     websocketpp::lib::mutex connectionsLock_;
     
-    using Message = PlayerMessage<WebsocketServer::message_ptr>;
-    using Action = std::variant<NewPlayer, PlayerDisconnected, Message>;
+    using MessageAction = PlayerMessage<WebsocketServer::message_ptr>;
+    using Action = std::variant<NewPlayer, PlayerDisconnected, MessageAction>;
     std::queue<Action> actions_;
     websocketpp::lib::mutex actionLock_;
     websocketpp::lib::condition_variable actionCond_;

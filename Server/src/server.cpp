@@ -63,7 +63,7 @@ void Server::on_message(connection_hdl hdl, WebsocketServer::message_ptr msg)
 {
     {
         lock_guard guard(actionLock_);
-        actions_.push(Message(hdl, msg));
+        actions_.push(MessageAction(hdl, msg));
     }
     actionCond_.notify_one();
 }
@@ -92,19 +92,31 @@ void Server::process_actions()
                 connections_.insert(arg.hdl);
                 game_.addPlayer();
                 if (game_.started()) {
-                    const std::string msg("Game started!");
+                    //const std::string msg("Game started!");
+                    //for (auto it = connections_.begin(); it != connections_.end(); ++it) {
+                    //
+                    //    server_.send(*it, msg, websocketpp::frame::opcode::TEXT);
+                    //}
+                    auto state = game_.getState();
+                    int i = 0;
                     for (auto it = connections_.begin(); it != connections_.end(); ++it) {
-
-                        server_.send(*it, msg, websocketpp::frame::opcode::TEXT);
+                        state.set_player(i);
+                        ++i;
+                        const auto size = state.ByteSizeLong();
+                        const auto arr = new std::byte[size];
+                        state.SerializeToArray(arr, size);
+                        server_.send(*it, arr, size, websocketpp::frame::opcode::BINARY);
+                        delete[] arr;
                     }
+
                 }
             }
             else if constexpr (std::is_same_v<T, PlayerDisconnected>) {
                 lock_guard guard(connectionsLock_);
-                
+
                 if (connections_.count(arg.hdl) == 0)
                     return;
-                
+
                 connections_.erase(arg.hdl);
                 for (auto it = connections_.begin(); it != connections_.end(); ++it) {
                     server_.close(*it, websocketpp::close::status::normal, "Player disconnected");
@@ -112,11 +124,17 @@ void Server::process_actions()
                 connections_.clear();
                 game_.restart(2);
             }
-            else if constexpr (std::is_same_v<T, Message>) {
+            else if constexpr (std::is_same_v<T, MessageAction>) {
                 lock_guard guard(connectionsLock_);
-                for (auto it = connections_.begin(); it != connections_.end(); ++it) {
-                    server_.send(*it, arg.msg);
-                }
+                //const auto state = game_.getState();
+                //
+                //const auto size = state.ByteSizeLong();
+                //const auto arr = new std::byte[size];
+                //state.SerializeToArray(arr, size);
+                //
+                //for (auto it = connections_.begin(); it != connections_.end(); ++it) {
+                //    server_.send(*it, arr, size, websocketpp::frame::opcode::BINARY);
+                //}
             }
             else
                 static_assert(always_false<T>, "visitor not specified for all actions!");

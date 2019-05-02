@@ -1,7 +1,11 @@
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
 
+#include <google/protobuf/util/json_util.h>
+
 #include <iostream>
+
+#include "protocol.pb.h"
 
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
@@ -24,12 +28,20 @@ void on_connect(client* c, websocketpp::connection_hdl hdl) {
 // This message handler will be invoked once for each incoming message. It
 // prints the message and then sends a copy of the message back to the server.
 void on_message(client* c, websocketpp::connection_hdl hdl, message_ptr msg) {
-    std::cout << "on_message called with hdl: " << hdl.lock().get()
-        << " and message: " << msg->get_payload()
-        << std::endl;
+    //std::cout << "on_message called with hdl: " << hdl.lock().get()
+        //<< " and message: " << msg->get_payload()
+        //<< std::endl;
 
 
     websocketpp::lib::error_code ec;
+
+    GameState state;
+    if (state.ParseFromString(msg->get_payload()))
+    {
+        std::string str;
+        google::protobuf::util::MessageToJsonString(state, &str);
+        std::cout << str;
+    }
 
     //std::cout << "Specify action (0 - nothing, 1 - send hi): ";
     //int action;
