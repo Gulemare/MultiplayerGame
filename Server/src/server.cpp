@@ -106,12 +106,11 @@ void Server::process_actions()
                     return;
                 
                 connections_.erase(arg.hdl);
-                
                 for (auto it = connections_.begin(); it != connections_.end(); ++it) {
                     server_.close(*it, websocketpp::close::status::normal, "Player disconnected");
                 }
+                connections_.clear();
                 game_.restart(2);
-                //server_.close(arg.hdl, websocketpp::close::status::normal, "Player disconnected");
             }
             else if constexpr (std::is_same_v<T, Message>) {
                 lock_guard guard(connectionsLock_);
