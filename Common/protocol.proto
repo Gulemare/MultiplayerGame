@@ -2,10 +2,10 @@ syntax = "proto3";
 
 message GameState {
   uint32 active_player = 1;
-  uint32 player = 2;             // Your order in game sequence
-  map<uint64, Unit> units = 3;   // Units in game (by unique id)
-  repeated Tile tiles = 4;       // Updated map tiles
-  repeated Command commands = 5; // Last applied commands
+  uint32 player = 2;            // Your order in game sequence
+  map<uint64, Unit> units = 3;  // Units in game (by unique id)
+  repeated Tile tiles = 4;      // Updated map tiles
+  Command last_command = 5;     // Last applied command
 }
 
 message Position {

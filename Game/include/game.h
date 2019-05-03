@@ -12,18 +12,19 @@ namespace game {
     class Game
     {
     public:
-        Game();
+        explicit Game(size_t playerCount = 2);
         ~Game();
 
-        void restart(const size_t playerCount); // Initialize game
-        void addPlayer();                       // Add new player to game simulation
-        bool started();                         // Game is started when all players are added
+        void restart(const size_t playerCount = 2); // Initialize game
+        int addPlayer();                            // Add new player to game simulation, returns player id
+        bool started();                             // Game is started when all players are added
 
         GameState getState() const;
 
-        bool consumeCommand(size_t player, const Command& command); // apply command and returns true if game changed
+        bool consumeCommand(size_t player, const Command& command); // applies command and returns true if game changed
 
     private:
+        Command lastAppliedCommand_;
         size_t playerCount_ = 0;
         size_t currentPlayerCount_ = 0;
         size_t activePlayer_ = 0;

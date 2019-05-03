@@ -1,64 +1,82 @@
 #pragma once
+#include <map>
+#include <variant>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 #include <websocketpp/common/thread.hpp>
-#include <iostream>
-#include <set>
-#include <variant>
-#include <type_traits>
 #include "game.h"
+#include "protocol.pb.h"
 
-struct ActionType {
-    ActionType(websocketpp::connection_hdl h) : hdl(h) {}
-    websocketpp::connection_hdl hdl;
+/*! Base server notification, contains connection handler */
+struct Notification {
+    Notification(websocketpp::connection_hdl conn) : connection(conn) {}
+    websocketpp::connection_hdl connection;
 };
 
-struct NewPlayer : public ActionType {
-    using ActionType::ActionType;
+/*! Notification to add new player/connection */
+struct AddPlayer : public Notification {
+    using Notification::Notification;
 };
 
-struct PlayerDisconnected : public ActionType {
-    using ActionType::ActionType;
+/*! Notification to remove player/connection */
+struct PlayerDisconnected : public Notification {
+    using Notification::Notification;
 };
 
-template <typename T>
-struct PlayerMessage : public ActionType {
-    PlayerMessage(websocketpp::connection_hdl h, T m) : ActionType(h), msg(m) {}
-    T msg;
+/*! Notification-command recieved from player */
+struct CommandNotification : public Notification {
+    CommandNotification(websocketpp::connection_hdl h, const Command& cmd) : Notification(h), command(cmd) {}
+    Command command;
 };
 
-/* on_open insert connection_hdl into channel
- * on_close remove connection_hdl from channel
- * on_message queue send to all channels
- */
 class Server {
 public:
-    using WebsocketServer = websocketpp::server<websocketpp::config::asio>;
-
     Server();
 
+    /*! Run server, listening specified port */
     void run(uint16_t port);
-    void on_open(websocketpp::connection_hdl hdl);
-    void on_close(websocketpp::connection_hdl hdl);
-    void on_message(websocketpp::connection_hdl hdl, WebsocketServer::message_ptr msg);
-
-    void process_actions();
 
 private:
-    
+    using WebsocketServer = websocketpp::server<websocketpp::config::asio>;
+    using Connection = websocketpp::connection_hdl;
+    using ConnectionsContainer = std::map<Connection, int, std::owner_less<Connection>>;
+    using ServerMsg = WebsocketServer::message_ptr;
+    using Mutex = websocketpp::lib::mutex;
+    using ConditionVar = websocketpp::lib::condition_variable;
+
+    /*! websocketpp server instance */
     WebsocketServer server_;
 
-    using ConnectionsContainer = std::set<websocketpp::connection_hdl,
-        std::owner_less<websocketpp::connection_hdl> >;
-
+    /*! All active server connections: connection -> playerId */
     ConnectionsContainer connections_;
-    websocketpp::lib::mutex connectionsLock_;
-    
-    using MessageAction = PlayerMessage<WebsocketServer::message_ptr>;
-    using Action = std::variant<NewPlayer, PlayerDisconnected, MessageAction>;
-    std::queue<Action> actions_;
-    websocketpp::lib::mutex actionLock_;
-    websocketpp::lib::condition_variable actionCond_;
 
+    /*! Mutex to sync connections_ */
+    // Mutex connectionsLock_;
+
+    /*! Queue consumer of server notifications */
+    std::queue<std::variant<
+        AddPlayer,
+        PlayerDisconnected,
+        CommandNotification>> notifications_;
+
+    /*! Mutex to sync notifications_ */
+    Mutex notificationsLock_;
+
+    /*! Condition variable to process notifications queue */
+    ConditionVar notificationCond_;
+
+    /*! Game instance */
     game::Game game_;
+
+    /*! Open new connection handler */
+    void onOpen(Connection conn);
+
+    /*! Close connection handler */
+    void onClose(Connection conn);
+
+    /*! Recieve message handler */
+    void onMessage(Connection conn, ServerMsg msg);
+
+    /*! Handles notifications from server in separate thread */
+    void processNotifications();
 };

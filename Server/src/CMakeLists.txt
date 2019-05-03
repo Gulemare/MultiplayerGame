@@ -7,8 +7,6 @@ include_directories(
 add_executable(Server
     ../../Common/protocol.pb.h
     main.cpp
-    ../include/game_manager.h game_manager.cpp
-    ../include/session.h session.cpp
     ../include/server.h server.cpp
 )
 target_link_libraries(Server Game)

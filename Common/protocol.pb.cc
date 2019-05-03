@@ -270,7 +270,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::GameState, player_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::GameState, units_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::GameState, tiles_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::GameState, commands_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::GameState, last_command_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::Position, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -381,29 +381,29 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\016protocol.proto\"\277\001\n\tGameState\022\025\n\ractive"
+      "\n\016protocol.proto\"\303\001\n\tGameState\022\025\n\ractive"
       "_player\030\001 \001(\r\022\016\n\006player\030\002 \001(\r\022$\n\005units\030\003"
       " \003(\0132\025.GameState.UnitsEntry\022\024\n\005tiles\030\004 \003"
-      "(\0132\005.Tile\022\032\n\010commands\030\005 \003(\0132\010.Command\0323\n"
-      "\nUnitsEntry\022\013\n\003key\030\001 \001(\004\022\024\n\005value\030\002 \001(\0132"
-      "\005.Unit:\0028\001\"$\n\010Position\022\013\n\003col\030\001 \001(\r\022\013\n\003r"
-      "ow\030\002 \001(\r\"A\n\004Tile\022\026\n\003pos\030\001 \001(\0132\t.Position"
-      "\022\017\n\007terrain\030\002 \001(\r\022\020\n\010occupied\030\003 \001(\010\"h\n\004U"
-      "nit\022\016\n\006player\030\001 \001(\r\022\014\n\004type\030\002 \001(\r\022\033\n\010pos"
-      "ition\030\003 \001(\0132\t.Position\022\016\n\006health\030\004 \001(\005\022\025"
-      "\n\raction_points\030\005 \001(\005\"\212\001\n\007Command\022\034\n\010end"
-      "_turn\030\001 \001(\0132\010.EndTurnH\000\022\025\n\004move\030\002 \001(\0132\005."
-      "MoveH\000\022&\n\rdirect_attack\030\003 \001(\0132\r.DirectAt"
-      "tackH\000\022\027\n\005spawn\030\004 \001(\0132\006.SpawnH\000B\t\n\007comma"
-      "nd\"\t\n\007EndTurn\"4\n\004Move\022\017\n\007unit_id\030\001 \001(\004\022\033"
-      "\n\010position\030\002 \001(\0132\t.Position\"2\n\014DirectAtt"
-      "ack\022\017\n\007unit_id\030\001 \001(\004\022\021\n\ttarget_id\030\002 \001(\004\""
-      "H\n\005Spawn\022\017\n\007unit_id\030\001 \001(\004\022\021\n\tunit_type\030\002"
-      " \001(\r\022\033\n\010position\030\003 \001(\0132\t.Positionb\006proto"
-      "3"
+      "(\0132\005.Tile\022\036\n\014last_command\030\005 \001(\0132\010.Comman"
+      "d\0323\n\nUnitsEntry\022\013\n\003key\030\001 \001(\004\022\024\n\005value\030\002 "
+      "\001(\0132\005.Unit:\0028\001\"$\n\010Position\022\013\n\003col\030\001 \001(\r\022"
+      "\013\n\003row\030\002 \001(\r\"A\n\004Tile\022\026\n\003pos\030\001 \001(\0132\t.Posi"
+      "tion\022\017\n\007terrain\030\002 \001(\r\022\020\n\010occupied\030\003 \001(\010\""
+      "h\n\004Unit\022\016\n\006player\030\001 \001(\r\022\014\n\004type\030\002 \001(\r\022\033\n"
+      "\010position\030\003 \001(\0132\t.Position\022\016\n\006health\030\004 \001"
+      "(\005\022\025\n\raction_points\030\005 \001(\005\"\212\001\n\007Command\022\034\n"
+      "\010end_turn\030\001 \001(\0132\010.EndTurnH\000\022\025\n\004move\030\002 \001("
+      "\0132\005.MoveH\000\022&\n\rdirect_attack\030\003 \001(\0132\r.Dire"
+      "ctAttackH\000\022\027\n\005spawn\030\004 \001(\0132\006.SpawnH\000B\t\n\007c"
+      "ommand\"\t\n\007EndTurn\"4\n\004Move\022\017\n\007unit_id\030\001 \001"
+      "(\004\022\033\n\010position\030\002 \001(\0132\t.Position\"2\n\014Direc"
+      "tAttack\022\017\n\007unit_id\030\001 \001(\004\022\021\n\ttarget_id\030\002 "
+      "\001(\004\"H\n\005Spawn\022\017\n\007unit_id\030\001 \001(\004\022\021\n\tunit_ty"
+      "pe\030\002 \001(\r\022\033\n\010position\030\003 \001(\0132\t.Positionb\006p"
+      "roto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 761);
+      descriptor, 765);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "protocol.proto", &protobuf_RegisterTypes);
 }
@@ -440,13 +440,15 @@ void GameState_UnitsEntry_DoNotUse::MergeFrom(
 // ===================================================================
 
 void GameState::InitAsDefaultInstance() {
+  ::_GameState_default_instance_._instance.get_mutable()->last_command_ = const_cast< ::Command*>(
+      ::Command::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int GameState::kActivePlayerFieldNumber;
 const int GameState::kPlayerFieldNumber;
 const int GameState::kUnitsFieldNumber;
 const int GameState::kTilesFieldNumber;
-const int GameState::kCommandsFieldNumber;
+const int GameState::kLastCommandFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GameState::GameState()
@@ -459,10 +461,14 @@ GameState::GameState()
 GameState::GameState(const GameState& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      tiles_(from.tiles_),
-      commands_(from.commands_) {
+      tiles_(from.tiles_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   units_.MergeFrom(from.units_);
+  if (from.has_last_command()) {
+    last_command_ = new ::Command(*from.last_command_);
+  } else {
+    last_command_ = NULL;
+  }
   ::memcpy(&active_player_, &from.active_player_,
     static_cast<size_t>(reinterpret_cast<char*>(&player_) -
     reinterpret_cast<char*>(&active_player_)) + sizeof(player_));
@@ -470,9 +476,9 @@ GameState::GameState(const GameState& from)
 }
 
 void GameState::SharedCtor() {
-  ::memset(&active_player_, 0, static_cast<size_t>(
+  ::memset(&last_command_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&player_) -
-      reinterpret_cast<char*>(&active_player_)) + sizeof(player_));
+      reinterpret_cast<char*>(&last_command_)) + sizeof(player_));
 }
 
 GameState::~GameState() {
@@ -481,6 +487,7 @@ GameState::~GameState() {
 }
 
 void GameState::SharedDtor() {
+  if (this != internal_default_instance()) delete last_command_;
 }
 
 void GameState::SetCachedSize(int size) const {
@@ -505,7 +512,10 @@ void GameState::Clear() {
 
   units_.Clear();
   tiles_.Clear();
-  commands_.Clear();
+  if (GetArenaNoVirtual() == NULL && last_command_ != NULL) {
+    delete last_command_;
+  }
+  last_command_ = NULL;
   ::memset(&active_player_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&player_) -
       reinterpret_cast<char*>(&active_player_)) + sizeof(player_));
@@ -581,12 +591,12 @@ bool GameState::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .Command commands = 5;
+      // .Command last_command = 5;
       case 5: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_commands()));
+               input, mutable_last_command()));
         } else {
           goto handle_unusual;
         }
@@ -677,13 +687,10 @@ void GameState::SerializeWithCachedSizes(
       output);
   }
 
-  // repeated .Command commands = 5;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->commands_size()); i < n; i++) {
+  // .Command last_command = 5;
+  if (this->has_last_command()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5,
-      this->commands(static_cast<int>(i)),
-      output);
+      5, this->_internal_last_command(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -761,12 +768,11 @@ void GameState::SerializeWithCachedSizes(
         4, this->tiles(static_cast<int>(i)), deterministic, target);
   }
 
-  // repeated .Command commands = 5;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->commands_size()); i < n; i++) {
+  // .Command last_command = 5;
+  if (this->has_last_command()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        5, this->commands(static_cast<int>(i)), deterministic, target);
+        5, this->_internal_last_command(), deterministic, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -811,15 +817,11 @@ size_t GameState::ByteSizeLong() const {
     }
   }
 
-  // repeated .Command commands = 5;
-  {
-    unsigned int count = static_cast<unsigned int>(this->commands_size());
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
-          this->commands(static_cast<int>(i)));
-    }
+  // .Command last_command = 5;
+  if (this->has_last_command()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *last_command_);
   }
 
   // uint32 active_player = 1;
@@ -865,7 +867,9 @@ void GameState::MergeFrom(const GameState& from) {
 
   units_.MergeFrom(from.units_);
   tiles_.MergeFrom(from.tiles_);
-  commands_.MergeFrom(from.commands_);
+  if (from.has_last_command()) {
+    mutable_last_command()->::Command::MergeFrom(from.last_command());
+  }
   if (from.active_player() != 0) {
     set_active_player(from.active_player());
   }
@@ -900,7 +904,7 @@ void GameState::InternalSwap(GameState* other) {
   using std::swap;
   units_.Swap(&other->units_);
   CastToBase(&tiles_)->InternalSwap(CastToBase(&other->tiles_));
-  CastToBase(&commands_)->InternalSwap(CastToBase(&other->commands_));
+  swap(last_command_, other->last_command_);
   swap(active_player_, other->active_player_);
   swap(player_, other->player_);
   _internal_metadata_.Swap(&other->_internal_metadata_);

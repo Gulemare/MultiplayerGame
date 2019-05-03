@@ -6,9 +6,9 @@
 
 using namespace game;
 
-Game::Game() : map_(10, 10)
+Game::Game(const size_t playerCount) : map_(10, 8)
 {
-    restart(2);
+    restart(playerCount);
 }
 
 Game::~Game()
@@ -30,8 +30,6 @@ bool Game::consumeCommand(size_t player, const Command& command)
 
     removeDeadUnits();
 
-    units_.setUser(activePlayer_);
-
     bool gameChanged = false;
 
     if (command.has_end_turn()) {
@@ -49,6 +47,8 @@ bool Game::consumeCommand(size_t player, const Command& command)
 
     if (!gameChanged)
         return false;
+
+    lastAppliedCommand_ = command;
     
     map_.updateOccupied(units_);
     return gameChanged;
@@ -59,17 +59,19 @@ size_t Game::activePlayer() const
     return activePlayer_;
 }
 
-void Game::addPlayer()
+int Game::addPlayer()
 {
     if (started())
-        return;
+        return -1;
 
     // Create starting units for player
-    units_.setUser(currentPlayerCount_);
+    const auto playerId = currentPlayerCount_;
+    units_.setUser(playerId);
     units_.create(UnitType::WORKER, { static_cast<int>(currentPlayerCount_), 0 });
     map_.updateOccupied(units_);
 
     currentPlayerCount_++;
+    return playerId;
 }
 
 bool Game::started()
@@ -113,6 +115,7 @@ GameState Game::getState() const
         }
     }
 
+    state.set_allocated_last_command(new Command(lastAppliedCommand_));
 
     return state;
 }
@@ -144,6 +147,8 @@ bool Game::applyCommand(const EndTurn& endTurnCommand)
     activePlayer_++;
     if (activePlayer_ >= playerCount_)
         activePlayer_ = 0;
+
+    units_.setUser(activePlayer_);
 
     restoreActivePlayerUnits();
     return true;

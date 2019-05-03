@@ -225,17 +225,17 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
   const ::google::protobuf::RepeatedPtrField< ::Tile >&
       tiles() const;
 
-  // repeated .Command commands = 5;
-  int commands_size() const;
-  void clear_commands();
-  static const int kCommandsFieldNumber = 5;
-  ::Command* mutable_commands(int index);
-  ::google::protobuf::RepeatedPtrField< ::Command >*
-      mutable_commands();
-  const ::Command& commands(int index) const;
-  ::Command* add_commands();
-  const ::google::protobuf::RepeatedPtrField< ::Command >&
-      commands() const;
+  // .Command last_command = 5;
+  bool has_last_command() const;
+  void clear_last_command();
+  static const int kLastCommandFieldNumber = 5;
+  private:
+  const ::Command& _internal_last_command() const;
+  public:
+  const ::Command& last_command() const;
+  ::Command* release_last_command();
+  ::Command* mutable_last_command();
+  void set_allocated_last_command(::Command* last_command);
 
   // uint32 active_player = 1;
   void clear_active_player();
@@ -260,7 +260,7 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > units_;
   ::google::protobuf::RepeatedPtrField< ::Tile > tiles_;
-  ::google::protobuf::RepeatedPtrField< ::Command > commands_;
+  ::Command* last_command_;
   ::google::protobuf::uint32 active_player_;
   ::google::protobuf::uint32 player_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -1340,34 +1340,58 @@ GameState::tiles() const {
   return tiles_;
 }
 
-// repeated .Command commands = 5;
-inline int GameState::commands_size() const {
-  return commands_.size();
+// .Command last_command = 5;
+inline bool GameState::has_last_command() const {
+  return this != internal_default_instance() && last_command_ != NULL;
 }
-inline void GameState::clear_commands() {
-  commands_.Clear();
+inline void GameState::clear_last_command() {
+  if (GetArenaNoVirtual() == NULL && last_command_ != NULL) {
+    delete last_command_;
+  }
+  last_command_ = NULL;
 }
-inline ::Command* GameState::mutable_commands(int index) {
-  // @@protoc_insertion_point(field_mutable:GameState.commands)
-  return commands_.Mutable(index);
+inline const ::Command& GameState::_internal_last_command() const {
+  return *last_command_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::Command >*
-GameState::mutable_commands() {
-  // @@protoc_insertion_point(field_mutable_list:GameState.commands)
-  return &commands_;
+inline const ::Command& GameState::last_command() const {
+  const ::Command* p = last_command_;
+  // @@protoc_insertion_point(field_get:GameState.last_command)
+  return p != NULL ? *p : *reinterpret_cast<const ::Command*>(
+      &::_Command_default_instance_);
 }
-inline const ::Command& GameState::commands(int index) const {
-  // @@protoc_insertion_point(field_get:GameState.commands)
-  return commands_.Get(index);
+inline ::Command* GameState::release_last_command() {
+  // @@protoc_insertion_point(field_release:GameState.last_command)
+  
+  ::Command* temp = last_command_;
+  last_command_ = NULL;
+  return temp;
 }
-inline ::Command* GameState::add_commands() {
-  // @@protoc_insertion_point(field_add:GameState.commands)
-  return commands_.Add();
+inline ::Command* GameState::mutable_last_command() {
+  
+  if (last_command_ == NULL) {
+    auto* p = CreateMaybeMessage<::Command>(GetArenaNoVirtual());
+    last_command_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:GameState.last_command)
+  return last_command_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::Command >&
-GameState::commands() const {
-  // @@protoc_insertion_point(field_list:GameState.commands)
-  return commands_;
+inline void GameState::set_allocated_last_command(::Command* last_command) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete last_command_;
+  }
+  if (last_command) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      last_command = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, last_command, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  last_command_ = last_command;
+  // @@protoc_insertion_point(field_set_allocated:GameState.last_command)
 }
 
 // -------------------------------------------------------------------
