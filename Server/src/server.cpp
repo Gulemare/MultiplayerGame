@@ -84,8 +84,9 @@ void Server::processNotifications()
 {
     const auto sendGameState = [this]() {
         auto state = game_.getState();
-        for (auto&&[connection, playerNum] : connections_) {
-            state.set_player(playerNum);
+        for (auto&&[connection, playerId] : connections_) {
+            state.set_player(playerId);
+            state.set_team(game_.getPlayerTeam(playerId));
             server_.send(connection, state.SerializeAsString(), websocketpp::frame::opcode::BINARY);
         }
     };

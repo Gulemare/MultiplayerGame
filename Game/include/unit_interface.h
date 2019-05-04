@@ -8,8 +8,8 @@ namespace game {
     class UnitInterface {
 
     public:
-        UnitInterface(const Coords& position, int player, int health, int actionPoints)
-            : position_(position), owner_(player), health_(health), actionPoints_(actionPoints) {}
+        UnitInterface(const Coords& position, int player, int team, int health, int actionPoints)
+            : position_(position), owner_(player), team_(team), health_(health), actionPoints_(actionPoints) {}
         virtual ~UnitInterface() = default;
 
         virtual UnitType getType() = 0;
@@ -25,11 +25,13 @@ namespace game {
         void setActionPoints(int actions) { actionPoints_ = actions; }
 
         int owner() const { return owner_; }
+        int team() const { return team_; }
 
     protected:
         Coords position_;
         int health_;
         int owner_;
+        int team_;
         int actionPoints_;
     };
 

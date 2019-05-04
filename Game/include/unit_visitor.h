@@ -1,9 +1,9 @@
 #pragma once
 
 namespace game {
-    class Worker;
+    class Warrior;
     class UnitVisitor {
     public:
-        virtual void visit(Worker&) = 0;
+        virtual void visit(Warrior&) = 0;
     };
 }

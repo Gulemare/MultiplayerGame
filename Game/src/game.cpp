@@ -6,6 +6,9 @@
 
 using namespace game;
 
+const auto playersTeam = 0;
+const auto npcTeam = 1;
+
 Game::Game(const size_t playerCount) : map_(10, 8)
 {
     restart(playerCount);
@@ -18,14 +21,19 @@ Game::~Game()
 void Game::restart(const size_t playerCount)
 {
     playerCount_ = playerCount;
-    activePlayer_ = 0;
+    activeTeam_ = 0;
     currentPlayerCount_ = 0;
     units_.reset();
+    teams_.clear();
+    lastAppliedCommand_.Clear();
 }
 
 bool Game::consumeCommand(size_t player, const Command& command)
 {
-    if (player != activePlayer_)
+    if (teams_.count(player) == 0)
+        return false;
+
+    if (teams_[player].teamId != activeTeam_)
         return false;
 
     removeDeadUnits();
@@ -33,16 +41,16 @@ bool Game::consumeCommand(size_t player, const Command& command)
     bool gameChanged = false;
 
     if (command.has_end_turn()) {
-        gameChanged = applyCommand(command.end_turn());
+        gameChanged = applyCommand(player, command.end_turn());
     }
     else if (command.has_spawn()) {
-        gameChanged = applyCommand(command.spawn());
+        gameChanged = applyCommand(player, command.spawn());
     }
     else if (command.has_move()) {
-        gameChanged = applyCommand(command.move());
+        gameChanged = applyCommand(player, command.move());
     }
     else if (command.has_direct_attack()) {
-        gameChanged = applyCommand(command.direct_attack());
+        gameChanged = applyCommand(player, command.direct_attack());
     }
 
     if (!gameChanged)
@@ -54,9 +62,18 @@ bool Game::consumeCommand(size_t player, const Command& command)
     return gameChanged;
 }
 
-size_t Game::activePlayer() const
+void game::Game::spawnEnemies()
 {
-    return activePlayer_;
+    teams_.insert({ playerCount_, {npcTeam, true} });
+    units_.setTeam(npcTeam);
+    units_.setUser(playerCount_);
+    units_.create(UnitType::WARRIOR, { 3, 3 });
+    map_.updateOccupied(units_);
+}
+
+size_t Game::activeTeam() const
+{
+    return activeTeam_;
 }
 
 int Game::addPlayer()
@@ -66,11 +83,18 @@ int Game::addPlayer()
 
     // Create starting units for player
     const auto playerId = currentPlayerCount_;
+    teams_.insert({ playerId, {playersTeam, true} });
+    units_.setTeam(playersTeam);
     units_.setUser(playerId);
-    units_.create(UnitType::WORKER, { static_cast<int>(currentPlayerCount_), 0 });
+    units_.create(UnitType::WARRIOR, { static_cast<int>(playerId), 0 });
+    units_.create(UnitType::WARRIOR, { static_cast<int>(playerId), 1 });
     map_.updateOccupied(units_);
 
     currentPlayerCount_++;
+
+    if (started())
+        spawnEnemies();
+
     return playerId;
 }
 
@@ -79,22 +103,31 @@ bool Game::started()
     return currentPlayerCount_ == playerCount_;
 }
 
+size_t game::Game::getPlayerTeam(size_t player) const
+{
+    return teams_.at(player).teamId;
+}
+
 GameState Game::getState() const
 {
     GameState state;
+    state.set_active_team(activeTeam_);
 
-    state.set_active_player(activePlayer());
+    for (const auto&[id, playerTeam] : teams_) {
+        if (playerTeam.teamId == activeTeam_ && playerTeam.playerIsActive)
+            state.add_active_players(id);
+    }
+
+    state.set_team(-1);     // Invalid team, should be reset by server for each client
     state.set_player(-1);   // Invalid player, should be reset by server for each client
-    
 
-    for (auto it = units_.begin(); it != units_.end(); ++it) {
-        const auto id = it->first;
-        auto data = it->second;
+    for (const auto&[id, data]: units_) {
         Unit unit;
         unit.set_type(data->getType());
         unit.set_health(data->getHealth());
         unit.set_action_points(data->getActionPoints());
         unit.set_player(data->owner());
+        unit.set_team(data->team());
         
         auto pos = new Position();
         pos->set_col(data->getCoords().col);
@@ -111,7 +144,7 @@ GameState Game::getState() const
             pos->set_row(row);
             tile->set_allocated_pos(pos);
             tile->set_terrain(map_.getTile({ col, row}).terrain);
-            tile->set_occupied(map_.getTile({ col, row }).isOccupied);
+            tile->set_occupied(map_.getTile({ col, row }).occupiedBy);
         }
     }
 
@@ -120,13 +153,19 @@ GameState Game::getState() const
     return state;
 }
 
-bool Game::applyCommand(const Move& moveCommand)
+bool Game::applyCommand(size_t playerId, const Move& moveCommand)
 {
     auto unit = units_.get(moveCommand.unit_id());
     if (!unit)
         return false;
 
-    if (unit->owner() != activePlayer_)
+    if (unit->team() != activeTeam_)
+        return false;
+
+    if (unit->owner() != playerId)
+        return false;
+
+    if (!teams_.at(playerId).playerIsActive)
         return false;
 
     const auto& pos = moveCommand.position();
@@ -137,30 +176,64 @@ bool Game::applyCommand(const Move& moveCommand)
     return move.isSuccess();
 }
 
-bool Game::applyCommand(const Spawn& spawnCommand)
+bool Game::applyCommand(size_t playerId, const Spawn& spawnCommand)
 {
     return false;
 }
 
-bool Game::applyCommand(const EndTurn& endTurnCommand)
+bool Game::applyCommand(size_t playerId, const EndTurn& endTurnCommand)
 {
-    activePlayer_++;
-    if (activePlayer_ >= playerCount_)
-        activePlayer_ = 0;
+    bool teamStillActive = false;
+    bool isPlayerTurnEnd = false;
+    std::set<int> teamIds;
 
-    units_.setUser(activePlayer_);
+    for (auto&[id, teamInfo] : teams_) {
+        auto&[teamId, isActive] = teamInfo;
+        teamIds.insert(teamId);
+        if (teamId != activeTeam_)
+            continue;
+        if (id == playerId) {
+            isActive = false;
+            isPlayerTurnEnd = true;
+        }
 
-    restoreActivePlayerUnits();
+        teamStillActive |= isActive;
+    }
+
+    if (teamStillActive)
+        return isPlayerTurnEnd;
+
+    auto it = teamIds.find(activeTeam_);
+    if (it == std::prev(teamIds.end()))
+        activeTeam_ = *teamIds.begin();
+    else
+        activeTeam_ = *std::next(it);
+
+    for (auto&[id, teamInfo] : teams_) {
+        auto&[teamId, isActive] = teamInfo;
+        if (teamId == activeTeam_)
+            isActive = true;
+    }
+    
+    units_.setTeam(activeTeam_);
+
+    restoreActiveTeamUnits();
     return true;
 }
 
-bool game::Game::applyCommand(const DirectAttack& directAttackCommand)
+bool game::Game::applyCommand(size_t playerId, const DirectAttack& directAttackCommand)
 {
     auto attacker = units_.get(directAttackCommand.unit_id());
     if (!attacker)
         return false;
 
-    if (attacker->owner() != activePlayer_)
+    if (attacker->team() != activeTeam_)
+        return false;
+
+    if (attacker->owner() != playerId)
+        return false;
+
+    if (!teams_.at(playerId).playerIsActive)
         return false;
 
     auto target = units_.get(directAttackCommand.target_id());
@@ -175,13 +248,13 @@ bool game::Game::applyCommand(const DirectAttack& directAttackCommand)
     return attack.isSuccess();
 }
 
-void Game::restoreActivePlayerUnits()
+void Game::restoreActiveTeamUnits()
 {
     RestorationVisitor restoration;
     for (auto it = units_.begin(); it != units_.end(); ++it)
     {
         auto& unit = *(it->second);
-        if (unit.owner() == activePlayer_)
+        if (unit.team() == activeTeam_)
             unit.accept(restoration);
     }
 }

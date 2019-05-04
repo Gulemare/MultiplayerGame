@@ -6,11 +6,11 @@ namespace game {
     /*! Restore action points to units */
     class RestorationVisitor : public UnitVisitor {
     public:
-        void visit(Worker& worker) override {
-            worker.setActionPoints(Worker::maxActionPoints);
+        void visit(Warrior& warrior) override {
+            warrior.setActionPoints(Warrior::maxActionPoints);
 
-            auto newHealth = worker.getHealth() + Worker::healthRegeneration;
-            worker.setHealth(std::min(Worker::maxHealth, newHealth));
+            auto newHealth = warrior.getHealth() + Warrior::healthRegeneration;
+            warrior.setHealth(std::min(Warrior::maxHealth, newHealth));
         }
     };
 }

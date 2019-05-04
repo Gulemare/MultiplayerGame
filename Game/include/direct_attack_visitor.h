@@ -15,17 +15,17 @@ namespace game {
             return success_;
         }
 
-        void visit(Worker& worker) override {
+        void visit(Warrior& warrior) override {
             const auto pos = target_.getCoords();
-            if (cubeDistance(oddrToCube(pos), oddrToCube(worker.getCoords())) > Worker::attackRange ||
-                worker.getActionPoints() < Worker::attackCost)
+            if (cubeDistance(oddrToCube(pos), oddrToCube(warrior.getCoords())) > Warrior::attackRange ||
+                warrior.getActionPoints() < Warrior::attackCost)
             {
                 success_ = false;
                 return;
             }
 
-            target_.setHealth(target_.getHealth() - worker.attackPower);
-            worker.setActionPoints(worker.getActionPoints() - Worker::attackCost);
+            target_.setHealth(target_.getHealth() - warrior.attackPower);
+            warrior.setActionPoints(warrior.getActionPoints() - Warrior::attackCost);
             success_ = true;
             return;
         }

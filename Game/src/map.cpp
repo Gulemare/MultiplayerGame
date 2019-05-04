@@ -90,14 +90,15 @@ Tile Map::getTile(const Coords& coords) const
 void game::Map::updateOccupied(const UnitsHolder& units)
 {
     for (auto& tile : tiles_)
-        tile.isOccupied = false;
+        tile.occupiedBy = 0;
 
-    for (auto it = units.begin(); it != units.end(); ++it) {
-        const auto& unit = it->second;
+    for (const auto&[id, unit] : units) {
         const auto& pos = unit->getCoords();
         if (!isValidCoord(pos))
             continue;
-        tiles_[pos.row * width_ + pos.col].isOccupied = true;
+        if (unit->getHealth() <= 0)
+            continue;
+        tiles_[pos.row * width_ + pos.col].occupiedBy = id;
     }
 }
 

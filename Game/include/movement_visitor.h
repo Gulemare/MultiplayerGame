@@ -35,22 +35,22 @@ namespace game {
             return success_;
         }
 
-        void visit(Worker& worker) override {
-            if (worker.getActionPoints() == 0 ||
+        void visit(Warrior& warrior) override {
+            if (warrior.getActionPoints() == 0 ||
                 !map_.isValidCoord(goal_) ||
-                map_.getTile(goal_).isOccupied)
+                map_.getTile(goal_).occupiedBy > 0)
             {
                 success_ = false;
                 return;
             }
 
-            const auto& coords = worker.getCoords();
+            const auto& coords = warrior.getCoords();
             auto neighbors = getNeighbours(coords);
             for (const auto& n : neighbors) {
                 if (goal_ == n) {
                     success_ = true;
-                    worker.setCoords(goal_);
-                    worker.setActionPoints(worker.getActionPoints() - 1);
+                    warrior.setCoords(goal_);
+                    warrior.setActionPoints(warrior.getActionPoints() - 1);
                     return;
                 }
             }

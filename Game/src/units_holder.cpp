@@ -8,17 +8,17 @@ void UnitsHolder::create(UnitType type, const Coords& pos)
 {
     std::shared_ptr<UnitInterface> newUnit;
     switch (type) {
-    case WORKER: newUnit = std::make_shared<Worker>(pos, player_); break;
+    case WARRIOR: newUnit = std::make_shared<Warrior>(pos, player_, team_); break;
     default: throw std::invalid_argument("Unknown type");
     }
 
-    insert({ lastId_++, newUnit });
+    units_.insert({ lastId_++, newUnit });
 }
 
 std::shared_ptr<UnitInterface> game::UnitsHolder::get(uint64_t id) const
 {
-    if (count(id) == 0)
+    if (units_.count(id) == 0)
         return nullptr;
     else
-        return at(id);
+        return units_.at(id);
 }

@@ -20,6 +20,9 @@ game.initScene = function (newScene, socket) {
     scene.selectedUnit = null;
     scene.moveTiles = [];
 
+    // UI elements
+    scene.endTurnBtn = null;
+
     // disable rmb clicks
     scene.input.mouse.disableContextMenu();
 
@@ -98,6 +101,35 @@ game.scene.handleStart = function () {
     //alert("Connected to server");
 }
 
+game.scene.updateUI = function (isPlayerActive) {
+    if (!scene.endTurnBtn) {
+        const enabledColor = "#0F0";
+        const disabledColor = "#AAA";
+        scene.endTurnBtn = scene.add.text(hex.WIDTH * 11, 0, ["END", "TURN"],
+            { color: enabledColor, font: "bold 72px Arial", align: 'center', stroke: "#fff", strokeThickness: 5 });
+
+        scene.endTurnBtn.setInteractive();
+        scene.endTurnBtn.on('pointerdown', function () {
+            if (scene.endTurnBtn.enabled) {
+                console.log("clicked");
+                var end = new proto.EndTurn();
+                var command = new proto.Command();
+                command.setEndTurn(end);
+                scene.sendCommand(command);
+                scene.endTurnBtn.setEnabled(false);
+            }
+        });
+        scene.endTurnBtn.enabled = true;
+
+        scene.endTurnBtn.setEnabled = function (enabledFlag) {
+            scene.endTurnBtn.enabled = enabledFlag;
+            scene.endTurnBtn.setColor(enabledFlag ? enabledColor : disabledColor);
+        }
+    }
+
+    scene.endTurnBtn.setEnabled(isPlayerActive);
+}
+
 game.scene.handleConnectionClosed = function (event) {
     game.scene.clear();
 
@@ -121,7 +153,7 @@ game.scene.updatePossibleMoves = function (sceneUnit) {
         const tileKey = `${oddr.row},${oddr.col}`;
         if (tileKey in scene.tiles) {
             let sceneTile = scene.tiles[tileKey];
-            if (sceneTile.isOccupied) {
+            if (sceneTile.occupiedBy > 0) {
                 return;
             }
             scene.moveTiles.push(sceneTile);
@@ -135,10 +167,21 @@ game.scene.updatePossibleMoves = function (sceneUnit) {
 }
 
 game.scene.handleGameStateRecieved = function (event) {
-    const state = proto.GameState.deserializeBinary(event.data);
-    console.log("Get data " + state.getPlayer() + " " + state.getActivePlayer());
 
+    const state = proto.GameState.deserializeBinary(event.data);
     const player = state.getPlayer();
+    const team = state.getTeam();
+
+    console.log(state.getActivePlayersList())
+
+    let isPlayerActive = false;
+    state.getActivePlayersList().forEach(function (id) {
+        if (id == player)
+            isPlayerActive = true;
+    });
+    
+
+    game.scene.updateUI(isPlayerActive);
 
     state.getTilesList().forEach(function (tile) {
         const row = tile.getPos().getRow();
@@ -148,7 +191,7 @@ game.scene.handleGameStateRecieved = function (event) {
 
         // Update tile
         if (tileKey in scene.tiles) {
-            scene.tiles[tileKey].isOccupied = tile.getOccupied();
+            scene.tiles[tileKey].occupiedBy = tile.getOccupied();
             return;
         }
 
@@ -158,34 +201,64 @@ game.scene.handleGameStateRecieved = function (event) {
         sceneTile.setDepth(0);
         sceneTile.oddr = hex.Oddr(row, col);
 
+        var shape = new Phaser.Geom.Polygon(hex.polygon);
+        sceneTile.setInteractive(shape, Phaser.Geom.Polygon.Contains);
+
         sceneTile.on('pointerdown', function (pointer) {
-            if (pointer.rightButtonDown()) {
-                var pos = new proto.Position();
-                pos.setRow(sceneTile.oddr.row);
-                pos.setCol(sceneTile.oddr.col);
+            //if (pointer.rightButtonDown()) {
 
-                var move = new proto.Move();
-                move.setPosition(pos);
-                move.setUnitId(scene.selectedUnit.id);
+            if (sceneTile.occupiedBy > 0) {
+                // select unit
+                let unitOnTile = scene.units[sceneTile.occupiedBy];
+                if (unitOnTile.player == player) {
+                    unitOnTile.select();
+                    return;
+                }
+            }
 
-                var command = new proto.Command();
-                command.setMove(move)
+            if (scene.selectedUnit) {
+                if (sceneTile.occupiedBy == 0) {
+                    // Move selected unit
+                    var pos = new proto.Position();
+                    pos.setRow(sceneTile.oddr.row);
+                    pos.setCol(sceneTile.oddr.col);
 
-                scene.sendCommand(command);
+                    var move = new proto.Move();
+                    move.setPosition(pos);
+                    move.setUnitId(scene.selectedUnit.id);
+
+                    var command = new proto.Command();
+                    command.setMove(move)
+
+                    scene.sendCommand(command);
+                }
+                else {
+                    // Attack unit on tile
+                    let unitOnTile = scene.units[sceneTile.occupiedBy];
+                    if (unitOnTile.team == team)
+                        return;
+
+                    var attack = new proto.DirectAttack();
+                    attack.setUnitId(scene.selectedUnit.id);
+                    attack.setTargetId(unitOnTile.id);
+
+                    var command = new proto.Command();
+                    command.setDirectAttack(attack);
+
+                    scene.sendCommand(command);
+
+                }
             }
         });
 
         sceneTile.setStrokeStyle(3, 0x000000, 1.0);
-        sceneTile.isOccupied = tile.getOccupied();
+        sceneTile.occupiedBy = tile.getOccupied();
         sceneTile.clearEffects = function () {
-            sceneTile.disableInteractive();
             sceneTile.setStrokeStyle(3, 0x000000, 1.0);
             sceneTile.setFillStyle(0xffffff, 1.0);
         }
         sceneTile.setMovableEffect = function () {
             sceneTile.clearEffects();
-            var shape = new Phaser.Geom.Polygon(hex.polygon);
-            sceneTile.setInteractive(shape, Phaser.Geom.Polygon.Contains);
             sceneTile.setFillStyle(0xaaffaa, 1.0);
         }
 
@@ -197,34 +270,71 @@ game.scene.handleGameStateRecieved = function (event) {
         const col = unit.getPosition().getCol();
         const oddr = hex.Oddr(row, col);
         const pos = hex.oddrToScenePos(row, col);
+        const isEnemy = unit.getTeam() != team;
         const isControllable = unit.getPlayer() == player;
-
+        
         // update unit
         if (id in scene.units) {
             let sceneUnit = scene.units[id];
 
-            if (oddr.row == sceneUnit.oddr.row && oddr.col == sceneUnit.oddr.col) {
-                return;
+            if (oddr.row != sceneUnit.oddr.row || oddr.col != sceneUnit.oddr.col) {
+                sceneUnit.moveTo(oddr);
             }
-            sceneUnit.moveTo(oddr);
+
+            if (sceneUnit.health != unit.getHealth()) {
+                sceneUnit.health = unit.getHealth();
+                sceneUnit.healthBar.setPercent(sceneUnit.health * 100.0 / sceneUnit.maxHealth);
+            }
+
             return;
         }
 
         // create new unit
-        const color = isControllable ? 0xccffcc : 0xffcccc;
+        let color = isControllable ? 0xccffcc : 0xccccff;
+        color = isEnemy ? 0xffcccc : color;
 
         let sceneUnit = scene.add.container(pos.x - hex.WIDTH / 2, pos.y - hex.HEIGHT / 2);
+        sceneUnit.sprite = scene.add.sprite(0, -20, 'swordsman').setScale(3);
+        sceneUnit.add(sceneUnit.sprite);
+
+        const maxBarWidth = hex.WIDTH - 20;
+        sceneUnit.healthBar = scene.add.rectangle(0, -sceneUnit.sprite.displayHeight / 2, maxBarWidth, 10, 0x00ff00)
+        let healthBarDecorator = scene.add.rectangle(0, -sceneUnit.sprite.displayHeight / 2, maxBarWidth, 10, 0xffffff, 0.0)
+        sceneUnit.healthBar.setPercent = function (percent) {
+            if (percent > 100)
+                return;
+            if (percent < 0)
+                percent = 0;
+            sceneUnit.healthBar.setScale(percent / 100.0, 1.0);
+            sceneUnit.healthBar.setX(sceneUnit.healthBar.displayWidth / 2.0 - maxBarWidth / 2.0);
+            let color = percent > 75 ? 0x00ff00 : 0xffff00;
+            color = percent < 25 ? 0xff0000 : color;
+            sceneUnit.healthBar.setFillStyle(color);
+        };
+        
+        healthBarDecorator.setStrokeStyle(2, 0x000000, 1.0);
+        
+        sceneUnit.add(sceneUnit.healthBar);
+        sceneUnit.add(healthBarDecorator);
 
         sceneUnit.oddr = oddr;
         sceneUnit.id = id;
-
-        sceneUnit.sprite = scene.add.sprite(0, 0, 'swordsman').setScale(3);
-        sceneUnit.add(sceneUnit.sprite);
+        sceneUnit.player = unit.getPlayer();
+        sceneUnit.team = unit.getTeam();
+        sceneUnit.health = unit.getHealth();
+        sceneUnit.maxHealth = unit.getHealth();
 
         sceneUnit.sprite.setTint(color);
-
         //sceneUnit.setStrokeStyle(1, 0x000000, 1.0);
-        sceneUnit.sprite.setDepth(1000);
+        //sceneUnit.sprite.setDepth(10);
+        //sceneUnit.healthBar.setDepth(50);
+        //healthBarDecorator.setDepth(50);
+
+        sceneUnit.updateDepth = function () {
+            sceneUnit.setDepth(sceneUnit.oddr.row);
+        };
+        sceneUnit.updateDepth();
+
         sceneUnit.sprite.setFlipX(true);
 
         // unit animations ---------------------------------------------
@@ -235,6 +345,12 @@ game.scene.handleGameStateRecieved = function (event) {
 
         sceneUnit.playDamaged = function () {
             sceneUnit.sprite.anims.play('damaged');
+            if (sceneUnit.health <= 0) {
+                sceneUnit.destroy();
+                if (scene.selectedUnit)
+                    game.scene.updatePossibleMoves(scene.selectedUnit);
+                return;
+            }
         };
 
         sceneUnit.playAttack = function (targetId) {
@@ -248,10 +364,8 @@ game.scene.handleGameStateRecieved = function (event) {
         };
 
         sceneUnit.playIdle = function () {
-            if (scene.selectedUnit && scene.selectedUnit.id == sceneUnit.id) {
-                game.scene.updatePossibleMoves(sceneUnit);
+            if (scene.selectedUnit && scene.selectedUnit.id == sceneUnit.id)
                 sceneUnit.sprite.anims.play('idle_selected');
-            }
             else
                 sceneUnit.sprite.anims.play('idle');
         }
@@ -260,6 +374,7 @@ game.scene.handleGameStateRecieved = function (event) {
             const prevPos = hex.oddrToScenePos(sceneUnit.oddr.row, sceneUnit.oddr.col);
             const newPos = hex.oddrToScenePos(newOddr.row, newOddr.col);
             sceneUnit.oddr = newOddr;
+            sceneUnit.updateDepth();
             sceneUnit.sprite.setFlipX(newPos.x > prevPos.x);
             sceneUnit.sprite.anims.play('walk');
             scene.tweens.add({
@@ -270,6 +385,8 @@ game.scene.handleGameStateRecieved = function (event) {
                 ease: 'Linear',
                 onComplete: function (tween, targets) {
                     sceneUnit.playIdle();
+                    if (scene.selectedUnit)
+                        game.scene.updatePossibleMoves(scene.selectedUnit);
                 }
             });
         }
@@ -278,58 +395,25 @@ game.scene.handleGameStateRecieved = function (event) {
             sceneUnit.playIdle();
         }
 
+        sceneUnit.select = function () {
+            if (scene.selectedUnit) {
+                if (scene.selectedUnit.id == sceneUnit.id)
+                    return;
+                scene.selectedUnit.unselect();
+            }
+            scene.selectedUnit = sceneUnit;
+            game.scene.updatePossibleMoves(sceneUnit);
+            sceneUnit.sprite.anims.play('idle_selected');
+            
+        };
+
+        sceneUnit.unselect = function () {
+            sceneUnit.sprite.anims.play('idle');
+        };
+
         sceneUnit.sprite.on('animationcomplete', animComplete, sceneUnit.sprite);
         sceneUnit.playIdle();
         // -------------------------------------------------------------------------------
-        
-
-        sceneUnit.sprite.setInteractive();
-
-        if (isControllable) {
-            sceneUnit.unselect = function () {
-                sceneUnit.sprite.anims.play('idle');
-            };
-
-            sceneUnit.select = function () {
-                sceneUnit.sprite.anims.play('idle_selected');
-            };
-
-            sceneUnit.sprite.on('pointerdown', function (pointer) {
-                if (scene.selectedUnit) {
-                    if (scene.selectedUnit.id == sceneUnit.id)
-                        return;
-                    scene.selectedUnit.unselect();
-                }
-                sceneUnit.select();
-                scene.selectedUnit = sceneUnit;
-                console.log('unit selected');
-                game.scene.updatePossibleMoves(sceneUnit);
-            });
-
-            sceneUnit.sprite.on('pointerout', function (pointer) {
-            });
-
-            sceneUnit.sprite.on('pointerup', function (pointer) {
-            });
-        }
-        else {
-            sceneUnit.sprite.on('pointerdown', function (pointer) {
-                if (!pointer.rightButtonDown())
-                    return;
-                if (!scene.selectedUnit)
-                    return;
-
-                var attack = new proto.DirectAttack();
-                attack.setUnitId(scene.selectedUnit.id);
-                attack.setTargetId(sceneUnit.id);
-
-                var command = new proto.Command();
-                command.setDirectAttack(attack);
-
-                scene.sendCommand(command);
-
-            });
-        }
 
         scene.units[id] = sceneUnit;
     });

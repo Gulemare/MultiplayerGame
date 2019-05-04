@@ -204,19 +204,31 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // accessors -------------------------------------------------------
 
-  // map<uint64, .Unit> units = 3;
+  // repeated uint32 active_players = 4;
+  int active_players_size() const;
+  void clear_active_players();
+  static const int kActivePlayersFieldNumber = 4;
+  ::google::protobuf::uint32 active_players(int index) const;
+  void set_active_players(int index, ::google::protobuf::uint32 value);
+  void add_active_players(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      active_players() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_active_players();
+
+  // map<uint64, .Unit> units = 5;
   int units_size() const;
   void clear_units();
-  static const int kUnitsFieldNumber = 3;
+  static const int kUnitsFieldNumber = 5;
   const ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >&
       units() const;
   ::google::protobuf::Map< ::google::protobuf::uint64, ::Unit >*
       mutable_units();
 
-  // repeated .Tile tiles = 4;
+  // repeated .Tile tiles = 6;
   int tiles_size() const;
   void clear_tiles();
-  static const int kTilesFieldNumber = 4;
+  static const int kTilesFieldNumber = 6;
   ::Tile* mutable_tiles(int index);
   ::google::protobuf::RepeatedPtrField< ::Tile >*
       mutable_tiles();
@@ -225,10 +237,10 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
   const ::google::protobuf::RepeatedPtrField< ::Tile >&
       tiles() const;
 
-  // .Command last_command = 5;
+  // .Command last_command = 7;
   bool has_last_command() const;
   void clear_last_command();
-  static const int kLastCommandFieldNumber = 5;
+  static const int kLastCommandFieldNumber = 7;
   private:
   const ::Command& _internal_last_command() const;
   public:
@@ -237,22 +249,30 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::Command* mutable_last_command();
   void set_allocated_last_command(::Command* last_command);
 
-  // uint32 active_player = 1;
-  void clear_active_player();
-  static const int kActivePlayerFieldNumber = 1;
-  ::google::protobuf::uint32 active_player() const;
-  void set_active_player(::google::protobuf::uint32 value);
-
-  // uint32 player = 2;
+  // uint32 player = 1;
   void clear_player();
-  static const int kPlayerFieldNumber = 2;
+  static const int kPlayerFieldNumber = 1;
   ::google::protobuf::uint32 player() const;
   void set_player(::google::protobuf::uint32 value);
+
+  // uint32 team = 2;
+  void clear_team();
+  static const int kTeamFieldNumber = 2;
+  ::google::protobuf::uint32 team() const;
+  void set_team(::google::protobuf::uint32 value);
+
+  // uint32 active_team = 3;
+  void clear_active_team();
+  static const int kActiveTeamFieldNumber = 3;
+  ::google::protobuf::uint32 active_team() const;
+  void set_active_team(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:GameState)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > active_players_;
+  mutable int _active_players_cached_byte_size_;
   ::google::protobuf::internal::MapField<
       GameState_UnitsEntry_DoNotUse,
       ::google::protobuf::uint64, ::Unit,
@@ -261,8 +281,9 @@ class GameState : public ::google::protobuf::Message /* @@protoc_insertion_point
       0 > units_;
   ::google::protobuf::RepeatedPtrField< ::Tile > tiles_;
   ::Command* last_command_;
-  ::google::protobuf::uint32 active_player_;
   ::google::protobuf::uint32 player_;
+  ::google::protobuf::uint32 team_;
+  ::google::protobuf::uint32 active_team_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -477,25 +498,25 @@ class Tile : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::Position* mutable_pos();
   void set_allocated_pos(::Position* pos);
 
+  // uint64 occupied = 3;
+  void clear_occupied();
+  static const int kOccupiedFieldNumber = 3;
+  ::google::protobuf::uint64 occupied() const;
+  void set_occupied(::google::protobuf::uint64 value);
+
   // uint32 terrain = 2;
   void clear_terrain();
   static const int kTerrainFieldNumber = 2;
   ::google::protobuf::uint32 terrain() const;
   void set_terrain(::google::protobuf::uint32 value);
 
-  // bool occupied = 3;
-  void clear_occupied();
-  static const int kOccupiedFieldNumber = 3;
-  bool occupied() const;
-  void set_occupied(bool value);
-
   // @@protoc_insertion_point(class_scope:Tile)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::Position* pos_;
+  ::google::protobuf::uint64 occupied_;
   ::google::protobuf::uint32 terrain_;
-  bool occupied_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_protocol_2eproto::TableStruct;
 };
@@ -588,10 +609,10 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
 
   // accessors -------------------------------------------------------
 
-  // .Position position = 3;
+  // .Position position = 4;
   bool has_position() const;
   void clear_position();
-  static const int kPositionFieldNumber = 3;
+  static const int kPositionFieldNumber = 4;
   private:
   const ::Position& _internal_position() const;
   public:
@@ -606,21 +627,27 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::uint32 player() const;
   void set_player(::google::protobuf::uint32 value);
 
-  // uint32 type = 2;
+  // uint32 team = 2;
+  void clear_team();
+  static const int kTeamFieldNumber = 2;
+  ::google::protobuf::uint32 team() const;
+  void set_team(::google::protobuf::uint32 value);
+
+  // uint32 type = 3;
   void clear_type();
-  static const int kTypeFieldNumber = 2;
+  static const int kTypeFieldNumber = 3;
   ::google::protobuf::uint32 type() const;
   void set_type(::google::protobuf::uint32 value);
 
-  // int32 health = 4;
+  // int32 health = 5;
   void clear_health();
-  static const int kHealthFieldNumber = 4;
+  static const int kHealthFieldNumber = 5;
   ::google::protobuf::int32 health() const;
   void set_health(::google::protobuf::int32 value);
 
-  // int32 action_points = 5;
+  // int32 action_points = 6;
   void clear_action_points();
-  static const int kActionPointsFieldNumber = 5;
+  static const int kActionPointsFieldNumber = 6;
   ::google::protobuf::int32 action_points() const;
   void set_action_points(::google::protobuf::int32 value);
 
@@ -630,6 +657,7 @@ class Unit : public ::google::protobuf::Message /* @@protoc_insertion_point(clas
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::Position* position_;
   ::google::protobuf::uint32 player_;
+  ::google::protobuf::uint32 team_;
   ::google::protobuf::uint32 type_;
   ::google::protobuf::int32 health_;
   ::google::protobuf::int32 action_points_;
@@ -1264,21 +1292,7 @@ class Spawn : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 
 // GameState
 
-// uint32 active_player = 1;
-inline void GameState::clear_active_player() {
-  active_player_ = 0u;
-}
-inline ::google::protobuf::uint32 GameState::active_player() const {
-  // @@protoc_insertion_point(field_get:GameState.active_player)
-  return active_player_;
-}
-inline void GameState::set_active_player(::google::protobuf::uint32 value) {
-  
-  active_player_ = value;
-  // @@protoc_insertion_point(field_set:GameState.active_player)
-}
-
-// uint32 player = 2;
+// uint32 player = 1;
 inline void GameState::clear_player() {
   player_ = 0u;
 }
@@ -1292,7 +1306,65 @@ inline void GameState::set_player(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:GameState.player)
 }
 
-// map<uint64, .Unit> units = 3;
+// uint32 team = 2;
+inline void GameState::clear_team() {
+  team_ = 0u;
+}
+inline ::google::protobuf::uint32 GameState::team() const {
+  // @@protoc_insertion_point(field_get:GameState.team)
+  return team_;
+}
+inline void GameState::set_team(::google::protobuf::uint32 value) {
+  
+  team_ = value;
+  // @@protoc_insertion_point(field_set:GameState.team)
+}
+
+// uint32 active_team = 3;
+inline void GameState::clear_active_team() {
+  active_team_ = 0u;
+}
+inline ::google::protobuf::uint32 GameState::active_team() const {
+  // @@protoc_insertion_point(field_get:GameState.active_team)
+  return active_team_;
+}
+inline void GameState::set_active_team(::google::protobuf::uint32 value) {
+  
+  active_team_ = value;
+  // @@protoc_insertion_point(field_set:GameState.active_team)
+}
+
+// repeated uint32 active_players = 4;
+inline int GameState::active_players_size() const {
+  return active_players_.size();
+}
+inline void GameState::clear_active_players() {
+  active_players_.Clear();
+}
+inline ::google::protobuf::uint32 GameState::active_players(int index) const {
+  // @@protoc_insertion_point(field_get:GameState.active_players)
+  return active_players_.Get(index);
+}
+inline void GameState::set_active_players(int index, ::google::protobuf::uint32 value) {
+  active_players_.Set(index, value);
+  // @@protoc_insertion_point(field_set:GameState.active_players)
+}
+inline void GameState::add_active_players(::google::protobuf::uint32 value) {
+  active_players_.Add(value);
+  // @@protoc_insertion_point(field_add:GameState.active_players)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+GameState::active_players() const {
+  // @@protoc_insertion_point(field_list:GameState.active_players)
+  return active_players_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+GameState::mutable_active_players() {
+  // @@protoc_insertion_point(field_mutable_list:GameState.active_players)
+  return &active_players_;
+}
+
+// map<uint64, .Unit> units = 5;
 inline int GameState::units_size() const {
   return units_.size();
 }
@@ -1310,7 +1382,7 @@ GameState::mutable_units() {
   return units_.MutableMap();
 }
 
-// repeated .Tile tiles = 4;
+// repeated .Tile tiles = 6;
 inline int GameState::tiles_size() const {
   return tiles_.size();
 }
@@ -1340,7 +1412,7 @@ GameState::tiles() const {
   return tiles_;
 }
 
-// .Command last_command = 5;
+// .Command last_command = 7;
 inline bool GameState::has_last_command() const {
   return this != internal_default_instance() && last_command_ != NULL;
 }
@@ -1498,15 +1570,15 @@ inline void Tile::set_terrain(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:Tile.terrain)
 }
 
-// bool occupied = 3;
+// uint64 occupied = 3;
 inline void Tile::clear_occupied() {
-  occupied_ = false;
+  occupied_ = GOOGLE_ULONGLONG(0);
 }
-inline bool Tile::occupied() const {
+inline ::google::protobuf::uint64 Tile::occupied() const {
   // @@protoc_insertion_point(field_get:Tile.occupied)
   return occupied_;
 }
-inline void Tile::set_occupied(bool value) {
+inline void Tile::set_occupied(::google::protobuf::uint64 value) {
   
   occupied_ = value;
   // @@protoc_insertion_point(field_set:Tile.occupied)
@@ -1530,7 +1602,21 @@ inline void Unit::set_player(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:Unit.player)
 }
 
-// uint32 type = 2;
+// uint32 team = 2;
+inline void Unit::clear_team() {
+  team_ = 0u;
+}
+inline ::google::protobuf::uint32 Unit::team() const {
+  // @@protoc_insertion_point(field_get:Unit.team)
+  return team_;
+}
+inline void Unit::set_team(::google::protobuf::uint32 value) {
+  
+  team_ = value;
+  // @@protoc_insertion_point(field_set:Unit.team)
+}
+
+// uint32 type = 3;
 inline void Unit::clear_type() {
   type_ = 0u;
 }
@@ -1544,7 +1630,7 @@ inline void Unit::set_type(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:Unit.type)
 }
 
-// .Position position = 3;
+// .Position position = 4;
 inline bool Unit::has_position() const {
   return this != internal_default_instance() && position_ != NULL;
 }
@@ -1598,7 +1684,7 @@ inline void Unit::set_allocated_position(::Position* position) {
   // @@protoc_insertion_point(field_set_allocated:Unit.position)
 }
 
-// int32 health = 4;
+// int32 health = 5;
 inline void Unit::clear_health() {
   health_ = 0;
 }
@@ -1612,7 +1698,7 @@ inline void Unit::set_health(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:Unit.health)
 }
 
-// int32 action_points = 5;
+// int32 action_points = 6;
 inline void Unit::clear_action_points() {
   action_points_ = 0;
 }

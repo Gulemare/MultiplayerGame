@@ -1,11 +1,14 @@
 syntax = "proto3";
 
 message GameState {
-  uint32 active_player = 1;
-  uint32 player = 2;            // Your order in game sequence
-  map<uint64, Unit> units = 3;  // Units in game (by unique id)
-  repeated Tile tiles = 4;      // Updated map tiles
-  Command last_command = 5;     // Last applied command
+  uint32 player = 1;            // Your id
+  uint32 team = 2;              // Your team
+  uint32 active_team = 3;       // Active team (which turn)
+  repeated uint32 active_players = 4; // Active players
+  
+  map<uint64, Unit> units = 5;  // Units in game (by unique id)
+  repeated Tile tiles = 6;      // Updated map tiles
+  Command last_command = 7;     // Last applied command
 }
 
 message Position {
@@ -16,15 +19,16 @@ message Position {
 message Tile {
   Position pos = 1;
   uint32 terrain = 2;
-  bool occupied = 3;
+  uint64 occupied = 3;          // Unit id or -1 if empty
 }
 
 message Unit {
   uint32 player = 1;           // Unit owner
-  uint32 type = 2;             // Unit type
-  Position position = 3;       // Position on grid
-  int32 health = 4;            // Unit health
-  int32 action_points = 5;     // Unit action points
+  uint32 team = 2;             // Unit team
+  uint32 type = 3;             // Unit type
+  Position position = 4;       // Position on grid
+  int32 health = 5;            // Unit health
+  int32 action_points = 6;     // Unit action points
 }
 
 message Command {

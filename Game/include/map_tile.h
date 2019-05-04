@@ -10,7 +10,7 @@ namespace game {
 
     struct Tile {
         Terrain terrain = GROUND;
-        bool isOccupied = false;
+        size_t occupiedBy = 0; // 0 - not occupied
     };
 
     using Coords = Oddr<int>;
