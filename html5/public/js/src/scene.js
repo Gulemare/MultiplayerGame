@@ -20,8 +20,12 @@ game.initScene = function (newScene, socket) {
     scene.selectedUnit = null;
     scene.moveTiles = [];
 
+    scene.gameStarted = false;
+
     // UI elements
     scene.endTurnBtn = null;
+    scene.waitText = null;
+    
 
     // disable rmb clicks
     scene.input.mouse.disableContextMenu();
@@ -94,17 +98,24 @@ game.scene.clear = function () {
     scene.tiles = {};
     scene.moveTiles = [];
     scene.units = {};
+
+    if (scene.endTurnBtn)
+        scene.endTurnBtn.destroy();
+    if (scene.waitText)
+        scene.waitText.destroy();
 }
 
 
 game.scene.handleStart = function () {
     //alert("Connected to server");
+    scene.waitText = scene.add.text(0, hex.HEIGHT * 1, ["WAIT FOR", "ANOTHER PLAYER"],
+        { color: "#000", font: "bold 144px Arial", align: 'center', stroke: "#fff", strokeThickness: 10 });
 }
 
 game.scene.updateUI = function (isPlayerActive) {
-    if (!scene.endTurnBtn) {
-        const enabledColor = "#0F0";
-        const disabledColor = "#AAA";
+    if (!scene.gameStarted) {
+        const enabledColor = "#0f0";
+        const disabledColor = "#aaa";
         scene.endTurnBtn = scene.add.text(hex.WIDTH * 11, 0, ["END", "TURN"],
             { color: enabledColor, font: "bold 72px Arial", align: 'center', stroke: "#fff", strokeThickness: 5 });
 
@@ -117,6 +128,7 @@ game.scene.updateUI = function (isPlayerActive) {
                 command.setEndTurn(end);
                 scene.sendCommand(command);
                 scene.endTurnBtn.setEnabled(false);
+                game.scene.clearSelection();
             }
         });
         scene.endTurnBtn.enabled = true;
@@ -125,6 +137,9 @@ game.scene.updateUI = function (isPlayerActive) {
             scene.endTurnBtn.enabled = enabledFlag;
             scene.endTurnBtn.setColor(enabledFlag ? enabledColor : disabledColor);
         }
+
+        scene.waitText.destroy();
+        scene.gameStarted = true;
     }
 
     scene.endTurnBtn.setEnabled(isPlayerActive);
@@ -132,13 +147,20 @@ game.scene.updateUI = function (isPlayerActive) {
 
 game.scene.handleConnectionClosed = function (event) {
     game.scene.clear();
-
-    if (event.wasClean) {
-        //alert('Connection closed nicely');
-    } else {
-        //alert('Connection closed badly');
-    }
+    alert(event.reason);
 };
+
+game.scene.clearSelection = function () {
+    if (scene.selectedUnit) {
+        scene.selectedUnit.unselect();
+        scene.selectedUnit = null;
+    }
+
+    scene.moveTiles.forEach(function (tile) {
+        tile.clearEffects();
+    });
+    scene.moveTiles.length = 0;
+}
 
 game.scene.updatePossibleMoves = function (sceneUnit) {
 
@@ -209,6 +231,8 @@ game.scene.handleGameStateRecieved = function (event) {
 
             if (sceneTile.occupiedBy > 0) {
                 // select unit
+                if (!scene.endTurnBtn.enabled)
+                    return;
                 let unitOnTile = scene.units[sceneTile.occupiedBy];
                 if (unitOnTile.player == player) {
                     unitOnTile.select();

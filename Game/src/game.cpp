@@ -28,6 +28,15 @@ void Game::restart(const size_t playerCount)
     lastAppliedCommand_.Clear();
 }
 
+bool Game::checkWinConditions() const
+{
+    for (const auto&[id, unit] : units_) {
+        if (unit->team() == npcTeam)
+            return false;
+    }
+    return true;
+}
+
 bool Game::consumeCommand(size_t player, const Command& command)
 {
     if (teams_.count(player) == 0)
@@ -67,7 +76,12 @@ void game::Game::spawnEnemies()
     teams_.insert({ playerCount_, {npcTeam, true} });
     units_.setTeam(npcTeam);
     units_.setUser(playerCount_);
-    units_.create(UnitType::WARRIOR, { 3, 3 });
+    units_.create(UnitType::WARRIOR, { 4, 3 });
+    units_.create(UnitType::WARRIOR, { 4, 4 });
+    units_.create(UnitType::WARRIOR, { 4, 5 });
+    units_.create(UnitType::WARRIOR, { 5, 3 });
+    units_.create(UnitType::WARRIOR, { 5, 4 });
+    units_.create(UnitType::WARRIOR, { 5, 5 });
     map_.updateOccupied(units_);
 }
 
@@ -86,8 +100,8 @@ int Game::addPlayer()
     teams_.insert({ playerId, {playersTeam, true} });
     units_.setTeam(playersTeam);
     units_.setUser(playerId);
-    units_.create(UnitType::WARRIOR, { static_cast<int>(playerId), 0 });
-    units_.create(UnitType::WARRIOR, { static_cast<int>(playerId), 1 });
+    units_.create(UnitType::WARRIOR, { 0, static_cast<int>(playerId) * 6 });
+    units_.create(UnitType::WARRIOR, { 0, static_cast<int>(playerId) * 6 + 1 });
     map_.updateOccupied(units_);
 
     currentPlayerCount_++;
@@ -106,6 +120,11 @@ bool Game::started()
 size_t game::Game::getPlayerTeam(size_t player) const
 {
     return teams_.at(player).teamId;
+}
+
+size_t game::Game::getActiveTeam() const
+{
+    return activeTeam_;
 }
 
 GameState Game::getState() const

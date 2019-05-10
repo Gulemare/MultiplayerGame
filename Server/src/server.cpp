@@ -14,6 +14,14 @@ using websocketpp::lib::unique_lock;
 /*! Helper variable, false for any type */
 template<class T> constexpr bool always_false = std::false_type::value;
 
+std::vector<Command> npcTurn(const GameState& state) {
+    std::vector<Command> commands;
+    Command end;
+    end.set_allocated_end_turn(new EndTurn);
+    commands.emplace_back(end);
+    return commands;
+}
+
 Server::Server()
 {
     // Initialize Asio Transport
@@ -140,6 +148,7 @@ void Server::processNotifications()
                     return;
 
                 const auto playerId = connections_.at(arg.connection);
+                const auto activeTeam = game_.getActiveTeam();
                 if (!game_.consumeCommand(playerId, arg.command))
                     return;
 
@@ -150,6 +159,32 @@ void Server::processNotifications()
                 server_.get_alog().write(websocketpp::log::alevel::app, ss.str());
 
                 sendGameState();
+
+                //TODO: refactor
+                if (game_.getActiveTeam() != activeTeam) {
+                    const auto commands = npcTurn(game_.getState());
+                    for (const auto& cmd : commands) {
+                        //TODO: remove magic constant 2
+                        const auto consumed = game_.consumeCommand(2, cmd);
+                        if (!consumed) {
+                            server_.get_alog().write(websocketpp::log::alevel::app,
+                                "Npc generated invalid command");
+                            break;
+                        }
+                        sendGameState();
+                    }
+                }
+
+                if (game_.checkWinConditions()) {
+                    for (auto&&[connection, playerNum] : connections_) {
+                        server_.close(connection, websocketpp::close::status::normal, "YOU WIN");
+                    }
+                    connections_.clear();
+                    while (!notifications_.empty())
+                        notifications_.pop();
+                    game_.restart(2);
+                }
+
             }
             else
                 static_assert(always_false<T>, "visitor not specified for all actions!");

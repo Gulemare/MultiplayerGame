@@ -20,7 +20,10 @@ namespace game {
         bool started();                             // Game is started when all players are added
 
         size_t getPlayerTeam(size_t player) const;
+        size_t getActiveTeam() const;
         GameState getState() const;
+
+        bool checkWinConditions() const;
 
         bool consumeCommand(size_t player, const Command& command); // applies command and returns true if game changed
 
